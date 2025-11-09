@@ -109,7 +109,7 @@ export default function EnhancedCobblerDashboard() {
       rating: 4.9,
       duration: '2-3 days',
       category: 'repair',
-      route: '/services'
+      route: '/service'
     },
     { 
       id: 4, 

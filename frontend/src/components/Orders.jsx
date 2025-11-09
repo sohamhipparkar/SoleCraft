@@ -822,15 +822,26 @@ export default function Orders() {
       <div className="pt-24 md:pt-28">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
           {/* Header */}
-          <div className="mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8"
+          >
             <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
               My Orders
-              <div className="h-1.5 w-44 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2" />
+              <motion.div
+                                  initial={{ width: 0 }}
+                                  animate={{ width: '180px' }}
+                                  transition={{ delay: 0.3, duration: 0.8 }}
+                                  className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2"
+                                />
+
             </h1>
             <p className="text-gray-400 mt-3">
               Track and manage all your orders in one place
             </p>
-          </div>
+          </motion.div>
 
           {/* Search and Filters */}
           <div className="mb-8">

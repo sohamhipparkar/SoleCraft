@@ -13,10 +13,44 @@ import {
   HelpCircle,
   ChevronDown,
   ArrowRight,
-  RotateCw
+  RotateCw,
+  Star,
+  Award,
+  TrendingUp,
+  Mail,
+  MessageSquare,
+  Phone,
+  Globe,
+  Shield,
+  Zap,
+  RefreshCw
 } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
 
 export default function OrderTrackingComponent() {
   const [trackingNumber, setTrackingNumber] = useState('');
@@ -147,6 +181,40 @@ export default function OrderTrackingComponent() {
     }
   };
 
+  const stats = [
+    { label: 'Orders Tracked', value: '50K+', icon: Package, color: 'blue' },
+    { label: 'Avg. Delivery', value: '3.5 days', icon: Clock, color: 'purple' },
+    { label: 'Customer Rating', value: '4.9/5', icon: Star, color: 'amber' },
+    { label: 'Countries', value: '40+', icon: Globe, color: 'green' }
+  ];
+
+  const trackingFeatures = [
+    {
+      icon: Shield,
+      title: 'Secure Tracking',
+      description: 'Real-time updates with verified information',
+      color: 'blue'
+    },
+    {
+      icon: Zap,
+      title: 'Instant Updates',
+      description: 'Get notified at every delivery milestone',
+      color: 'amber'
+    },
+    {
+      icon: RefreshCw,
+      title: 'Easy Returns',
+      description: 'Hassle-free return process with tracking',
+      color: 'green'
+    },
+    {
+      icon: MessageSquare,
+      title: '24/7 Support',
+      description: 'Our team is always here to help',
+      color: 'purple'
+    }
+  ];
+
   const faqData = [
     {
       id: 'faq-1',
@@ -203,566 +271,688 @@ export default function OrderTrackingComponent() {
     setIsLoggedIn(true);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: 0.05,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { 
-        type: 'spring', 
-        stiffness: 100,
-        damping: 12
-      }
-    }
-  };
-
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
-        <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-40">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-12 text-center"
-        >
-          <div className="inline-block mb-5">
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-gray-800 p-4 rounded-full"
-            >
-              <Package size={40} className="text-green-400" />
-            </motion.div>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white relative inline-block">
-            Track Your Order
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="absolute -bottom-1 left-0 h-1 bg-green-500 rounded-full"
-            ></motion.div>
-          </h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-gray-400 text-lg max-w-2xl mx-auto"
-          >
-            Keep tabs on your sneakers from order to delivery. Enter your details below to get real-time tracking information.
-          </motion.p>
-        </motion.div>
-
-        {/* Tracking Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="flex justify-center mb-8"
-        >
-          <div className="inline-flex bg-gray-800 rounded-lg p-1">
-            <motion.button
-              whileHover={{ backgroundColor: activeTab === 'track' ? "" : "#374151" }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => setActiveTab('track')}
-              className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-                activeTab === 'track' 
-                  ? "bg-green-500 text-gray-900" 
-                  : "text-gray-400 hover:text-gray-200"
-              }`}
-            >
-              <div className="flex items-center">
-                <Search size={18} className="mr-2" />
-                Track Order
-              </div>
-            </motion.button>
-            <motion.button
-              whileHover={{ backgroundColor: activeTab === 'recent' ? "" : "#374151" }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => activeTab === 'recent' ? null : handleLogin()}
-              className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-                activeTab === 'recent' 
-                  ? "bg-green-500 text-gray-900" 
-                  : "text-gray-400 hover:text-gray-200"
-              }`}
-            >
-              <div className="flex items-center">
-                <ShoppingBag size={18} className="mr-2" />
-                Recent Orders
-              </div>
-            </motion.button>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content Section */}
+      <Navbar />
+      
+      <div className="pt-24 md:pt-28">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {/* Enhanced Header */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.7 }}
-            className="lg:col-span-2"
+            transition={{ duration: 0.5 }}
+            className="mb-8"
           >
-            <AnimatePresence mode="wait">
-              {activeTab === 'track' ? (
-                <motion.div
-                  key="tracking-form"
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 30 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {!trackingResult ? (
-                    <motion.div
-                      variants={containerVariants}
-                      initial="hidden"
-                      animate="visible"
-                      className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-                    >
-                      {/* Decorative elements */}
-                      <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.03 }}
-                        transition={{ delay: 1, duration: 1 }}
-                        className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-green-500"
-                      />
-                      <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.03 }}
-                        transition={{ delay: 1.2, duration: 1 }}
-                        className="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-green-500"
-                      />
-
-                      <form onSubmit={handleTrackingSubmit} className="relative z-10 space-y-5">
-                        <motion.div variants={itemVariants}>
-                          <label htmlFor="trackingNumber" className="block text-gray-400 text-sm font-medium mb-2">
-                            Order Number or Tracking Number
-                          </label>
-                          <input
-                            type="text"
-                            id="trackingNumber"
-                            value={trackingNumber}
-                            onChange={(e) => setTrackingNumber(e.target.value)}
-                            required
-                            className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-all duration-200"
-                            placeholder="e.g. SNK-123456 or TRK-789012"
-                          />
-                        </motion.div>
-
-                        <motion.div variants={itemVariants}>
-                          <label htmlFor="email" className="block text-gray-400 text-sm font-medium mb-2">
-                            Email Address
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-all duration-200"
-                            placeholder="The email used for your order"
-                          />
-                        </motion.div>
-
-                        <motion.div 
-                          variants={itemVariants}
-                          className="flex justify-end"
-                        >
-                          <motion.button
-                            whileHover={{ scale: 1.03 }}
-                            whileTap={{ scale: 0.97 }}
-                            type="submit"
-                            className="bg-green-500 text-gray-900 py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-colors duration-300 shadow-lg flex items-center"
-                            disabled={isLoading}
-                          >
-                            {isLoading ? (
-                              <>
-                                <RotateCw size={18} className="mr-2 animate-spin" />
-                                Tracking...
-                              </>
-                            ) : (
-                              <>
-                                <Search size={18} className="mr-2" />
-                                Track Order
-                              </>
-                            )}
-                          </motion.button>
-                        </motion.div>
-                      </form>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="space-y-6"
-                    >
-                      {/* Order Progress Overview */}
-                      <motion.div 
-                        className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg"
-                      >
-                        <div className="flex justify-between items-center mb-6">
-                          <div>
-                            <p className="text-gray-400 text-sm">Order #{trackingResult.orderNumber}</p>
-                            <h3 className="text-xl font-bold text-white">
-                              {trackingStatuses[trackingResult.currentStatus]}
-                            </h3>
-                            <p className="text-gray-400 text-sm mt-1">Last updated: {trackingResult.lastUpdated}</p>
-                          </div>
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setTrackingResult(null)}
-                            className="text-sm text-green-400 hover:text-green-500 flex items-center"
-                          >
-                            <Search size={16} className="mr-1" />
-                            Track Another
-                          </motion.button>
-                        </div>
-
-                        {/* Progress Bar */}
-                        <div className="mb-8">
-                          <div className="relative">
-                            <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-gray-700">
-                              <motion.div 
-                                initial={{ width: 0 }}
-                                animate={{ width: `${calculateProgress(trackingResult.currentStatus)}%` }}
-                                transition={{ duration: 1, delay: 0.3 }}
-                                className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"
-                              ></motion.div>
-                            </div>
-                            <div className="flex justify-between text-xs text-gray-400">
-                              <span>Order Placed</span>
-                              <span>Processing</span>
-                              <span>Shipped</span>
-                              <span>Delivered</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Delivery Info */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                          <motion.div 
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2, duration: 0.5 }}
-                            className="bg-gray-750 p-4 rounded-lg border border-gray-700"
-                          >
-                            <div className="flex items-center mb-2">
-                              <Calendar size={16} className="text-green-400 mr-2" />
-                              <h4 className="text-white font-medium">Order Date</h4>
-                            </div>
-                            <p className="text-gray-400 text-sm">{trackingResult.orderDate}</p>
-                          </motion.div>
-                          
-                          <motion.div 
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3, duration: 0.5 }}
-                            className="bg-gray-750 p-4 rounded-lg border border-gray-700"
-                          >
-                            <div className="flex items-center mb-2">
-                              <Truck size={16} className="text-green-400 mr-2" />
-                              <h4 className="text-white font-medium">Carrier</h4>
-                            </div>
-                            <p className="text-gray-400 text-sm">{trackingResult.carrier}</p>
-                          </motion.div>
-                          
-                          <motion.div 
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4, duration: 0.5 }}
-                            className="bg-gray-750 p-4 rounded-lg border border-gray-700"
-                          >
-                            <div className="flex items-center mb-2">
-                              <Clock size={16} className="text-green-400 mr-2" />
-                              <h4 className="text-white font-medium">Estimated Delivery</h4>
-                            </div>
-                            <p className="text-gray-400 text-sm">{trackingResult.estimatedDelivery}</p>
-                          </motion.div>
-                        </div>
-
-                        {/* Item Details */}
-                        <motion.div 
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.5, duration: 0.5 }}
-                          className="flex items-center p-4 bg-gray-750 rounded-lg border border-gray-700"
-                        >
-                          <div className="flex-shrink-0">
-                            <img src={trackingResult.item.image} alt="Product" className="w-16 h-16 object-cover rounded-md" />
-                          </div>
-                          <div className="ml-4 flex-grow">
-                            <h4 className="text-white font-medium">{trackingResult.item.name}</h4>
-                            <div className="flex text-sm text-gray-400 space-x-4 mt-1">
-                              <span>Size: {trackingResult.item.size}</span>
-                              <span>Color: {trackingResult.item.color}</span>
-                              <span>Qty: {trackingResult.item.quantity}</span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-white font-medium">{trackingResult.item.price}</p>
-                          </div>
-                        </motion.div>
-                      </motion.div>
-
-                      {/* Tracking Timeline */}
-                      <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.6, duration: 0.5 }}
-                        className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg"
-                      >
-                        <h3 className="text-lg font-bold text-white mb-6">Tracking History</h3>
-                        
-                        <div className="relative">
-                          {trackingResult.trackingHistory.map((step, index) => (
-                            <motion.div 
-                              key={index}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: 0.7 + (index * 0.1), duration: 0.5 }}
-                              className="mb-6 relative pl-8"
-                            >
-                              {/* Timeline line */}
-                              {index < trackingResult.trackingHistory.length - 1 && (
-                                <div className="absolute left-3 top-3 h-full w-0.5 bg-gray-700"></div>
-                              )}
-                              
-                              {/* Status circle */}
-                              <div className={`absolute left-0 top-0 rounded-full w-6 h-6 flex items-center justify-center ${
-                                step.completed 
-                                  ? "bg-green-500 text-gray-900" 
-                                  : "bg-gray-700 text-gray-400"
-                              }`}>
-                                {step.completed ? <CheckCircle size={16} /> : <Clock size={16} />}
-                              </div>
-                              
-                              <div>
-                                <h4 className={`font-medium ${step.completed ? "text-white" : "text-gray-400"}`}>{step.status}</h4>
-                                <p className="text-sm text-gray-400">{step.location}</p>
-                                <p className="text-xs text-gray-500 mt-1">
-                                  {step.date} {step.time && `• ${step.time}`}
-                                </p>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </motion.div>
-
-                      {/* Shipping Address */}
-                      <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.9, duration: 0.5 }}
-                        className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg"
-                      >
-                        <div className="flex items-center mb-4">
-                          <MapPin size={20} className="text-green-400 mr-2" />
-                          <h3 className="text-lg font-bold text-white">Shipping Address</h3>
-                        </div>
-                        
-                        <div className="text-gray-400">
-                          <p>{trackingResult.customerName}</p>
-                          <p>{trackingResult.shippingAddress.street}</p>
-                          <p>{trackingResult.shippingAddress.city}, {trackingResult.shippingAddress.state} {trackingResult.shippingAddress.zip}</p>
-                          <p>{trackingResult.shippingAddress.country}</p>
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  )}
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="recent-orders"
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -30 }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg"
-                >
-                  <h3 className="text-xl font-bold text-white mb-6">Your Recent Orders</h3>
-                  
-                  {recentOrders.length > 0 ? (
-                    <div className="space-y-4">
-                      {recentOrders.map((order, index) => (
-                        <motion.div
-                          key={order.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 + (index * 0.1), duration: 0.5 }}
-                          className="bg-gray-750 rounded-lg p-4 border border-gray-700 hover:border-green-500 transition-colors duration-300 cursor-pointer"
-                        >
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                              <img src={order.image} alt={order.product} className="w-16 h-16 object-cover rounded-md" />
-                            </div>
-                            <div className="ml-4 flex-grow">
-                              <div className="flex justify-between">
-                                <h4 className="font-medium text-white">{order.product}</h4>
-                                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                  order.status === 'delivered' ? 'bg-green-500/20 text-green-400' :
-                                  order.status === 'shipped' ? 'bg-blue-500/20 text-blue-400' :
-                                  'bg-yellow-500/20 text-yellow-400'
-                                }`}>
-                                  {order.statusText}
-                                </div>
-                              </div>
-                              <div className="mt-1 text-sm text-gray-400">
-                                <span>Order #{order.id}</span>
-                                <span className="mx-2">•</span>
-                                <span>{order.date}</span>
-                              </div>
-                              <div className="mt-2">
-                                <div className="h-1.5 w-full bg-gray-700 rounded-full overflow-hidden">
-                                  <motion.div 
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${order.progress}%` }}
-                                    transition={{ duration: 1 }}
-                                    className={`h-full rounded-full ${
-                                      order.status === 'delivered' ? 'bg-green-500' :
-                                      order.status === 'shipped' ? 'bg-blue-500' :
-                                      'bg-yellow-500'
-                                    }`}
-                                  ></motion.div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="mt-3 flex justify-between items-center text-sm">
-                            <span className="text-gray-500">Last update: {order.lastUpdate}</span>
-                            <div className="flex items-center text-green-400 hover:text-green-300 transition-colors duration-200">
-                              <span>Track Order</span>
-                              <ArrowRight size={16} className="ml-1" />
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <motion.div 
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                        className="inline-flex items-center justify-center w-16 h-16 bg-gray-750 rounded-full mb-4"
-                      >
-                        <ShoppingBag size={32} className="text-gray-500" />
-                      </motion.div>
-                      <h4 className="text-lg font-medium text-white mb-2">No Recent Orders</h4>
-                      <p className="text-gray-400">When you place orders, they will appear here for easy tracking.</p>
-                    </div>
-                  )}
-                  </motion.div>
-              )}
-            </AnimatePresence>
+            <div className="text-center mb-8">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
+              >
+                <Package className="w-5 h-5 text-amber-400" />
+                <span className="text-amber-400 text-sm font-semibold">Order Tracking</span>
+              </motion.div>
+              
+              <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
+                Track Your Order
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "280px" }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                  className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
+                />
+              </h2>
+              
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
+              >
+                Stay updated with real-time tracking information for your orders. Enter your details below to get started.
+              </motion.p>
+            </div>
           </motion.div>
 
-          {/* Sidebar */}
+          {/* Stats Banner */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.7 }}
-            className="lg:col-span-1"
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
           >
-            {/* Help & FAQ Section */}
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg mb-6">
-              <div className="flex items-center mb-6">
-                <HelpCircle size={20} className="text-green-400 mr-2" />
-                <h3 className="text-lg font-bold text-white">Help & FAQ</h3>
-              </div>
-
-              <div className="space-y-3">
-                {faqData.map((faq, index) => (
-                  <motion.div 
-                    key={faq.id}
-                    initial={{ opacity: 0, y: 10 }}
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8 + (index * 0.1), duration: 0.5 }}
-                    className="border-b border-gray-700 pb-3 last:border-0 last:pb-0"
+                    transition={{ delay: 0.6 + index * 0.1, duration: 0.3 }}
+                    whileHover={{ y: -3 }}
+                    className="text-center"
                   >
-                    <button 
-                      onClick={() => toggleFaq(faq.id)}
-                      className="flex justify-between items-center w-full text-left"
-                    >
-                      <span className="font-medium text-white">{faq.question}</span>
-                      <ChevronDown 
-                        size={18} 
-                        className={`text-gray-400 transition-transform duration-300 ${
-                          openFaqId === faq.id ? 'transform rotate-180' : ''
-                        }`} 
-                      />
-                    </button>
-                    
-                    <AnimatePresence>
-                      {openFaqId === faq.id && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden"
-                        >
-                          <p className="text-gray-400 text-sm pt-3">{faq.answer}</p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                      <Icon className={`w-6 h-6 text-${stat.color}-400`} />
+                    </div>
+                    <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-white">{stat.value}</p>
                   </motion.div>
-                ))}
-              </div>
+                );
+              })}
             </div>
+          </motion.div>
 
-            {/* Shipping Info */}
+          {/* Tracking Features */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+          >
+            {trackingFeatures.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + (index * 0.1), duration: 0.3 }}
+                  whileHover={{ y: -5 }}
+                  className={`bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-${feature.color}-500/50 transition-all shadow-lg text-center group`}
+                >
+                  <div className={`inline-flex p-3 bg-${feature.color}-500/10 rounded-xl mb-4 border border-${feature.color}-500/20 group-hover:scale-110 transition-transform`}>
+                    <Icon className={`w-6 h-6 text-${feature.color}-400`} />
+                  </div>
+                  <h3 className="font-medium text-white text-lg mb-2">{feature.title}</h3>
+                  <p className="text-gray-400 text-sm">{feature.description}</p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          {/* Tracking Tabs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.5 }}
+            className="mb-6 overflow-x-auto pb-2 scrollbar-hide"
+          >
+            <div className="flex gap-2">
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setActiveTab('track')}
+                className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
+                  activeTab === 'track' 
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
+                    : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                }`}
+              >
+                <Search className="w-4 h-4" />
+                <span className="text-sm">Track Order</span>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => activeTab === 'recent' ? null : handleLogin()}
+                className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
+                  activeTab === 'recent' 
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
+                    : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                }`}
+              >
+                <ShoppingBag className="w-4 h-4" />
+                <span className="text-sm">Recent Orders</span>
+              </motion.button>
+            </div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content Section */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.5 }}
-              className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg"
+              className="lg:col-span-2"
             >
-              <div className="flex items-center mb-6">
-                <Truck size={20} className="text-green-400 mr-2" />
-                <h3 className="text-lg font-bold text-white">Shipping Info</h3>
-              </div>
+              <AnimatePresence mode="wait">
+                {activeTab === 'track' ? (
+                  <motion.div
+                    key="tracking-form"
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 30 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    {!trackingResult ? (
+                      <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl"
+                      >
+                        <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                          <Search className="mr-2 text-amber-400" size={20} />
+                          Enter Tracking Details
+                        </h3>
 
-              <div className="space-y-4">
-                <div className="bg-gray-750 p-4 rounded-lg border border-gray-700">
-                  <h4 className="font-medium text-white mb-2">Standard Shipping</h4>
-                  <p className="text-sm text-gray-400">5-7 business days</p>
-                  <p className="text-sm text-gray-400">Free for orders over $100</p>
-                </div>
-                
-                <div className="bg-gray-750 p-4 rounded-lg border border-gray-700">
-                  <h4 className="font-medium text-white mb-2">Express Shipping</h4>
-                  <p className="text-sm text-gray-400">2-3 business days</p>
-                  <p className="text-sm text-gray-400">$15 flat rate</p>
+                        <form onSubmit={handleTrackingSubmit} className="space-y-5">
+                          <motion.div variants={itemVariants}>
+                            <label htmlFor="trackingNumber" className="block text-gray-400 text-sm font-medium mb-2">
+                              Order Number or Tracking Number
+                            </label>
+                            <input
+                              type="text"
+                              id="trackingNumber"
+                              value={trackingNumber}
+                              onChange={(e) => setTrackingNumber(e.target.value)}
+                              required
+                              className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all"
+                              placeholder="e.g. SNK-123456 or TRK-789012"
+                            />
+                          </motion.div>
+
+                          <motion.div variants={itemVariants}>
+                            <label htmlFor="email" className="block text-gray-400 text-sm font-medium mb-2">
+                              Email Address
+                            </label>
+                            <input
+                              type="email"
+                              id="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              required
+                              className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all"
+                              placeholder="The email used for your order"
+                            />
+                          </motion.div>
+
+                          <motion.div 
+                            variants={itemVariants}
+                            className="flex justify-end"
+                          >
+                            <motion.button
+                              whileHover={{ scale: 1.03 }}
+                              whileTap={{ scale: 0.97 }}
+                              type="submit"
+                              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 py-3 px-8 rounded-xl font-bold shadow-lg shadow-amber-500/30 flex items-center gap-2 transition-colors"
+                              disabled={isLoading}
+                            >
+                              {isLoading ? (
+                                <>
+                                  <RotateCw size={18} className="animate-spin" />
+                                  Tracking...
+                                </>
+                              ) : (
+                                <>
+                                  <Search size={18} />
+                                  Track Order
+                                </>
+                              )}
+                            </motion.button>
+                          </motion.div>
+                        </form>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="space-y-6"
+                      >
+                        {/* Order Progress Overview */}
+                        <motion.div className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl">
+                          <div className="flex justify-between items-center mb-6">
+                            <div>
+                              <p className="text-gray-400 text-sm">Order #{trackingResult.orderNumber}</p>
+                              <h3 className="text-xl font-bold text-white">
+                                {trackingStatuses[trackingResult.currentStatus]}
+                              </h3>
+                              <p className="text-gray-400 text-sm mt-1">Last updated: {trackingResult.lastUpdated}</p>
+                            </div>
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => setTrackingResult(null)}
+                              className="text-sm text-amber-400 hover:text-amber-300 flex items-center gap-1 transition-colors"
+                            >
+                              <Search size={16} />
+                              Track Another
+                            </motion.button>
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div className="mb-8">
+                            <div className="relative">
+                              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-gray-700">
+                                <motion.div 
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${calculateProgress(trackingResult.currentStatus)}%` }}
+                                  transition={{ duration: 1, delay: 0.3 }}
+                                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-amber-500 to-amber-600"
+                                ></motion.div>
+                              </div>
+                              <div className="flex justify-between text-xs text-gray-400">
+                                <span>Ordered</span>
+                                <span>Processing</span>
+                                <span>Shipped</span>
+                                <span>Delivered</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Delivery Info */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                          {[
+                            {
+                              icon: Calendar,
+                              label: 'Order Date',
+                              value: trackingResult.orderDate,
+                              color: 'blue'
+                            },
+                            {
+                              icon: Truck,
+                              label: 'Carrier',
+                              value: trackingResult.carrier,
+                              color: 'purple'
+                            },
+                            {
+                              icon: Clock,
+                              label: 'Est. Delivery',
+                              value: trackingResult.estimatedDelivery,
+                              color: 'green'
+                            }
+                          ].map((info, index) => {
+                              const Icon = info.icon;
+                              return (
+                                <motion.div 
+                                  key={index}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: 0.2 + (index * 0.1), duration: 0.5 }}
+                                  className="bg-gray-900 p-4 rounded-xl border border-gray-700"
+                                >
+                                  <div className="flex items-center mb-2">
+                                    <div className={`p-2 bg-${info.color}-500/10 rounded-lg border border-${info.color}-500/20 mr-2`}>
+                                      <Icon size={16} className={`text-${info.color}-400`} />
+                                    </div>
+                                    <h4 className="text-white font-medium text-sm">{info.label}</h4>
+                                  </div>
+                                  <p className="text-gray-400 text-sm">{info.value}</p>
+                                </motion.div>
+                              );
+                            })}
+                          </div>
+
+                          {/* Item Details */}
+                          <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5, duration: 0.5 }}
+                            className="flex items-center p-4 bg-gray-900 rounded-xl border border-gray-700"
+                          >
+                            <div className="flex-shrink-0">
+                              <img src={trackingResult.item.image} alt="Product" className="w-16 h-16 object-cover rounded-lg border-2 border-amber-400" />
+                            </div>
+                            <div className="ml-4 flex-grow">
+                              <h4 className="text-white font-medium">{trackingResult.item.name}</h4>
+                              <div className="flex text-sm text-gray-400 space-x-4 mt-1">
+                                <span>Size: {trackingResult.item.size}</span>
+                                <span>Color: {trackingResult.item.color}</span>
+                                <span>Qty: {trackingResult.item.quantity}</span>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-amber-400 font-bold text-lg">{trackingResult.item.price}</p>
+                            </div>
+                          </motion.div>
+                        </motion.div>
+
+                        {/* Tracking Timeline */}
+                        <motion.div 
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.6, duration: 0.5 }}
+                          className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl"
+                        >
+                          <h3 className="text-lg font-bold text-white mb-6 flex items-center">
+                            <Package className="mr-2 text-amber-400" size={20} />
+                            Tracking History
+                          </h3>
+                          
+                          <div className="relative">
+                            {trackingResult.trackingHistory.map((step, index) => (
+                              <motion.div 
+                                key={index}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.7 + (index * 0.1), duration: 0.5 }}
+                                className="mb-6 relative pl-8 last:mb-0"
+                              >
+                                {/* Timeline line */}
+                                {index < trackingResult.trackingHistory.length - 1 && (
+                                  <div className="absolute left-3 top-3 h-full w-0.5 bg-gray-700"></div>
+                                )}
+                                
+                                {/* Status circle */}
+                                <div className={`absolute left-0 top-0 rounded-full w-6 h-6 flex items-center justify-center border-2 ${
+                                  step.completed 
+                                    ? "bg-amber-500 border-amber-500 text-gray-900" 
+                                    : "bg-gray-800 border-gray-600 text-gray-400"
+                                }`}>
+                                  {step.completed ? <CheckCircle size={14} /> : <Clock size={14} />}
+                                </div>
+                                
+                                <div>
+                                  <h4 className={`font-medium ${step.completed ? "text-white" : "text-gray-400"}`}>{step.status}</h4>
+                                  <p className="text-sm text-gray-400">{step.location}</p>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    {step.date} {step.time && `• ${step.time}`}
+                                  </p>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </motion.div>
+
+                        {/* Shipping Address */}
+                        <motion.div 
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.9, duration: 0.5 }}
+                          className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl"
+                        >
+                          <div className="flex items-center mb-4">
+                            <div className="p-2 bg-green-500/10 rounded-lg border border-green-500/20 mr-3">
+                              <MapPin size={20} className="text-green-400" />
+                            </div>
+                            <h3 className="text-lg font-bold text-white">Shipping Address</h3>
+                          </div>
+                          
+                          <div className="text-gray-300 space-y-1">
+                            <p className="font-medium">{trackingResult.customerName}</p>
+                            <p>{trackingResult.shippingAddress.street}</p>
+                            <p>{trackingResult.shippingAddress.city}, {trackingResult.shippingAddress.state} {trackingResult.shippingAddress.zip}</p>
+                            <p>{trackingResult.shippingAddress.country}</p>
+                          </div>
+                        </motion.div>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="recent-orders"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.5 }}
+                    className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl"
+                  >
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                      <ShoppingBag className="mr-2 text-amber-400" size={20} />
+                      Your Recent Orders
+                    </h3>
+                    
+                    {recentOrders.length > 0 ? (
+                      <div className="space-y-4">
+                        {recentOrders.map((order, index) => (
+                          <motion.div
+                            key={order.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 + (index * 0.1), duration: 0.5 }}
+                            whileHover={{ y: -3 }}
+                            className="bg-gray-900 rounded-xl p-4 border border-gray-700 hover:border-amber-500/50 transition-all cursor-pointer"
+                          >
+                            <div className="flex items-center mb-3">
+                              <div className="flex-shrink-0">
+                                <img src={order.image} alt={order.product} className="w-16 h-16 object-cover rounded-lg border-2 border-amber-400" />
+                              </div>
+                              <div className="ml-4 flex-grow">
+                                <div className="flex justify-between items-start">
+                                  <h4 className="font-medium text-white">{order.product}</h4>
+                                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                    order.status === 'delivered' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                                    order.status === 'shipped' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                                    'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                  }`}>
+                                    {order.statusText}
+                                  </div>
+                                </div>
+                                <div className="mt-1 text-sm text-gray-400">
+                                  <span>Order #{order.id}</span>
+                                  <span className="mx-2">•</span>
+                                  <span>{order.date}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="mb-3">
+                              <div className="h-2 w-full bg-gray-700 rounded-full overflow-hidden">
+                                <motion.div 
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${order.progress}%` }}
+                                  transition={{ duration: 1 }}
+                                  className={`h-full rounded-full ${
+                                    order.status === 'delivered' ? 'bg-gradient-to-r from-green-500 to-green-600' :
+                                    order.status === 'shipped' ? 'bg-gradient-to-r from-blue-500 to-blue-600' :
+                                    'bg-gradient-to-r from-amber-500 to-amber-600'
+                                  }`}
+                                ></motion.div>
+                              </div>
+                            </div>
+                            
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500">Last update: {order.lastUpdate}</span>
+                              <div className="flex items-center text-amber-400 hover:text-amber-300 transition-colors">
+                                <span>Track Order</span>
+                                <ArrowRight size={16} className="ml-1" />
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <motion.div 
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ duration: 0.5 }}
+                          className="inline-flex items-center justify-center w-20 h-20 bg-gray-900 rounded-full mb-4 border border-gray-700"
+                        >
+                          <ShoppingBag size={32} className="text-gray-500" />
+                        </motion.div>
+                        <h4 className="text-lg font-medium text-white mb-2">No Recent Orders</h4>
+                        <p className="text-gray-400 mb-6">When you place orders, they will appear here for easy tracking.</p>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 rounded-xl font-bold shadow-lg shadow-amber-500/30 transition-colors"
+                        >
+                          Start Shopping
+                        </motion.button>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Sidebar */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.5 }}
+              className="lg:col-span-1"
+            >
+              <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl sticky top-24 space-y-6">
+                {/* FAQ Section */}
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                    <HelpCircle className="mr-2 text-amber-400" size={20} />
+                    Frequently Asked Questions
+                  </h3>
+
+                  <div className="space-y-3">
+                    {faqData.map((faq) => (
+                      <div
+                        key={faq.id}
+                        className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
+                      >
+                        <button 
+                          onClick={() => toggleFaq(faq.id)}
+                          className={`flex justify-between items-center w-full text-left p-4 transition-colors ${
+                            openFaqId === faq.id ? "bg-gray-900" : "hover:bg-gray-900"
+                          }`}
+                        >
+                          <span className="font-medium text-white text-sm pr-2">{faq.question}</span>
+                          <ChevronDown 
+                            size={18} 
+                            className={`text-amber-400 flex-shrink-0 transition-transform duration-200 ${
+                              openFaqId === faq.id ? 'rotate-180' : ''
+                            }`} 
+                          />
+                        </button>
+                        
+                        <AnimatePresence>
+                          {openFaqId === faq.id && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden"
+                            >
+                              <p className="text-gray-400 text-sm p-4 pt-0 bg-gray-900 border-t border-gray-700">{faq.answer}</p>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="bg-gray-750 p-4 rounded-lg border border-gray-700">
-                  <h4 className="font-medium text-white mb-2">Need Help?</h4>
-                  <p className="text-sm text-gray-400 mb-3">Having issues with your order?</p>
-                  <button className="flex items-center text-green-400 hover:text-green-300 transition-colors duration-200 text-sm">
-                    <AlertCircle size={16} className="mr-1" />
-                    Contact Support
-                  </button>
+                {/* Help & Support */}
+                <div className="pt-6 border-t border-gray-700">
+                  <div className="text-center mb-4">
+                    <div className="inline-flex p-3 bg-amber-500/10 rounded-xl mb-3 border border-amber-500/20">
+                      <MessageSquare className="w-5 h-5 text-amber-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">Need Help?</h3>
+                    <p className="text-gray-400 text-sm">
+                      Our support team is available 24/7
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                  {[
+                    {
+                      icon: Mail,
+                      label: 'Email Support',
+                      value: 'support@solecraft.com',
+                      color: 'blue'
+                    },
+                    {
+                      icon: Phone,
+                      label: 'Call Us',
+                      value: '+91-7705481060',
+                      color: 'green'
+                    },
+                    {
+                      icon: MessageSquare,
+                      label: 'Live Chat',
+                      value: 'Available now',
+                      color: 'purple'
+                    }
+                  ].map((contact, index) => {
+                      const Icon = contact.icon;
+                      return (
+                        <motion.div
+                          key={index}
+                          whileHover={{ x: 3 }}
+                          className={`flex items-center gap-3 p-4 bg-gray-900 rounded-xl border border-gray-700 hover:border-${contact.color}-500/50 transition-all cursor-pointer`}
+                        >
+                          <div className={`p-2 bg-${contact.color}-500/10 rounded-lg border border-${contact.color}-500/20`}>
+                            <Icon className={`w-4 h-4 text-${contact.color}-400`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white text-sm font-medium">{contact.label}</p>
+                            <p className="text-gray-500 text-xs truncate">{contact.value}</p>
+                          </div>
+                          <ArrowRight className="w-4 h-4 text-gray-500" />
+                        </motion.div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </motion.div>
+          </div>
+
+          {/* Help Banner */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.5 }}
+            className="mt-8 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute inset-0">
+              <motion.div 
+                animate={{ 
+                  x: [-100, 100, -100],
+                  opacity: [0.1, 0.2, 0.1]
+                }}
+                transition={{ 
+                  duration: 10, 
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+              />
+            </div>
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="text-center md:text-left">
+                <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
+                  <AlertCircle className="w-4 h-4 text-white" />
+                  <span className="text-white text-sm font-semibold">Need Assistance?</span>
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-2">
+                  Having Trouble with Your Order?
+                </h3>
+                <p className="text-gray-800 text-lg">
+                  Contact our support team and we'll help you track your package.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-gray-900 text-amber-400 px-6 py-3 rounded-xl font-bold shadow-xl flex items-center justify-center gap-2 whitespace-nowrap hover:bg-gray-800 transition-colors"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  <span>Live Chat</span>
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-white/95 backdrop-blur-sm text-gray-900 px-6 py-3 rounded-xl font-bold shadow-xl flex items-center justify-center gap-2 whitespace-nowrap hover:bg-white transition-colors"
+                >
+                  <Mail className="w-5 h-5" />
+                  <span>Email Us</span>
+                </motion.button>
+              </div>
+            </div>
           </motion.div>
-        </div>
+        </main>
       </div>
+      
       <Footer />
     </div>
   );

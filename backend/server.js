@@ -2105,82 +2105,233 @@ app.get(
   }
 );
 
-// ==================== STATS & ANALYTICS ROUTES ====================
+// ==================== COBBLER SCHEMAS ====================
 
-// Get marketplace stats
-app.get("/api/stats", async (req, res) => {
-  try {
-    const totalListings = await Shoe.countDocuments({ status: "available" });
-    const totalSold = await Shoe.countDocuments({ status: "sold" });
-    const totalOrders = await Order.countDocuments();
-    const totalUsers = await User.countDocuments();
-    const totalSubscribers = await Subscription.countDocuments({
-      isActive: true,
-    });
-
-    // Calculate average rating
-    const avgRatingResult = await Shoe.aggregate([
-      { $match: { rating: { $gt: 0 } } },
-      { $group: { _id: null, avgRating: { $avg: "$rating" } } },
-    ]);
-    const avgRating =
-      avgRatingResult.length > 0 ? avgRatingResult[0].avgRating.toFixed(1) : 0;
-
-    res.json({
-      success: true,
-      stats: {
-        activeListings: totalListings,
-        totalTransactions: totalSold + totalOrders,
-        averageRating: parseFloat(avgRating),
-        activeUsers: totalUsers,
-        subscribers: totalSubscribers,
-      },
-    });
-  } catch (error) {
-    console.error("Get Stats Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error fetching stats",
-      error: error.message,
-    });
-  }
+// Cobbler/Service Provider Schema
+const cobblerSchema = new mongoose.Schema({
+  cobblerId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    lowercase: true,
+    trim: true,
+  },
+  address: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      default: "Point",
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+    },
+  },
+  rating: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5,
+  },
+  reviews: {
+    type: Number,
+    default: 0,
+  },
+  hours: {
+    type: String,
+    required: true,
+  },
+  services: [
+    {
+      type: String,
+      enum: ["Repair", "Polish", "Custom", "Exchange", "Restoration"],
+    },
+  ],
+  speciality: {
+    type: String,
+    default: "",
+  },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
+  availableSlots: [
+    {
+      type: String,
+    },
+  ],
+  images: [
+    {
+      type: String,
+    },
+  ],
+  totalBookings: {
+    type: Number,
+    default: 0,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-// Get trending shoes
-app.get("/api/trending", async (req, res) => {
-  try {
-    const trending = await Shoe.find({ status: "available" })
-      .sort({ views: -1, rating: -1 })
-      .limit(10)
-      .select("name brand colorway resellPrice retailPrice image rating views");
+// Create geospatial index for location-based queries
+cobblerSchema.index({ location: "2dsphere" });
 
-    const trendingWithChange = trending.map((shoe) => {
-      const priceChange = (
-        ((shoe.resellPrice - shoe.retailPrice) / shoe.retailPrice) *
-        100
-      ).toFixed(0);
-      return {
-        ...shoe.toObject(),
-        priceChange: priceChange > 0 ? `+${priceChange}%` : `${priceChange}%`,
-        trend: priceChange > 0 ? "up" : "down",
-      };
-    });
+const Cobbler = mongoose.model("Cobbler", cobblerSchema);
 
-    res.json({
-      success: true,
-      trending: trendingWithChange,
-    });
-  } catch (error) {
-    console.error("Get Trending Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error fetching trending shoes",
-      error: error.message,
-    });
-  }
+// Cobbler Appointment Schema
+const cobblerAppointmentSchema = new mongoose.Schema({
+  appointmentId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  cobblerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Cobbler",
+    required: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  customerName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  customerEmail: {
+    type: String,
+    required: true,
+    lowercase: true,
+    trim: true,
+  },
+  customerPhone: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  appointmentDate: {
+    type: Date,
+    required: true,
+  },
+  appointmentTime: {
+    type: String,
+    required: true,
+  },
+  serviceType: {
+    type: String,
+    required: true,
+    enum: ["Repair", "Polish", "Custom", "Exchange", "Restoration"],
+  },
+  notes: {
+    type: String,
+    default: "",
+  },
+  status: {
+    type: String,
+    enum: ["pending", "confirmed", "in-progress", "completed", "cancelled"],
+    default: "confirmed",
+  },
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+  },
+  review: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-// ==================== PRODUCT ROUTES ====================
+const CobblerAppointment = mongoose.model(
+  "CobblerAppointment",
+  cobblerAppointmentSchema
+);
+
+// Cobbler Review Schema
+const cobblerReviewSchema = new mongoose.Schema({
+  cobblerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Cobbler",
+    required: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  appointmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "CobblerAppointment",
+  },
+  customerName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  rating: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 5,
+  },
+  comment: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  images: [
+    {
+      type: String,
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const CobblerReview = mongoose.model("CobblerReview", cobblerReviewSchema);
+
+// ==================== SHOP/PRODUCT ROUTES ====================
 
 // Get all products with filters
 app.get("/api/products", async (req, res) => {
@@ -2191,8 +2342,7 @@ app.get("/api/products", async (req, res) => {
       category,
       minPrice,
       maxPrice,
-      inStock,
-      sortBy,
+      sortBy = "featured",
       page = 1,
       limit = 12,
     } = req.query;
@@ -2210,8 +2360,12 @@ app.get("/api/products", async (req, res) => {
     }
 
     // Brand filter
-    if (brand && brand !== "all") {
-      query.brand = brand;
+    if (brand) {
+      if (Array.isArray(brand)) {
+        query.brand = { $in: brand };
+      } else if (brand !== "all") {
+        query.brand = brand;
+      }
     }
 
     // Category filter
@@ -2230,12 +2384,7 @@ app.get("/api/products", async (req, res) => {
       if (maxPrice) query.price.$lte = Number(maxPrice);
     }
 
-    // Stock filter
-    if (inStock === "true") {
-      query.inStock = true;
-    }
-
-    // Build sort option
+    // Build sort
     let sort = {};
     switch (sortBy) {
       case "price-low":
@@ -2253,6 +2402,7 @@ app.get("/api/products", async (req, res) => {
       case "popular":
         sort.sales = -1;
         break;
+      case "featured":
       default:
         sort.featured = -1;
         sort.createdAt = -1;
@@ -2299,7 +2449,6 @@ app.get("/api/products/:id", async (req, res) => {
       });
     }
 
-    // Increment views
     product.views += 1;
     await product.save();
 
@@ -2317,7 +2466,7 @@ app.get("/api/products/:id", async (req, res) => {
   }
 });
 
-// Get product brands
+// Get brands
 app.get("/api/products/filters/brands", async (req, res) => {
   try {
     const brands = await Product.distinct("brand");
@@ -2335,7 +2484,7 @@ app.get("/api/products/filters/brands", async (req, res) => {
   }
 });
 
-// Get product categories
+// Get categories
 app.get("/api/products/filters/categories", async (req, res) => {
   try {
     const categories = await Product.distinct("category");
@@ -2353,9 +2502,44 @@ app.get("/api/products/filters/categories", async (req, res) => {
   }
 });
 
-// ==================== CART ROUTES ====================
+// Get shop stats
+app.get("/api/shop/stats", async (req, res) => {
+  try {
+    const totalProducts = await Product.countDocuments();
+    const inStockProducts = await Product.countDocuments({ inStock: true });
+    const totalOrders = await ShopOrder.countDocuments();
 
-// Get user cart (Protected)
+    const ratingAgg = await Product.aggregate([
+      {
+        $group: {
+          _id: null,
+          avgRating: { $avg: "$rating" },
+        },
+      },
+    ]);
+
+    const averageRating = ratingAgg[0]?.avgRating || 0;
+
+    res.json({
+      success: true,
+      stats: {
+        totalProducts,
+        inStockProducts,
+        totalOrders,
+        averageRating: Number(averageRating), // Return as number, not string
+      },
+    });
+  } catch (error) {
+    console.error("Get Shop Stats Error:", error);
+    res.json({
+      success: false,
+      message: "Server error fetching statistics",
+      error: error.message,
+    });
+  }
+});
+
+// Cart routes
 app.get("/api/cart", authenticateToken, async (req, res) => {
   try {
     let cart = await Cart.findOne({ userId: req.user.userId }).populate(
@@ -2370,21 +2554,18 @@ app.get("/api/cart", authenticateToken, async (req, res) => {
       await cart.save();
     }
 
-    // Filter out items with null productId (deleted products)
-    cart.items = cart.items.filter((item) => item.productId !== null);
-    await cart.save();
-
-    // Calculate totals
-    const subtotal = cart.items.reduce((total, item) => {
-      return total + item.price * item.quantity;
-    }, 0);
+    const subtotal = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
 
     res.json({
       success: true,
       cart: {
         items: cart.items,
         subtotal: subtotal.toFixed(2),
-        itemCount: cart.items.reduce((count, item) => count + item.quantity, 0),
+        itemCount,
       },
     });
   } catch (error) {
@@ -2397,19 +2578,10 @@ app.get("/api/cart", authenticateToken, async (req, res) => {
   }
 });
 
-// Add item to cart (Protected)
 app.post("/api/cart/add", authenticateToken, async (req, res) => {
   try {
     const { productId, quantity = 1, size, color } = req.body;
 
-    if (!productId) {
-      return res.status(400).json({
-        success: false,
-        message: "Product ID is required",
-      });
-    }
-
-    // Check if product exists and is in stock
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({
@@ -2425,8 +2597,8 @@ app.post("/api/cart/add", authenticateToken, async (req, res) => {
       });
     }
 
-    // Find or create cart
     let cart = await Cart.findOne({ userId: req.user.userId });
+
     if (!cart) {
       cart = new Cart({
         userId: req.user.userId,
@@ -2434,7 +2606,6 @@ app.post("/api/cart/add", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if item already exists in cart
     const existingItemIndex = cart.items.findIndex(
       (item) =>
         item.productId.toString() === productId &&
@@ -2443,13 +2614,11 @@ app.post("/api/cart/add", authenticateToken, async (req, res) => {
     );
 
     if (existingItemIndex > -1) {
-      // Update quantity
-      cart.items[existingItemIndex].quantity += Number(quantity);
+      cart.items[existingItemIndex].quantity += quantity;
     } else {
-      // Add new item
       cart.items.push({
         productId,
-        quantity: Number(quantity),
+        quantity,
         size: size || "",
         color: color || "",
         price: product.price,
@@ -2460,10 +2629,20 @@ app.post("/api/cart/add", authenticateToken, async (req, res) => {
     await cart.save();
     await cart.populate("items.productId");
 
+    const subtotal = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+
     res.json({
       success: true,
       message: "Item added to cart",
-      cart,
+      cart: {
+        items: cart.items,
+        subtotal: subtotal.toFixed(2),
+        itemCount,
+      },
     });
   } catch (error) {
     console.error("Add to Cart Error:", error);
@@ -2475,63 +2654,52 @@ app.post("/api/cart/add", authenticateToken, async (req, res) => {
   }
 });
 
-// Update cart item quantity (Protected)
 app.put("/api/cart/update/:itemId", authenticateToken, async (req, res) => {
   try {
     const { quantity } = req.body;
 
-    if (!quantity || quantity < 1) {
-      return res.status(400).json({
-        success: false,
-        message: "Valid quantity is required",
-      });
-    }
-
     const cart = await Cart.findOne({ userId: req.user.userId });
     if (!cart) {
-      return res.status(404).json({
-        success: false,
-        message: "Cart not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Cart not found" });
     }
 
     const item = cart.items.id(req.params.itemId);
     if (!item) {
-      return res.status(404).json({
-        success: false,
-        message: "Item not found in cart",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Item not found" });
     }
 
-    item.quantity = Number(quantity);
+    item.quantity = quantity;
     cart.updatedAt = Date.now();
     await cart.save();
     await cart.populate("items.productId");
 
+    const subtotal = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+
     res.json({
       success: true,
-      message: "Cart updated",
-      cart,
+      cart: { items: cart.items, subtotal: subtotal.toFixed(2), itemCount },
     });
   } catch (error) {
     console.error("Update Cart Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error updating cart",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-// Remove item from cart (Protected)
 app.delete("/api/cart/remove/:itemId", authenticateToken, async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.user.userId });
     if (!cart) {
-      return res.status(404).json({
-        success: false,
-        message: "Cart not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Cart not found" });
     }
 
     cart.items = cart.items.filter(
@@ -2541,169 +2709,23 @@ app.delete("/api/cart/remove/:itemId", authenticateToken, async (req, res) => {
     await cart.save();
     await cart.populate("items.productId");
 
+    const subtotal = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+
     res.json({
       success: true,
-      message: "Item removed from cart",
-      cart,
+      cart: { items: cart.items, subtotal: subtotal.toFixed(2), itemCount },
     });
   } catch (error) {
     console.error("Remove from Cart Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error removing from cart",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-// Clear cart (Protected)
-app.delete("/api/cart/clear", authenticateToken, async (req, res) => {
-  try {
-    const cart = await Cart.findOne({ userId: req.user.userId });
-    if (!cart) {
-      return res.status(404).json({
-        success: false,
-        message: "Cart not found",
-      });
-    }
-
-    cart.items = [];
-    cart.updatedAt = Date.now();
-    await cart.save();
-
-    res.json({
-      success: true,
-      message: "Cart cleared",
-      cart,
-    });
-  } catch (error) {
-    console.error("Clear Cart Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error clearing cart",
-      error: error.message,
-    });
-  }
-});
-
-// ==================== PRODUCT WISHLIST ROUTES ====================
-
-// Get user product wishlist (Protected)
-app.get("/api/product-wishlist", authenticateToken, async (req, res) => {
-  try {
-    const wishlist = await ProductWishlist.find({ userId: req.user.userId })
-      .populate("productId")
-      .sort({ addedAt: -1 });
-
-    const products = wishlist
-      .filter((item) => item.productId !== null)
-      .map((item) => item.productId);
-
-    res.json({
-      success: true,
-      wishlist: products,
-    });
-  } catch (error) {
-    console.error("Get Product Wishlist Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error fetching wishlist",
-      error: error.message,
-    });
-  }
-});
-
-// Add to product wishlist (Protected)
-app.post(
-  "/api/product-wishlist/:productId",
-  authenticateToken,
-  async (req, res) => {
-    try {
-      const { productId } = req.params;
-
-      // Check if product exists
-      const product = await Product.findById(productId);
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: "Product not found",
-        });
-      }
-
-      // Check if already in wishlist
-      const existing = await ProductWishlist.findOne({
-        userId: req.user.userId,
-        productId,
-      });
-
-      if (existing) {
-        return res.status(400).json({
-          success: false,
-          message: "Product already in wishlist",
-        });
-      }
-
-      const wishlistItem = new ProductWishlist({
-        userId: req.user.userId,
-        productId,
-      });
-
-      await wishlistItem.save();
-
-      res.status(201).json({
-        success: true,
-        message: "Added to wishlist",
-        wishlistItem,
-      });
-    } catch (error) {
-      console.error("Add to Product Wishlist Error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Server error adding to wishlist",
-        error: error.message,
-      });
-    }
-  }
-);
-
-// Remove from product wishlist (Protected)
-app.delete(
-  "/api/product-wishlist/:productId",
-  authenticateToken,
-  async (req, res) => {
-    try {
-      const { productId } = req.params;
-
-      const result = await ProductWishlist.findOneAndDelete({
-        userId: req.user.userId,
-        productId,
-      });
-
-      if (!result) {
-        return res.status(404).json({
-          success: false,
-          message: "Item not found in wishlist",
-        });
-      }
-
-      res.json({
-        success: true,
-        message: "Removed from wishlist",
-      });
-    } catch (error) {
-      console.error("Remove from Product Wishlist Error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Server error removing from wishlist",
-        error: error.message,
-      });
-    }
-  }
-);
-
-// ==================== SHOP ORDER ROUTES ====================
-
-// Create shop order (Protected)
+// Shop Checkout Route (Protected)
 app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
   try {
     const {
@@ -2717,14 +2739,10 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
     } = req.body;
 
     // Validation
-    if (!items || items.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Cart is empty",
-      });
-    }
-
     if (
+      !items ||
+      !Array.isArray(items) ||
+      items.length === 0 ||
       !customerName ||
       !customerEmail ||
       !customerPhone ||
@@ -2737,23 +2755,32 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
       });
     }
 
-    // Calculate totals
+    // Calculate order totals
     let subtotal = 0;
     const orderItems = [];
 
+    // Validate and process each item
     for (const item of items) {
       const product = await Product.findById(item.productId);
+
       if (!product) {
         return res.status(404).json({
           success: false,
-          message: `Product ${item.productId} not found`,
+          message: `Product not found: ${item.productId}`,
         });
       }
 
       if (!product.inStock) {
         return res.status(400).json({
           success: false,
-          message: `${product.name} is out of stock`,
+          message: `Product is out of stock: ${product.name}`,
+        });
+      }
+
+      if (product.stockQuantity < item.quantity) {
+        return res.status(400).json({
+          success: false,
+          message: `Insufficient stock for ${product.name}. Available: ${product.stockQuantity}`,
         });
       }
 
@@ -2771,13 +2798,17 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
         price: product.price,
       });
 
-      // Update product sales count
+      // Update product stock and sales
+      product.stockQuantity -= item.quantity;
       product.sales += item.quantity;
+      if (product.stockQuantity === 0) {
+        product.inStock = false;
+      }
       await product.save();
     }
 
-    // Calculate shipping and tax
-    const shippingCost = subtotal >= 100 ? 0 : 15;
+    // Calculate additional costs
+    const shippingCost = subtotal > 100 ? 0 : 9.99;
     const tax = subtotal * 0.08;
     const totalAmount = subtotal + shippingCost + tax;
 
@@ -2787,11 +2818,11 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
       .substr(2, 2)
       .toUpperCase()}`;
 
-    // Calculate estimated delivery (3-5 business days)
+    // Calculate estimated delivery (5-7 business days)
     const estimatedDelivery = new Date();
-    estimatedDelivery.setDate(estimatedDelivery.getDate() + 5);
+    estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
 
-    // Create order
+    // Create shop order
     const order = new ShopOrder({
       orderId,
       userId: req.user.userId,
@@ -2802,21 +2833,21 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
       shippingAddress,
       paymentMethod,
       subtotal: Number(subtotal.toFixed(2)),
-      shippingCost,
+      shippingCost: Number(shippingCost.toFixed(2)),
       tax: Number(tax.toFixed(2)),
       totalAmount: Number(totalAmount.toFixed(2)),
       estimatedDelivery,
+      status: paymentMethod === "cod" ? "confirmed" : "pending",
+      paymentStatus: paymentMethod === "cod" ? "pending" : "pending",
       notes: notes || "",
-      status: "confirmed",
-      paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
     });
 
     await order.save();
 
-    // Clear user's cart
+    // Clear user's cart after successful order
     await Cart.findOneAndUpdate(
       { userId: req.user.userId },
-      { items: [], updatedAt: Date.now() }
+      { $set: { items: [], updatedAt: Date.now() } }
     );
 
     res.status(201).json({
@@ -2828,6 +2859,7 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
         totalAmount: order.totalAmount,
         estimatedDelivery: order.estimatedDelivery,
         status: order.status,
+        paymentStatus: order.paymentStatus,
       },
     });
   } catch (error) {
@@ -2840,15 +2872,12 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
   }
 });
 
-// Get user shop orders (Protected)
+// Get user's shop orders (Protected)
 app.get("/api/shop/orders", authenticateToken, async (req, res) => {
   try {
     const orders = await ShopOrder.find({ userId: req.user.userId })
-      .populate({
-        path: "items.productId",
-        select: "name brand image price",
-      })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .populate("items.productId");
 
     res.json({
       success: true,
@@ -2868,11 +2897,8 @@ app.get("/api/shop/orders", authenticateToken, async (req, res) => {
 app.get("/api/shop/orders/:orderId", authenticateToken, async (req, res) => {
   try {
     const order = await ShopOrder.findOne({ orderId: req.params.orderId })
-      .populate("userId", "name email phone")
-      .populate({
-        path: "items.productId",
-        select: "name brand image price",
-      });
+      .populate("items.productId")
+      .populate("userId", "name email");
 
     if (!order) {
       return res.status(404).json({
@@ -2903,21 +2929,447 @@ app.get("/api/shop/orders/:orderId", authenticateToken, async (req, res) => {
   }
 });
 
-// ==================== SHOP STATS ROUTES ====================
+// Cancel shop order (Protected)
+app.put(
+  "/api/shop/orders/:orderId/cancel",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const order = await ShopOrder.findOne({ orderId: req.params.orderId });
 
-// Get shop statistics
-app.get("/api/shop/stats", async (req, res) => {
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: "Order not found",
+        });
+      }
+
+      // Check if user owns this order
+      if (order.userId.toString() !== req.user.userId) {
+        return res.status(403).json({
+          success: false,
+          message: "Unauthorized to cancel this order",
+        });
+      }
+
+      // Check if order can be cancelled
+      if (["shipped", "delivered"].includes(order.status)) {
+        return res.status(400).json({
+          success: false,
+          message: "Cannot cancel order that has been shipped or delivered",
+        });
+      }
+
+      if (order.status === "cancelled") {
+        return res.status(400).json({
+          success: false,
+          message: "Order is already cancelled",
+        });
+      }
+
+      // Restore product stock
+      for (const item of order.items) {
+        const product = await Product.findById(item.productId);
+        if (product) {
+          product.stockQuantity += item.quantity;
+          product.sales -= item.quantity;
+          product.inStock = true;
+          await product.save();
+        }
+      }
+
+      order.status = "cancelled";
+      order.paymentStatus = "refunded";
+      order.updatedAt = Date.now();
+      await order.save();
+
+      res.json({
+        success: true,
+        message: "Order cancelled successfully",
+        order,
+      });
+    } catch (error) {
+      console.error("Cancel Shop Order Error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error cancelling order",
+        error: error.message,
+      });
+    }
+  }
+);
+
+// ==================== COBBLER ROUTES ====================
+
+// Get all cobblers with filters and location-based search
+app.get("/api/cobblers", async (req, res) => {
   try {
-    const totalProducts = await Product.countDocuments();
-    const inStockProducts = await Product.countDocuments({ inStock: true });
-    const totalOrders = await ShopOrder.countDocuments();
-    const completedOrders = await ShopOrder.countDocuments({
-      status: "delivered",
+    const {
+      lat,
+      lng,
+      maxDistance = 50000, // 50km default
+      search,
+      services,
+      verified,
+      sortBy = "distance",
+      page = 1,
+      limit = 50,
+    } = req.query;
+
+    let query = { isActive: true };
+
+    // Search filter
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { address: { $regex: search, $options: "i" } },
+        { speciality: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // Services filter
+    if (services) {
+      const serviceArray = Array.isArray(services) ? services : [services];
+      query.services = { $all: serviceArray };
+    }
+
+    // Verified filter
+    if (verified === "true") {
+      query.verified = true;
+    }
+
+    // Location-based query
+    let cobblers;
+    if (lat && lng) {
+      const coordinates = [parseFloat(lng), parseFloat(lat)];
+
+      cobblers = await Cobbler.aggregate([
+        {
+          $geoNear: {
+            near: {
+              type: "Point",
+              coordinates: coordinates,
+            },
+            distanceField: "distance",
+            maxDistance: parseInt(maxDistance),
+            spherical: true,
+            query: query,
+          },
+        },
+        {
+          $skip: (parseInt(page) - 1) * parseInt(limit),
+        },
+        {
+          $limit: parseInt(limit),
+        },
+      ]);
+
+      // Add formatted distance
+      cobblers = cobblers.map((cobbler) => ({
+        ...cobbler,
+        distance:
+          cobbler.distance < 1000
+            ? `${Math.round(cobbler.distance)} m`
+            : `${(cobbler.distance / 1000).toFixed(1)} km`,
+      }));
+    } else {
+      // No location provided, just fetch all matching cobblers
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      cobblers = await Cobbler.find(query)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .lean();
+    }
+
+    // Sort results
+    if (sortBy === "rating") {
+      cobblers.sort((a, b) => b.rating - a.rating);
+    } else if (sortBy === "reviews") {
+      cobblers.sort((a, b) => b.reviews - a.reviews);
+    }
+    // distance sorting is already done by $geoNear
+
+    const total = await Cobbler.countDocuments(query);
+
+    res.json({
+      success: true,
+      cobblers,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / parseInt(limit)),
+        totalItems: total,
+        itemsPerPage: parseInt(limit),
+      },
+    });
+  } catch (error) {
+    console.error("Get Cobblers Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching cobblers",
+      error: error.message,
+    });
+  }
+});
+
+// Get single cobbler by ID
+app.get("/api/cobblers/:id", async (req, res) => {
+  try {
+    const cobbler = await Cobbler.findById(req.params.id);
+
+    if (!cobbler) {
+      return res.status(404).json({
+        success: false,
+        message: "Cobbler not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      cobbler,
+    });
+  } catch (error) {
+    console.error("Get Cobbler Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching cobbler",
+      error: error.message,
+    });
+  }
+});
+
+// Book appointment with cobbler (Protected)
+app.post("/api/cobblers/:id/book", authenticateToken, async (req, res) => {
+  try {
+    const {
+      customerName,
+      customerEmail,
+      customerPhone,
+      appointmentDate,
+      appointmentTime,
+      serviceType,
+      notes,
+    } = req.body;
+
+    // Validation
+    if (
+      !customerName ||
+      !customerEmail ||
+      !customerPhone ||
+      !appointmentDate ||
+      !appointmentTime ||
+      !serviceType
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required fields",
+      });
+    }
+
+    // Check if cobbler exists
+    const cobbler = await Cobbler.findById(req.params.id);
+    if (!cobbler) {
+      return res.status(404).json({
+        success: false,
+        message: "Cobbler not found",
+      });
+    }
+
+    if (!cobbler.isActive) {
+      return res.status(400).json({
+        success: false,
+        message: "This cobbler is not currently accepting appointments",
+      });
+    }
+
+    // Check if service is available
+    if (!cobbler.services.includes(serviceType)) {
+      return res.status(400).json({
+        success: false,
+        message: "Selected service is not available",
+      });
+    }
+
+    // Generate appointment ID
+    const appointmentId = `CA${Date.now().toString().slice(-6)}${Math.random()
+      .toString(36)
+      .substr(2, 2)
+      .toUpperCase()}`;
+
+    // Create appointment
+    const appointment = new CobblerAppointment({
+      appointmentId,
+      cobblerId: req.params.id,
+      userId: req.user.userId,
+      customerName,
+      customerEmail,
+      customerPhone,
+      appointmentDate: new Date(appointmentDate),
+      appointmentTime,
+      serviceType,
+      notes: notes || "",
+      status: "confirmed",
     });
 
-    // Calculate average rating
-    const avgRatingResult = await Product.aggregate([
-      { $match: { rating: { $gt: 0 } } },
+    await appointment.save();
+
+    // Update cobbler's total bookings
+    cobbler.totalBookings += 1;
+    await cobbler.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Appointment booked successfully",
+      appointment: {
+        appointmentId: appointment.appointmentId,
+        cobblerName: cobbler.name,
+        appointmentDate: appointment.appointmentDate,
+        appointmentTime: appointment.appointmentTime,
+        serviceType: appointment.serviceType,
+        status: appointment.status,
+      },
+    });
+  } catch (error) {
+    console.error("Book Appointment Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error booking appointment",
+      error: error.message,
+    });
+  }
+});
+
+// Get user's cobbler appointments (Protected)
+app.get("/api/cobbler-appointments", authenticateToken, async (req, res) => {
+  try {
+    const appointments = await CobblerAppointment.find({
+      userId: req.user.userId,
+    })
+      .populate("cobblerId")
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      appointments,
+    });
+  } catch (error) {
+    console.error("Get Appointments Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching appointments",
+      error: error.message,
+    });
+  }
+});
+
+// Get single appointment (Protected)
+app.get(
+  "/api/cobbler-appointments/:appointmentId",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const appointment = await CobblerAppointment.findOne({
+        appointmentId: req.params.appointmentId,
+      })
+        .populate("cobblerId")
+        .populate("userId", "name email phone");
+
+      if (!appointment) {
+        return res.status(404).json({
+          success: false,
+          message: "Appointment not found",
+        });
+      }
+
+      // Check if user owns this appointment
+      if (appointment.userId._id.toString() !== req.user.userId) {
+        return res.status(403).json({
+          success: false,
+          message: "Unauthorized to view this appointment",
+        });
+      }
+
+      res.json({
+        success: true,
+        appointment,
+      });
+    } catch (error) {
+      console.error("Get Appointment Error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error fetching appointment",
+        error: error.message,
+      });
+    }
+  }
+);
+
+// Cancel appointment (Protected)
+app.put(
+  "/api/cobbler-appointments/:appointmentId/cancel",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const appointment = await CobblerAppointment.findOne({
+        appointmentId: req.params.appointmentId,
+      });
+
+      if (!appointment) {
+        return res.status(404).json({
+          success: false,
+          message: "Appointment not found",
+        });
+      }
+
+      // Check if user owns this appointment
+      if (appointment.userId.toString() !== req.user.userId) {
+        return res.status(403).json({
+          success: false,
+          message: "Unauthorized to cancel this appointment",
+        });
+      }
+
+      if (appointment.status === "cancelled") {
+        return res.status(400).json({
+          success: false,
+          message: "Appointment is already cancelled",
+        });
+      }
+
+      appointment.status = "cancelled";
+      appointment.updatedAt = Date.now();
+      await appointment.save();
+
+      res.json({
+        success: true,
+        message: "Appointment cancelled successfully",
+        appointment,
+      });
+    } catch (error) {
+      console.error("Cancel Appointment Error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error cancelling appointment",
+        error: error.message,
+      });
+    }
+  }
+);
+
+// Get cobbler stats
+app.get("/api/cobblers/stats", async (req, res) => {
+  try {
+    const totalCobblers = await Cobbler.countDocuments({ isActive: true });
+    const verifiedCobblers = await Cobbler.countDocuments({
+      isActive: true,
+      verified: true,
+    });
+    const totalAppointments = await CobblerAppointment.countDocuments();
+    const completedAppointments = await CobblerAppointment.countDocuments({
+      status: "completed",
+    });
+
+    const avgRatingResult = await Cobbler.aggregate([
+      { $match: { isActive: true, rating: { $gt: 0 } } },
       { $group: { _id: null, avgRating: { $avg: "$rating" } } },
     ]);
     const avgRating =
@@ -2926,15 +3378,15 @@ app.get("/api/shop/stats", async (req, res) => {
     res.json({
       success: true,
       stats: {
-        totalProducts,
-        inStockProducts,
-        totalOrders,
-        completedOrders,
+        totalCobblers,
+        verifiedCobblers,
+        totalAppointments,
+        completedAppointments,
         averageRating: parseFloat(avgRating),
       },
     });
   } catch (error) {
-    console.error("Get Shop Stats Error:", error);
+    console.error("Get Cobbler Stats Error:", error);
     res.status(500).json({
       success: false,
       message: "Server error fetching statistics",
@@ -2943,28 +3395,598 @@ app.get("/api/shop/stats", async (req, res) => {
   }
 });
 
-// Get featured products
-app.get("/api/products/featured", async (req, res) => {
+// ==================== PRESS SCHEMAS ====================
+
+// Press Release Schema
+const pressReleaseSchema = new mongoose.Schema({
+  releaseId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  excerpt: {
+    type: String,
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
+  location: {
+    type: String,
+    default: "Mumbai, India",
+  },
+  image: {
+    type: String,
+  },
+  tags: [
+    {
+      type: String,
+    },
+  ],
+  views: {
+    type: Number,
+    default: 0,
+  },
+  downloads: {
+    type: Number,
+    default: 0,
+  },
+  isPublished: {
+    type: Boolean,
+    default: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const PressRelease = mongoose.model("PressRelease", pressReleaseSchema);
+
+// Media Coverage Schema
+const mediaCoverageSchema = new mongoose.Schema({
+  coverageId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  publication: {
+    type: String,
+    required: true,
+  },
+  publicationLogo: {
+    type: String,
+  },
+  excerpt: {
+    type: String,
+    required: true,
+  },
+  link: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
+  image: {
+    type: String,
+  },
+  quote: {
+    type: String,
+  },
+  author: {
+    type: String,
+  },
+  type: {
+    type: String,
+    enum: ["article", "interview", "review", "feature"],
+    default: "article",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const MediaCoverage = mongoose.model("MediaCoverage", mediaCoverageSchema);
+
+// Press Kit Schema
+const pressKitSchema = new mongoose.Schema({
+  kitId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  fileSize: {
+    type: String,
+    required: true,
+  },
+  fileCount: {
+    type: String,
+    required: true,
+  },
+  downloadUrl: {
+    type: String,
+    required: true,
+  },
+  thumbnails: [
+    {
+      type: String,
+    },
+  ],
+  downloads: {
+    type: Number,
+    default: 0,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const PressKit = mongoose.model("PressKit", pressKitSchema);
+
+// Media Asset Schema
+const mediaAssetSchema = new mongoose.Schema({
+  assetId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  type: {
+    type: String,
+    required: true,
+    enum: ["Logo Pack", "Product Images", "Brand Assets", "Videos"],
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  fileSize: {
+    type: String,
+    required: true,
+  },
+  fileCount: {
+    type: String,
+    required: true,
+  },
+  downloadUrl: {
+    type: String,
+    required: true,
+  },
+  thumbnails: [
+    {
+      type: String,
+    },
+  ],
+  downloads: {
+    type: Number,
+    default: 0,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const MediaAsset = mongoose.model("MediaAsset", mediaAssetSchema);
+
+// Press Contact Schema
+const pressContactSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    lowercase: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  color: {
+    type: String,
+    default: "blue",
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+});
+
+const PressContact = mongoose.model("PressContact", pressContactSchema);
+
+// Press Inquiry Schema
+const pressInquirySchema = new mongoose.Schema({
+  inquiryId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    lowercase: true,
+  },
+  organization: {
+    type: String,
+    required: true,
+  },
+  phoneNumber: {
+    type: String,
+  },
+  inquiryType: {
+    type: String,
+    required: true,
+    enum: ["interview", "information", "partnership", "review", "other"],
+  },
+  message: {
+    type: String,
+    required: true,
+  },
+  deadline: {
+    type: Date,
+  },
+  status: {
+    type: String,
+    enum: ["pending", "in-progress", "responded", "closed"],
+    default: "pending",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  respondedAt: {
+    type: Date,
+  },
+});
+
+const PressInquiry = mongoose.model("PressInquiry", pressInquirySchema);
+
+// ==================== PRESS ROUTES ====================
+
+// Get all press releases
+app.get("/api/press/releases", async (req, res) => {
   try {
-    const featured = await Product.find({ featured: true, inStock: true })
-      .sort({ sales: -1, rating: -1 })
-      .limit(8);
+    const { limit = 50, page = 1 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const releases = await PressRelease.find({ isPublished: true })
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await PressRelease.countDocuments({ isPublished: true });
 
     res.json({
       success: true,
-      products: featured,
+      releases,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / parseInt(limit)),
+        totalItems: total,
+      },
     });
   } catch (error) {
-    console.error("Get Featured Products Error:", error);
+    console.error("Get Press Releases Error:", error);
     res.status(500).json({
       success: false,
-      message: "Server error fetching featured products",
+      message: "Server error fetching press releases",
       error: error.message,
     });
   }
 });
 
-// 404 Handler
+// Record press release download
+app.post("/api/press/releases/:releaseId/download", async (req, res) => {
+  try {
+    const release = await PressRelease.findOne({
+      releaseId: req.params.releaseId,
+    });
+
+    if (!release) {
+      return res.status(404).json({
+        success: false,
+        message: "Press release not found",
+      });
+    }
+
+    release.downloads += 1;
+    await release.save();
+
+    res.json({
+      success: true,
+      message: "Download recorded",
+    });
+  } catch (error) {
+    console.error("Download Press Release Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+});
+
+// Get all media coverage
+app.get("/api/press/coverage", async (req, res) => {
+  try {
+    const { limit = 50, page = 1 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const coverage = await MediaCoverage.find()
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await MediaCoverage.countDocuments();
+
+    res.json({
+      success: true,
+      coverage,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / parseInt(limit)),
+        totalItems: total,
+      },
+    });
+  } catch (error) {
+    console.error("Get Media Coverage Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching media coverage",
+      error: error.message,
+    });
+  }
+});
+
+// Get all press kits
+app.get("/api/press/kits", async (req, res) => {
+  try {
+    const kits = await PressKit.find({ isActive: true }).sort({
+      createdAt: -1,
+    });
+
+    res.json({
+      success: true,
+      kits,
+    });
+  } catch (error) {
+    console.error("Get Press Kits Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching press kits",
+      error: error.message,
+    });
+  }
+});
+
+// Download press kit
+app.post("/api/press/kits/:kitId/download", async (req, res) => {
+  try {
+    const kit = await PressKit.findOne({ kitId: req.params.kitId });
+
+    if (!kit) {
+      return res.status(404).json({
+        success: false,
+        message: "Press kit not found",
+      });
+    }
+
+    kit.downloads += 1;
+    await kit.save();
+
+    res.json({
+      success: true,
+      downloadUrl: kit.downloadUrl,
+    });
+  } catch (error) {
+    console.error("Download Press Kit Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+});
+
+// Get all media assets
+app.get("/api/press/assets", async (req, res) => {
+  try {
+    const assets = await MediaAsset.find({ isActive: true }).sort({
+      createdAt: -1,
+    });
+
+    res.json({
+      success: true,
+      assets,
+    });
+  } catch (error) {
+    console.error("Get Media Assets Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching media assets",
+      error: error.message,
+    });
+  }
+});
+
+// Download media asset
+app.post("/api/press/assets/:assetId/download", async (req, res) => {
+  try {
+    const asset = await MediaAsset.findOne({ assetId: req.params.assetId });
+
+    if (!asset) {
+      return res.status(404).json({
+        success: false,
+        message: "Media asset not found",
+      });
+    }
+
+    asset.downloads += 1;
+    await asset.save();
+
+    res.json({
+      success: true,
+      downloadUrl: asset.downloadUrl,
+    });
+  } catch (error) {
+    console.error("Download Media Asset Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+});
+
+// Get press contacts
+app.get("/api/press/contacts", async (req, res) => {
+  try {
+    const contacts = await PressContact.find({ isActive: true });
+
+    res.json({
+      success: true,
+      contacts,
+    });
+  } catch (error) {
+    console.error("Get Press Contacts Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching press contacts",
+      error: error.message,
+    });
+  }
+});
+
+// Submit press inquiry
+app.post("/api/press/inquiries", async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      organization,
+      phoneNumber,
+      inquiryType,
+      message,
+      deadline,
+    } = req.body;
+
+    // Validation
+    if (!name || !email || !organization || !inquiryType || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required fields",
+      });
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address",
+      });
+    }
+
+    // Generate inquiry ID
+    const inquiryId = `PI${Date.now().toString().slice(-6)}${Math.random()
+      .toString(36)
+      .substr(2, 2)
+      .toUpperCase()}`;
+
+    const inquiry = new PressInquiry({
+      inquiryId,
+      name,
+      email,
+      organization,
+      phoneNumber: phoneNumber || "",
+      inquiryType,
+      message,
+      deadline: deadline ? new Date(deadline) : null,
+    });
+
+    await inquiry.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Press inquiry submitted successfully",
+      inquiry: {
+        inquiryId: inquiry.inquiryId,
+        status: inquiry.status,
+      },
+    });
+  } catch (error) {
+    console.error("Submit Press Inquiry Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error submitting inquiry",
+      error: error.message,
+    });
+  }
+});
+
+// ==================== 404 HANDLER (MUST BE LAST) ====================
+
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -2972,7 +3994,8 @@ app.use((req, res) => {
   });
 });
 
-// Error Handler
+// ==================== ERROR HANDLER ====================
+
 app.use((err, req, res, next) => {
   console.error("Server Error:", err);
   res.status(500).json({

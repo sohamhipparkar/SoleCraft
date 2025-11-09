@@ -363,7 +363,7 @@ export default function OrderConfirmed() {
               </motion.p>
               
               {customerEmail && (
-                <div className="flex items-center justify-center gap-2 text-sm text-gray-400 bg-gray-900/50 rounded-lg px-4 py-2 inline-flex">
+                <div className="items-center justify-center gap-2 text-sm text-gray-400 bg-gray-900/50 rounded-lg px-4 py-2 inline-flex">
                   <Mail className="w-4 h-4 text-amber-400" />
                   <span>Confirmation sent to <span className="text-amber-400 font-medium">{customerEmail}</span></span>
                 </div>

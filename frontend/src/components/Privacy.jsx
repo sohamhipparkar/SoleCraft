@@ -6,7 +6,6 @@ import {
   Eye, 
   UserCheck, 
   Server, 
-  List, 
   ChevronDown, 
   Users, 
   Globe, 
@@ -16,14 +15,64 @@ import {
   FileText,
   HelpCircle,
   RefreshCw,
-  AlertTriangle
+  AlertTriangle,
+  CheckCircle,
+  X,
+  Loader,
+  Zap,
+  Award,
+  Database,
+  Key,
+  AlertCircle as AlertIcon
 } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import axios from 'axios';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
 
 export default function PrivacyPolicyComponent() {
   const [activeSection, setActiveSection] = useState('collection');
   const [openSectionId, setOpenSectionId] = useState(null);
+  const [openFaqId, setOpenFaqId] = useState(null);
+  const [cookiePreferences, setCookiePreferences] = useState({
+    essential: true,
+    analytics: false,
+    functional: false,
+    advertising: false
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    requestType: '',
+    message: ''
+  });
+  const [inquiryId, setInquiryId] = useState('');
 
   const dpoInfo = {
     email: 'privacy@solecraft.com',
@@ -33,11 +82,11 @@ export default function PrivacyPolicyComponent() {
   };
 
   const privacySections = [
-    { id: 'collection', icon: <UserCheck />, name: 'Data Collection' },
-    { id: 'usage', icon: <Eye />, name: 'Data Usage' },
-    { id: 'sharing', icon: <Users />, name: 'Data Sharing' },
-    { id: 'security', icon: <Lock />, name: 'Security Measures' },
-    { id: 'rights', icon: <FileText />, name: 'Your Rights' }
+    { id: 'collection', icon: Database, name: 'Data Collection', color: 'blue' },
+    { id: 'usage', icon: Eye, name: 'Data Usage', color: 'purple' },
+    { id: 'sharing', icon: Users, name: 'Data Sharing', color: 'green' },
+    { id: 'security', icon: Lock, name: 'Security', color: 'amber' },
+    { id: 'rights', icon: Key, name: 'Your Rights', color: 'red' }
   ];
 
   const policySections = [
@@ -141,7 +190,7 @@ You can instruct your browser to refuse all cookies or to indicate when a cookie
     },
     {
       id: 'section-8',
-      title: 'Childrens Privacy',
+      title: 'Children\'s Privacy',
       content: `Our Services are not intended for children under 16 years of age, and we do not knowingly collect personal information from children under 16. If we learn we have collected personal information from a child under 16, we will delete that information as quickly as possible.
 
 If you believe we might have any information from or about a child under 16, please contact us immediately.`
@@ -160,7 +209,7 @@ We encourage you to review this Privacy Policy frequently to be informed of how 
 
 Email: privacy@solecraft.com
 Mail: Privacy Department, SoleCraft Inc., 123 Fashion Street, New York, NY 10001, USA
-Phone: +1 (555) 123-4567
+Phone: +91-7705481058
 
 For residents of the European Economic Area, we have appointed a data protection representative whom you can contact at eudpr@solecraft.com.`
     }
@@ -168,76 +217,153 @@ For residents of the European Economic Area, we have appointed a data protection
 
   const privacyHighlights = [
     { 
-      icon: <Shield />, 
+      icon: Shield, 
       title: 'Data Protection', 
-      description: 'Your data is protected using industry-standard encryption and security practices.' 
+      description: 'Industry-standard encryption and security practices.',
+      color: 'blue'
     },
     { 
-      icon: <Bell />, 
+      icon: Bell, 
       title: 'Transparency', 
-      description: 'We clearly explain what data we collect and how it iss used.' 
+      description: 'Clear explanation of data collection and usage.',
+      color: 'purple'
     },
     { 
-      icon: <RefreshCw />, 
+      icon: RefreshCw, 
       title: 'Control', 
-      description: 'You can access, modify, or delete your personal information at any time.' 
+      description: 'Access, modify, or delete your data anytime.',
+      color: 'green'
     },
     { 
-      icon: <AlertTriangle />, 
-      title: 'Data Minimization', 
-      description: 'We only collect information that is necessary for providing our services.' 
+      icon: AlertTriangle, 
+      title: 'Minimization', 
+      description: 'Only collect necessary information.',
+      color: 'amber'
     }
   ];
+
+  const faqData = [
+    {
+      id: 'faq-1',
+      question: 'How do I request a copy of my data?',
+      answer: 'You can request a copy of your personal data by contacting our Data Protection Officer at privacy@solecraft.com or by visiting your account settings and selecting "Request Data Export" under the Privacy section.'
+    },
+    {
+      id: 'faq-2',
+      question: 'How long do you retain my information?',
+      answer: 'We retain your personal information for as long as necessary to fulfill the purposes for which we collected it, including for the purposes of satisfying any legal, accounting, or reporting requirements. In general, account information is kept for the duration of your relationship with us, plus a reasonable period afterward for legal and accounting purposes.'
+    },
+    {
+      id: 'faq-3',
+      question: 'Can I opt out of marketing communications?',
+      answer: 'Yes, you can opt out of marketing communications at any time. Simply click the "Unsubscribe" link at the bottom of any marketing email you receive from us, or update your communication preferences in your account settings.'
+    },
+    {
+      id: 'faq-4',
+      question: 'How do you protect my payment information?',
+      answer: 'We use industry-standard encryption to protect your payment information during transmission. We do not store your full credit card details on our servers—this information is processed and stored by our PCI-compliant payment processors.'
+    },
+    {
+      id: 'faq-5',
+      question: 'How do I delete my account?',
+      answer: 'To delete your account, log in to your account settings, navigate to the "Account" tab, and select "Delete Account" at the bottom of the page. Please note that some information may be retained for legal purposes even after account deletion.'
+    }
+  ];
+
+  const stats = [
+    { label: 'Data Protection', value: '256-bit', icon: Lock, color: 'blue' },
+    { label: 'Compliance', value: 'GDPR', icon: Award, color: 'green' },
+    { label: 'Response Time', value: '< 48h', icon: Clock, color: 'purple' },
+    { label: 'Security Updates', value: 'Daily', icon: Shield, color: 'amber' }
+  ];
+
+  const sectionContent = {
+    collection: ['section-1', 'section-7', 'section-8'],
+    usage: ['section-2'],
+    sharing: ['section-3', 'section-6'],
+    security: ['section-4'],
+    rights: ['section-5', 'section-9', 'section-10']
+  };
 
   const toggleSection = (sectionId) => {
     setOpenSectionId(openSectionId === sectionId ? null : sectionId);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: 0.05,
-        delayChildren: 0.2
-      }
+  const toggleFaq = (faqId) => {
+    setOpenFaqId(openFaqId === faqId ? null : faqId);
+  };
+
+  const handleCookieToggle = (cookieType) => {
+    if (cookieType !== 'essential') {
+      setCookiePreferences({
+        ...cookiePreferences,
+        [cookieType]: !cookiePreferences[cookieType]
+      });
     }
   };
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { 
-        type: 'spring', 
-        stiffness: 100,
-        damping: 12
-      }
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+    if (submitError) setSubmitError('');
   };
 
-  const sectionContent = {
-    collection: [
-      'section-1',
-      'section-7',
-      'section-8'
-    ],
-    usage: [
-      'section-2'
-    ],
-    sharing: [
-      'section-3',
-      'section-6'
-    ],
-    security: [
-      'section-4'
-    ],
-    rights: [
-      'section-5',
-      'section-9',
-      'section-10'
-    ]
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+
+    try {
+      if (!formData.fullName || !formData.email || !formData.requestType || !formData.message) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        throw new Error('Please enter a valid email address');
+      }
+
+      // Submit to API
+      const response = await axios.post('http://localhost:5000/api/privacy/data-requests', formData);
+
+      if (response.data.success) {
+        setSubmitSuccess(true);
+        setInquiryId(response.data.request.requestId);
+        setFormData({
+          fullName: '',
+          email: '',
+          requestType: '',
+          message: ''
+        });
+
+        setTimeout(() => {
+          document.getElementById('success-message')?.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }, 100);
+
+        setTimeout(() => {
+          setSubmitSuccess(false);
+          setInquiryId('');
+        }, 10000);
+      }
+
+    } catch (error) {
+      console.error('Data subject request error:', error);
+      setSubmitError(
+        error.response?.data?.message || 
+        error.message || 
+        'Failed to submit request. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const filteredSections = policySections.filter(section => 
@@ -247,217 +373,219 @@ For residents of the European Economic Area, we have appointed a data protection
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-40">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-12 text-center"
-        >
-          <div className="inline-block mb-5">
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-gray-800 p-4 rounded-full"
-            >
-              <Shield size={40} className="text-blue-400" />
-            </motion.div>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white relative inline-block">
-            Privacy Policy
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="absolute -bottom-1 left-0 h-1 bg-blue-500 rounded-full"
-            ></motion.div>
-          </h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-gray-400 text-lg max-w-2xl mx-auto"
-          >
-            We value your privacy and are committed to protecting your personal information. 
-            This policy explains how we collect, use, and safeguard your data.
-          </motion.p>
-        </motion.div>
-
-        {/* DPO Info Cards */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
-        >
-          {[
-            { icon: <Mail size={24} />, title: "Contact DPO", content: dpoInfo.email, delay: 0 },
-            { icon: <Globe size={24} />, title: "DPO Office", content: dpoInfo.location, delay: 0.1 },
-            { icon: <Clock size={24} />, title: "Response Time", content: dpoInfo.response, delay: 0.2 },
-            { icon: <FileText size={24} />, title: "Last Updated", content: dpoInfo.update, delay: 0.3 }
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + item.delay, duration: 0.5 }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.1)" }}
-              className="bg-gray-800 rounded-xl p-6 border border-gray-700 flex flex-col items-center text-center"
-            >
-              <div className="bg-gray-750 p-3 rounded-full mb-4 text-blue-400">
-                {item.icon}
-              </div>
-              <h3 className="font-medium text-white text-lg mb-2">{item.title}</h3>
-              <p className="text-gray-400 text-sm">{item.content}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Privacy Highlights Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.7 }}
-          className="mb-12"
-        >
-          <div className="text-center mb-8">
-            <motion.h3 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="text-2xl font-bold text-white inline-block relative"
-            >
-              Privacy Highlights
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: "80%" }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-                className="absolute -bottom-1 left-0 right-0 mx-auto h-1 bg-blue-500 rounded-full"
-              ></motion.div>
-            </motion.h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {privacyHighlights.map((highlight, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + (index * 0.1), duration: 0.5 }}
-                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.1)" }}
-                className="bg-gray-800 rounded-xl p-6 border border-gray-700 text-center hover:border-blue-500 transition-all duration-300"
-              >
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.8 + (index * 0.1), duration: 0.5 }}
-                  className="bg-blue-500 bg-opacity-10 p-3 rounded-full mx-auto mb-4 inline-block"
-                >
-                  <span className="text-blue-400">
-                    {highlight.icon}
-                  </span>
-                </motion.div>
-                <h4 className="text-white font-medium text-lg mb-2">{highlight.title}</h4>
-                <p className="text-gray-400 text-sm">{highlight.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Main Policy Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Policy Sections */}
+      
+      <div className="pt-24 md:pt-28">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {/* Enhanced Header */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.7 }}
-            className="lg:col-span-2"
+            transition={{ duration: 0.5 }}
+            className="mb-8"
           >
-            {/* Section Navigation */}
+            <div className="text-center mb-8">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
+              >
+                <Shield className="w-5 h-5 text-amber-400" />
+                <span className="text-amber-400 text-sm font-semibold">Your Privacy Matters</span>
+              </motion.div>
+              
+              <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
+                Privacy Policy
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "220px" }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                  className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
+                />
+              </h2>
+              
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
+              >
+                We value your privacy and are committed to protecting your personal information. 
+                Learn how we collect, use, and safeguard your data.
+              </motion.p>
+            </div>
+          </motion.div>
+
+          {/* Stats Banner */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + index * 0.1, duration: 0.3 }}
+                    whileHover={{ y: -3 }}
+                    className="text-center"
+                  >
+                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                      <Icon className={`w-6 h-6 text-${stat.color}-400`} />
+                    </div>
+                    <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* DPO Info Cards */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+          >
+            {[
+              { icon: Mail, title: "Contact DPO", content: dpoInfo.email, color: 'blue', delay: 0 },
+              { icon: Globe, title: "DPO Office", content: dpoInfo.location, color: 'purple', delay: 0.1 },
+              { icon: Clock, title: "Response Time", content: dpoInfo.response, color: 'green', delay: 0.2 },
+              { icon: FileText, title: "Last Updated", content: dpoInfo.update, color: 'amber', delay: 0.3 }
+            ].map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + item.delay, duration: 0.3 }}
+                  whileHover={{ y: -5 }}
+                  className={`bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-${item.color}-500/50 transition-all shadow-lg text-center group`}
+                >
+                  <div className={`inline-flex p-3 bg-${item.color}-500/10 rounded-xl mb-4 border border-${item.color}-500/20 group-hover:scale-110 transition-transform`}>
+                    <Icon className={`w-5 h-5 text-${item.color}-400`} />
+                  </div>
+                  <h3 className="font-medium text-white text-lg mb-2">{item.title}</h3>
+                  <p className={`text-${item.color}-400 text-sm font-medium mb-1`}>{item.content}</p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          {/* Privacy Highlights */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.5 }}
+            className="bg-gray-800 rounded-2xl p-8 border border-gray-700 shadow-xl mb-8"
+          >
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-white mb-3 flex items-center justify-center">
+                <Zap className="mr-2 text-amber-400" />
+                Privacy Highlights
+              </h3>
+              <p className="text-gray-400 max-w-2xl mx-auto">
+                Our commitment to protecting your data
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {privacyHighlights.map((highlight, index) => {
+                const Icon = highlight.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1 + (index * 0.1), duration: 0.3 }}
+                    whileHover={{ y: -5 }}
+                    className={`bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-${highlight.color}-500/50 transition-all text-center group`}
+                  >
+                    <div className={`inline-flex p-3 bg-${highlight.color}-500/10 rounded-xl mb-4 border border-${highlight.color}-500/20 group-hover:scale-110 transition-transform`}>
+                      <Icon className={`w-6 h-6 text-${highlight.color}-400`} />
+                    </div>
+                    <h4 className="text-white font-medium text-lg mb-2">{highlight.title}</h4>
+                    <p className="text-gray-400 text-sm">{highlight.description}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Policy Content */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.7 }}
-              className="mb-6 overflow-x-auto pb-2 hide-scrollbar"
+              transition={{ delay: 1.1, duration: 0.5 }}
+              className="lg:col-span-2"
             >
-              <div className="flex space-x-2 md:space-x-4">
-                {privacySections.map((section) => (
-                  <motion.button
-                    key={section.id}
-                    whileHover={{ y: -3, backgroundColor: "#1f2937" }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setActiveSection(section.id)}
-                    className={`px-4 py-3 rounded-lg flex items-center whitespace-nowrap transition-all duration-300 ${
-                      activeSection === section.id 
-                        ? "bg-blue-500 text-gray-900 font-medium" 
-                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                    }`}
-                  >
-                    <span className={`mr-2 ${activeSection === section.id ? "text-gray-900" : "text-blue-400"}`}>
-                      {section.icon}
-                    </span>
-                    <span className="text-sm">{section.name}</span>
-                  </motion.button>
-                ))}
+              {/* Category Navigation */}
+              <div className="mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-2">
+                  {privacySections.map((section) => {
+                    const Icon = section.icon;
+                    return (
+                      <motion.button
+                        key={section.id}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setActiveSection(section.id)}
+                        className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
+                          activeSection === section.id 
+                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
+                            : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span className="text-sm">{section.name}</span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
               </div>
-            </motion.div>
 
-            {/* Policy Content */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-            >
-              {/* Decorative elements */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1, duration: 1 }}
-                className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.2, duration: 1 }}
-                className="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-
-              <div className="relative z-10">
-                <motion.h3 
-                  variants={itemVariants}
-                  className="text-xl font-bold text-white mb-6 flex items-center"
-                >
-                  <List className="mr-2 text-blue-400" size={20} />
+              {/* Policy Content */}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl mb-8"
+              >
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <FileText className="mr-2 text-amber-400" size={20} />
                   {privacySections.find(section => section.id === activeSection)?.name || 'Privacy Policy'}
-                </motion.h3>
+                </h3>
 
                 <div className="space-y-4">
-                  <AnimatePresence>
-                    {filteredSections.map((section, index) => (
+                  <AnimatePresence mode="wait">
+                    {filteredSections.map((section) => (
                       <motion.div
                         key={section.id}
                         variants={itemVariants}
-                        className="border border-gray-700 rounded-lg overflow-hidden hover:border-blue-500 transition-colors duration-300"
+                        className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
                       >
                         <button
                           onClick={() => toggleSection(section.id)}
-                          className={`w-full p-4 text-left transition-colors duration-300 ${
-                            openSectionId === section.id ? "bg-gray-750" : "hover:bg-gray-750"
+                          className={`w-full p-5 text-left transition-colors flex justify-between items-center ${
+                            openSectionId === section.id ? "bg-gray-900" : "hover:bg-gray-900"
                           }`}
                         >
-                          <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-white text-lg">{section.title}</h4>
-                            <motion.span
-                              animate={{ rotate: openSectionId === section.id ? 180 : 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="text-blue-400 flex-shrink-0"
-                            >
-                              <ChevronDown size={18} />
-                            </motion.span>
-                          </div>
+                          <h4 className="font-medium text-white text-lg pr-2">{section.title}</h4>
+                          <ChevronDown 
+                            className={`w-5 h-5 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
+                              openSectionId === section.id ? 'rotate-180' : ''
+                            }`}
+                          />
                         </button>
                         
                         <AnimatePresence>
@@ -469,7 +597,7 @@ For residents of the European Economic Area, we have appointed a data protection
                               transition={{ duration: 0.3 }}
                               className="overflow-hidden"
                             >
-                              <div className="p-4 md:p-5 text-gray-300 bg-gray-750 border-t border-gray-700 whitespace-pre-line">
+                              <div className="p-5 text-gray-300 bg-gray-900 border-t border-gray-700 whitespace-pre-line leading-relaxed">
                                 {section.content}
                               </div>
                             </motion.div>
@@ -479,73 +607,60 @@ For residents of the European Economic Area, we have appointed a data protection
                     ))}
                   </AnimatePresence>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
 
-            {/* Cookie Consent Management */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.7 }}
-              className="mt-8 bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-            >
-              {/* Decorative elements */}
+              {/* Cookie Management */}
               <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.3, duration: 1 }}
-                className="absolute -left-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.2, duration: 0.5 }}
+                className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl mb-8"
+              >
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                  <Server className="mr-2 text-amber-400" size={20} />
+                  Cookie Preferences
+                </h3>
 
-              <div className="relative z-10">
-                <motion.h3 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1, duration: 0.5 }}
-                  className="text-xl font-bold text-white mb-4 flex items-center"
-                >
-                  <Server className="mr-2 text-blue-400" size={20} />
-                  Manage Cookie Preferences
-                </motion.h3>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.1, duration: 0.5 }}
-                  className="text-gray-400 mb-6"
-                >
+                <p className="text-gray-400 mb-6">
                   Control what types of cookies you allow us to use on our website.
-                </motion.p>
+                </p>
 
                 <div className="space-y-4">
                   {[
-                    { id: 'essential', title: 'Essential Cookies', description: 'Required for basic website functionality. These cannot be disabled.', required: true },
-                    { id: 'analytics', title: 'Analytics Cookies', description: 'Help us understand how visitors interact with our website.', required: false },
-                    { id: 'functional', title: 'Functional Cookies', description: 'Enable personalized features and remember your preferences.', required: false },
-                    { id: 'advertising', title: 'Advertising Cookies', description: 'Used to deliver relevant ads and track campaign performance.', required: false }
+                    { id: 'essential', title: 'Essential Cookies', description: 'Required for basic website functionality. These cannot be disabled.', required: true, color: 'blue' },
+                    { id: 'analytics', title: 'Analytics Cookies', description: 'Help us understand how visitors interact with our website.', required: false, color: 'purple' },
+                    { id: 'functional', title: 'Functional Cookies', description: 'Enable personalized features and remember your preferences.', required: false, color: 'green' },
+                    { id: 'advertising', title: 'Advertising Cookies', description: 'Used to deliver relevant ads and track campaign performance.', required: false, color: 'amber' }
                   ].map((cookie, index) => (
                     <motion.div
                       key={cookie.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.2 + (index * 0.1), duration: 0.5 }}
-                      className="bg-gray-750 p-4 rounded-lg border border-gray-700"
+                      transition={{ delay: 1.3 + (index * 0.1), duration: 0.3 }}
+                      className={`bg-gray-900 p-5 rounded-xl border border-gray-700 hover:border-${cookie.color}-500/50 transition-all`}
                     >
                       <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="text-white font-medium">{cookie.title}</h4>
-                          <p className="text-gray-400 text-sm mt-1">{cookie.description}</p>
-                          {cookie.required && <span className="text-xs text-blue-400 mt-1 inline-block">Required</span>}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className="text-white font-medium">{cookie.title}</h4>
+                            {cookie.required && (
+                              <span className="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20">
+                                Required
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-gray-400 text-sm">{cookie.description}</p>
                         </div>
                         <div className="ml-4">
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input 
                               type="checkbox" 
                               className="sr-only peer" 
-                              defaultChecked={cookie.required}
+                              checked={cookie.required ? true : cookiePreferences[cookie.id]}
+                              onChange={() => handleCookieToggle(cookie.id)}
                               disabled={cookie.required}
                             />
-                            <div className={`w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${cookie.required ? 'peer-checked:bg-blue-500' : 'peer-checked:bg-blue-500'}`}></div>
+                            <div className={`w-11 h-6 ${cookie.required ? 'bg-amber-500' : 'bg-gray-700'} peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${!cookie.required && 'peer-checked:bg-amber-500'}`}></div>
                           </label>
                         </div>
                       </div>
@@ -553,293 +668,266 @@ For residents of the European Economic Area, we have appointed a data protection
                   ))}
                 </div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.6, duration: 0.5 }}
-                  className="flex justify-end mt-6 space-x-4"
-                >
+                <div className="flex justify-end mt-6 space-x-3">
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className="bg-gray-700 text-white py-2 px-5 rounded-lg font-medium hover:bg-gray-600 transition-colors duration-300"
+                    className="bg-gray-700 hover:bg-gray-600 text-white py-2.5 px-6 rounded-xl font-medium transition-colors"
                   >
                     Reject All
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className="bg-blue-500 text-gray-900 py-2 px-5 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg"
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 py-2.5 px-6 rounded-xl font-medium transition-colors shadow-lg shadow-amber-500/20"
                   >
                     Save Preferences
                   </motion.button>
-                </motion.div>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* FAQ Section */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.7 }}
-            className="lg:col-span-1"
-          >
-            <div className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden h-full">
-              {/* Decorative elements */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.1, duration: 1 }}
-                className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-
-              <div className="relative z-10">
-                <motion.h3 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
-                  className="text-xl font-bold text-white mb-6 flex items-center"
-                >
-                  <HelpCircle className="mr-2 text-blue-400" size={20} />
-                  Privacy FAQ
-                </motion.h3>
-
-                <div className="space-y-4">
-                  <AnimatePresence>
-                    {[
-                      {
-                        id: 'faq-1',
-                        question: 'How do I request a copy of my data?',
-                        answer: 'You can request a copy of your personal data by contacting our Data Protection Officer at privacy@solecraft.com or by visiting your account settings and selecting "Request Data Export" under the Privacy section.'
-                      },
-                      {
-                        id: 'faq-2',
-                        question: 'How long do you retain my information?',
-                        answer: 'We retain your personal information for as long as necessary to fulfill the purposes for which we collected it, including for the purposes of satisfying any legal, accounting, or reporting requirements. In general, account information is kept for the duration of your relationship with us, plus a reasonable period afterward for legal and accounting purposes.'
-                      },
-                      {
-                        id: 'faq-3',
-                        question: 'Can I opt out of marketing communications?',
-                        answer: 'Yes, you can opt out of marketing communications at any time. Simply click the "Unsubscribe" link at the bottom of any marketing email you receive from us, or update your communication preferences in your account settings.'
-                      },
-                      {
-                        id: 'faq-4',
-                        question: 'How do you protect my payment information?',
-                        answer: 'We use industry-standard encryption to protect your payment information during transmission. We do not store your full credit card details on our servers—this information is processed and stored by our PCI-compliant payment processors.'
-                      },
-                      {
-                        id: 'faq-5',
-                        question: 'How do I delete my account?',
-                        answer: 'To delete your account, log in to your account settings, navigate to the "Account" tab, and select "Delete Account" at the bottom of the page. Please note that some information may be retained for legal purposes even after account deletion.'
-                      }
-                    ].map((faq, index) => (
-                      <motion.div
-                        key={faq.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.9 + (index * 0.1), duration: 0.5 }}
-                        className="border border-gray-700 rounded-lg overflow-hidden hover:border-blue-500 transition-colors duration-300"
-                      >
-                        <button
-                          onClick={() => toggleSection(faq.id)}
-                          className={`w-full p-4 text-left transition-colors duration-300 ${
-                            openSectionId === faq.id ? "bg-gray-750" : "hover:bg-gray-750"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-white">{faq.question}</h4>
-                            <motion.span
-                              animate={{ rotate: openSectionId === faq.id ? 180 : 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="text-blue-400 flex-shrink-0"
-                            >
-                              <ChevronDown size={18} />
-                            </motion.span>
-                          </div>
-                        </button>
-                        
-                        <AnimatePresence>
-                          {openSectionId === faq.id && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="p-4 text-gray-300 bg-gray-750 border-t border-gray-700">
-                                {faq.answer}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
                 </div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.5, duration: 0.5 }}
-                  className="mt-8 bg-gray-750 p-5 rounded-lg border border-gray-700"
-                >
-                  <h4 className="font-medium text-white mb-2">Need more help?</h4>
-                  <p className="text-gray-400 text-sm mb-4">
-                    If you couldn't find an answer to your question, please contact our Data Protection Officer directly.
-                  </p>
-                  <motion.button
-                    whileHover={{ scale: 1.03, backgroundColor: "#3B82F6" }}
-                    whileTap={{ scale: 0.97 }}
-                    className="bg-blue-500 text-gray-900 py-2 px-5 rounded-lg font-medium transition-all duration-300 w-full flex items-center justify-center"
-                  >
-                    <Mail size={18} className="mr-2" />
-                    Contact DPO
-                  </motion.button>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Data Subject Request Form */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.7 }}
-          className="mt-12 bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-        >
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.03 }}
-            transition={{ delay: 1.4, duration: 1 }}
-            className="absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-blue-500"
-          />
-
-          <div className="relative z-10">
-            <motion.h3 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.5 }}
-              className="text-xl font-bold text-white mb-4 flex items-center"
-            >
-              <FileText className="mr-2 text-blue-400" size={20} />
-              Submit a Data Subject Request
-            </motion.h3>
-
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.1, duration: 0.5 }}
-              className="text-gray-400 mb-6"
-            >
-              Use this form to exercise your rights regarding your personal data, such as access, deletion, or correction.
-            </motion.p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-              >
-                <label htmlFor="fullName" className="block text-white mb-2 text-sm font-medium">Full Name*</label>
-                <input 
-                  type="text" 
-                  id="fullName" 
-                  className="bg-gray-750 text-gray-300 border border-gray-700 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                  placeholder="Enter your full name"
-                />
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
+              {/* Data Subject Request Form */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.3, duration: 0.5 }}
+                className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl"
               >
-                <label htmlFor="email" className="block text-white mb-2 text-sm font-medium">Email Address*</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  className="bg-gray-750 text-gray-300 border border-gray-700 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                  placeholder="Enter your email address"
-                />
-              </motion.div>
-            </div>
+                {/* Success Message */}
+                <AnimatePresence>
+                  {submitSuccess && (
+                    <motion.div
+                      id="success-message"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="bg-green-500/10 border border-green-500/30 rounded-xl p-5 mb-6"
+                    >
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="text-green-400 font-bold text-lg mb-2">Request Submitted!</h4>
+                          <p className="text-gray-300 text-sm">
+                            We've received your data subject request. Our team will process it within 48 hours.
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                  <UserCheck className="mr-2 text-amber-400" size={20} />
+                  Submit Data Subject Request
+                </h3>
+
+                <p className="text-gray-400 mb-6">
+                  Exercise your rights regarding your personal data, such as access, deletion, or correction.
+                </p>
+
+                {/* Error Message */}
+                <AnimatePresence>
+                  {submitError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6 flex items-start gap-3"
+                    >
+                      <AlertIcon className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-red-400 text-sm">{submitError}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label htmlFor="fullName" className="block text-gray-400 text-sm font-medium mb-2">
+                        Full Name *
+                      </label>
+                      <input 
+                        type="text" 
+                        id="fullName" 
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isSubmitting}
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed" 
+                        placeholder="John Doe"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="email" className="block text-gray-400 text-sm font-medium mb-2">
+                        Email Address *
+                      </label>
+                      <input 
+                        type="email" 
+                        id="email" 
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isSubmitting}
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed" 
+                        placeholder="your@email.com"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="requestType" className="block text-gray-400 text-sm font-medium mb-2">
+                      Request Type *
+                    </label>
+                    <select 
+                      id="requestType" 
+                      name="requestType"
+                      value={formData.requestType}
+                      onChange={handleInputChange}
+                      required
+                      disabled={isSubmitting}
+                      className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <option value="">Select request type</option>
+                      <option value="access">Access my data</option>
+                      <option value="delete">Delete my data</option>
+                      <option value="correct">Correct my data</option>
+                      <option value="restrict">Restrict processing</option>
+                      <option value="object">Object to processing</option>
+                      <option value="portable">Data portability</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="message" className="block text-gray-400 text-sm font-medium mb-2">
+                      Details of Your Request *
+                    </label>
+                    <textarea 
+                      id="message" 
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      rows={4} 
+                      required
+                      disabled={isSubmitting}
+                      className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed" 
+                      placeholder="Please provide details about your request..."
+                    ></textarea>
+                  </div>
+
+                  <div className="flex items-start">
+                    <input 
+                      id="terms" 
+                      type="checkbox" 
+                      required
+                      disabled={isSubmitting}
+                      className="w-4 h-4 bg-gray-900 border-gray-700 rounded mt-1 focus:ring-amber-500 focus:ring-2 disabled:opacity-50"
+                    />
+                    <label htmlFor="terms" className="ml-3 text-sm text-gray-400">
+                      I confirm that I am the data subject or authorized to act on their behalf, and the information provided is accurate. *
+                    </label>
+                  </div>
+
+                  <div className="flex justify-end pt-4">
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 py-3 px-8 rounded-xl font-bold transition-colors shadow-lg shadow-amber-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader size={18} className="animate-spin" />
+                          <span>Submitting...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UserCheck size={18} />
+                          <span>Submit Request</span>
+                        </>
+                      )}
+                    </motion.button>
+                  </div>
+                </form>
+              </motion.div>
+            </motion.div>
+
+            {/* FAQ Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.4, duration: 0.5 }}
-              className="mb-6"
+              className="lg:col-span-1"
             >
-              <label htmlFor="requestType" className="block text-white mb-2 text-sm font-medium">Request Type*</label>
-              <select 
-                id="requestType" 
-                className="bg-gray-750 text-gray-300 border border-gray-700 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-              >
-                <option value="">Select request type</option>
-                <option value="access">Access my data</option>
-                <option value="delete">Delete my data</option>
-                <option value="correct">Correct my data</option>
-                <option value="restrict">Restrict processing</option>
-                <option value="object">Object to processing</option>
-                <option value="portable">Data portability</option>
-              </select>
-            </motion.div>
+              <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl sticky top-24">
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <HelpCircle className="mr-2 text-amber-400" size={20} />
+                  Privacy FAQ
+                </h3>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5, duration: 0.5 }}
-              className="mb-6"
-            >
-              <label htmlFor="message" className="block text-white mb-2 text-sm font-medium">Details of Your Request*</label>
-              <textarea 
-                id="message" 
-                rows={4} 
-                className="bg-gray-750 text-gray-300 border border-gray-700 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                placeholder="Please provide details about your request..."
-              ></textarea>
-            </motion.div>
+                <div className="space-y-3">
+                  {faqData.map((faq) => (
+                    <div
+                      key={faq.id}
+                      className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
+                    >
+                      <button
+                        onClick={() => toggleFaq(faq.id)}
+                        className={`w-full p-4 text-left transition-colors flex justify-between items-center ${
+                          openFaqId === faq.id ? "bg-gray-900" : "hover:bg-gray-900"
+                        }`}
+                      >
+                        <span className="font-medium text-white text-sm pr-2">{faq.question}</span>
+                        <ChevronDown 
+                          className={`w-4 h-4 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
+                            openFaqId === faq.id ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                      
+                      <AnimatePresence>
+                        {openFaqId === faq.id && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="p-4 text-gray-400 text-sm bg-gray-900 border-t border-gray-700">
+                              {faq.answer}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ))}
+                </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.6, duration: 0.5 }}
-              className="mb-6 flex items-start"
-            >
-              <div className="flex items-center h-5">
-                <input 
-                  id="terms" 
-                  type="checkbox" 
-                  className="w-4 h-4 bg-gray-750 border border-gray-700 rounded focus:ring-blue-500 focus:ring-2"
-                />
+                <div className="mt-6 p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                  <h4 className="font-medium text-white mb-2 text-sm">Need more help?</h4>
+                  <p className="text-gray-400 text-xs mb-4">
+                    Contact our Data Protection Officer directly for assistance.
+                  </p>
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 py-2 px-4 rounded-xl font-medium transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+                  >
+                    <Mail size={16} />
+                    Contact DPO
+                  </motion.button>
+                </div>
               </div>
-              <label htmlFor="terms" className="ml-2 text-sm text-gray-400">
-                I confirm that I am the data subject or authorized to act on their behalf, and the information provided is accurate.*
-              </label>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.7, duration: 0.5 }}
-              className="flex justify-end"
-            >
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="bg-blue-500 text-gray-900 py-3 px-6 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg"
-              >
-                Submit Request
-              </motion.button>
             </motion.div>
           </div>
-        </motion.div>
+        </main>
       </div>
+      
       <Footer />
     </div>
   );
 }
- 

@@ -18,10 +18,63 @@ import {
   Code,
   PieChart,
   Coffee,
-  Book
+  Book,
+  CheckCircle,
+  DollarSign,
+  TrendingUp,
+  Zap,
+  Shield,
+  Target,
+  Sparkles,
+  X,
+  AlertCircle,
+  Loader
 } from 'lucide-react';
+import axios from 'axios';
 import Navbar from './Navbar';
 import Footer from './Footer';
+
+// Configure axios
+const API_BASE_URL = 'http://localhost:5000';
+axios.defaults.baseURL = API_BASE_URL;
+
+// Add token to requests if available
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
 
 export default function CareersComponent() {
   const [activeCategory, setActiveCategory] = useState('technology');
@@ -37,11 +90,15 @@ export default function CareersComponent() {
     resumeFile: null
   });
   const [fileUploaded, setFileUploaded] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
   const jobCategories = [
-    { id: 'technology', icon: <Code />, name: 'Technology' },
-    { id: 'design', icon: <Laptop />, name: 'Design' },
-    { id: 'marketing', icon: <PieChart />, name: 'Marketing' },
-    { id: 'operations', icon: <Building />, name: 'Operations' }
+    { id: 'technology', icon: Code, name: 'Technology', color: 'blue' },
+    { id: 'design', icon: Laptop, name: 'Design', color: 'purple' },
+    { id: 'marketing', icon: PieChart, name: 'Marketing', color: 'amber' },
+    { id: 'operations', icon: Building, name: 'Operations', color: 'green' }
   ];
 
   const jobsData = {
@@ -219,10 +276,37 @@ export default function CareersComponent() {
   ];
 
   const benefitsData = [
-    { icon: <Heart />, title: 'Health & Wellness', description: 'Comprehensive insurance, mental health support, and wellness programs.' },
-    { icon: <Coffee />, title: 'Work-Life Balance', description: 'Flexible schedules, remote options, and generous PTO policy.' },
-    { icon: <Award />, title: 'Career Growth', description: 'Professional development budget, mentorship, and clear advancement paths.' },
-    { icon: <Book />, title: 'Continuous Learning', description: 'Learning stipends, workshops, and knowledge sharing sessions.' }
+    { 
+      icon: Heart, 
+      title: 'Health & Wellness', 
+      description: 'Comprehensive insurance, mental health support, and wellness programs.',
+      color: 'red'
+    },
+    { 
+      icon: Coffee, 
+      title: 'Work-Life Balance', 
+      description: 'Flexible schedules, remote options, and generous PTO policy.',
+      color: 'amber'
+    },
+    { 
+      icon: Award, 
+      title: 'Career Growth', 
+      description: 'Professional development budget, mentorship, and clear advancement paths.',
+      color: 'purple'
+    },
+    { 
+      icon: Book, 
+      title: 'Continuous Learning', 
+      description: 'Learning stipends, workshops, and knowledge sharing sessions.',
+      color: 'green'
+    }
+  ];
+
+  const stats = [
+    { label: 'Open Positions', value: '25+', icon: Briefcase, color: 'blue' },
+    { label: 'Team Members', value: '500+', icon: Users, color: 'purple' },
+    { label: 'Countries', value: '12', icon: MapPin, color: 'green' },
+    { label: 'Avg. Tenure', value: '4.5yr', icon: Clock, color: 'amber' }
   ];
 
   const companyInfo = {
@@ -246,283 +330,320 @@ export default function CareersComponent() {
       ...formData,
       [name]: value
     });
+    // Clear errors when user starts typing
+    if (submitError) setSubmitError('');
   };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!allowedTypes.includes(file.type)) {
+        setSubmitError('Invalid file type. Please upload PDF, DOC, or DOCX file.');
+        return;
+      }
+
+      // Validate file size (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setSubmitError('File size too large. Please upload a file smaller than 5MB.');
+        return;
+      }
+
       setFormData({
         ...formData,
         resumeFile: file
       });
       setFileUploaded(true);
+      setSubmitError('');
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Application submitted:', formData);
-    alert('Thanks for your application! We\'ll review it and get back to you soon.');
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      position: '',
-      experience: '',
-      coverLetter: '',
-      resumeFile: null
-    });
-    setFileUploaded(false);
-  };
+    setIsSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: 0.05,
-        delayChildren: 0.2
+    try {
+      // Validate all fields
+      if (!formData.name || !formData.email || !formData.phone || 
+          !formData.position || !formData.experience || !formData.resumeFile) {
+        throw new Error('Please fill in all required fields');
       }
-    }
-  };
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { 
-        type: 'spring', 
-        stiffness: 100,
-        damping: 12
+      // Create FormData for file upload
+      const submitData = new FormData();
+      submitData.append('name', formData.name);
+      submitData.append('email', formData.email);
+      submitData.append('phone', formData.phone);
+      submitData.append('position', formData.position);
+      submitData.append('experience', formData.experience);
+      submitData.append('coverLetter', formData.coverLetter);
+      submitData.append('resume', formData.resumeFile);
+
+      // Submit application
+      const response = await axios.post('/api/careers/apply', submitData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data.success) {
+        setSubmitSuccess(true);
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          position: '',
+          experience: '',
+          coverLetter: '',
+          resumeFile: null
+        });
+        setFileUploaded(false);
+
+        // Scroll to success message
+        setTimeout(() => {
+          document.getElementById('success-message')?.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }, 100);
+
+        // Clear success message after 10 seconds
+        setTimeout(() => {
+          setSubmitSuccess(false);
+        }, 10000);
       }
+    } catch (error) {
+      console.error('Application submission error:', error);
+      setSubmitError(
+        error.response?.data?.message || 
+        error.message || 
+        'Failed to submit application. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-40">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-12 text-center"
-        >
-          <div className="inline-block mb-5">
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-gray-800 p-4 rounded-full"
-            >
-              <Briefcase size={40} className="text-blue-400" />
-            </motion.div>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white relative inline-block">
-            Join Our Team
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="absolute -bottom-1 left-0 h-1 bg-blue-500 rounded-full"
-            ></motion.div>
-          </h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-gray-400 text-lg max-w-2xl mx-auto"
-          >
-            Discover exciting opportunities to grow your career and make an impact in the fashion industry.
-          </motion.p>
-        </motion.div>
-
-        {/* Company Info Cards */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
-        >
-          {[
-            { icon: <Mail size={24} />, title: "Contact", content: companyInfo.email, delay: 0 },
-            { icon: <MapPin size={24} />, title: "Locations", content: companyInfo.locations, delay: 0.1 },
-            { icon: <Users size={24} />, title: "Our Team", content: companyInfo.team, delay: 0.2 },
-            { icon: <Heart size={24} />, title: "Culture", content: companyInfo.culture, delay: 0.3 }
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + item.delay, duration: 0.5 }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.1)" }}
-              className="bg-gray-800 rounded-xl p-6 border border-gray-700 flex flex-col items-center text-center"
-            >
-              <div className="bg-gray-750 p-3 rounded-full mb-4 text-blue-400">
-                {item.icon}
-              </div>
-              <h3 className="font-medium text-white text-lg mb-2">{item.title}</h3>
-              <p className="text-gray-400 text-sm">{item.content}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Benefits Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.7 }}
-          className="mb-12"
-        >
-          <div className="text-center mb-8">
-            <motion.h3 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="text-2xl font-bold text-white inline-block relative"
-            >
-              Why Join Us
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: "80%" }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-                className="absolute -bottom-1 left-0 right-0 mx-auto h-1 bg-blue-500 rounded-full"
-              ></motion.div>
-            </motion.h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {benefitsData.map((benefit, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + (index * 0.1), duration: 0.5 }}
-                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.1)" }}
-                className="bg-gray-800 rounded-xl p-6 border border-gray-700 text-center hover:border-blue-500 transition-all duration-300"
-              >
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.8 + (index * 0.1), duration: 0.5 }}
-                  className="bg-blue-500 bg-opacity-10 p-3 rounded-full mx-auto mb-4 inline-block"
-                >
-                  <span className="text-blue-400">
-                    {benefit.icon}
-                  </span>
-                </motion.div>
-                <h4 className="text-white font-medium text-lg mb-2">{benefit.title}</h4>
-                <p className="text-gray-400 text-sm">{benefit.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Open Positions Section */}
+      
+      <div className="pt-24 md:pt-28">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {/* Enhanced Header */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.7 }}
-            className="lg:col-span-2"
+            transition={{ duration: 0.5 }}
+            className="mb-8"
           >
-            {/* Category Navigation */}
+            <div className="text-center mb-8">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
+              >
+                <Briefcase className="w-5 h-5 text-amber-400" />
+                <span className="text-amber-400 text-sm font-semibold">We're Hiring</span>
+              </motion.div>
+              
+              <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
+                Join Our Team
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "240px" }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                  className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
+                />
+              </h2>
+              
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
+              >
+                Discover exciting opportunities to grow your career and make an impact in the sneaker industry.
+              </motion.p>
+            </div>
+          </motion.div>
+
+          {/* Stats Banner */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + index * 0.1, duration: 0.3 }}
+                    whileHover={{ y: -3 }}
+                    className="text-center"
+                  >
+                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                      <Icon className={`w-6 h-6 text-${stat.color}-400`} />
+                    </div>
+                    <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Benefits Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="mb-8"
+          >
+            <div className="bg-gray-800 rounded-2xl p-8 border border-gray-700 shadow-xl">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-white mb-3">Why Join SoleCraft</h3>
+                <p className="text-gray-400 max-w-2xl mx-auto">
+                  We believe in supporting our team with the best benefits and growth opportunities.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {benefitsData.map((benefit, index) => {
+                  const Icon = benefit.icon;
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.8 + (index * 0.1), duration: 0.3 }}
+                      whileHover={{ y: -3 }}
+                      className={`bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-${benefit.color}-500/50 transition-all text-center`}
+                    >
+                      <div className={`inline-flex p-3 bg-${benefit.color}-500/10 rounded-xl mb-4 border border-${benefit.color}-500/20`}>
+                        <Icon className={`w-6 h-6 text-${benefit.color}-400`} />
+                      </div>
+                      <h4 className="text-white font-medium text-lg mb-2">{benefit.title}</h4>
+                      <p className="text-gray-400 text-sm">{benefit.description}</p>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Open Positions Section */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.7 }}
-              className="mb-6 overflow-x-auto pb-2 hide-scrollbar"
+              transition={{ delay: 0.9, duration: 0.5 }}
+              className="lg:col-span-2"
             >
-              <div className="flex space-x-2 md:space-x-4">
-                {jobCategories.map((category) => (
-                  <motion.button
-                    key={category.id}
-                    whileHover={{ y: -3, backgroundColor: "#1f2937" }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setActiveCategory(category.id)}
-                    className={`px-4 py-3 rounded-lg flex items-center whitespace-nowrap transition-all duration-300 ${
-                      activeCategory === category.id 
-                        ? "bg-blue-500 text-gray-900 font-medium" 
-                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                    }`}
+              {/* Success Message */}
+              <AnimatePresence>
+                {submitSuccess && (
+                  <motion.div
+                    id="success-message"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="bg-green-500/10 border border-green-500/30 rounded-2xl p-6 mb-6"
                   >
-                    <span className={`mr-2 ${activeCategory === category.id ? "text-gray-900" : "text-blue-400"}`}>
-                      {category.icon}
-                    </span>
-                    <span className="text-sm">{category.name}</span>
-                  </motion.button>
-                ))}
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-green-400 font-bold text-lg mb-2">Application Submitted Successfully!</h4>
+                        <p className="text-gray-300 text-sm">
+                          Thank you for your interest in joining SoleCraft. We've received your application and our recruitment team will review it shortly. You should hear back from us within 1-2 weeks.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Category Navigation */}
+              <div className="mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-2">
+                  {jobCategories.map((category) => {
+                    const Icon = category.icon;
+                    return (
+                      <button
+                        key={category.id}
+                        onClick={() => setActiveCategory(category.id)}
+                        className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
+                          activeCategory === category.id 
+                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
+                            : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span>{category.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </motion.div>
 
-            {/* Job Listings */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-            >
-              {/* Decorative elements */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1, duration: 1 }}
-                className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.2, duration: 1 }}
-                className="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-
-              <div className="relative z-10">
-                <motion.h3 
-                  variants={itemVariants}
-                  className="text-xl font-bold text-white mb-6 flex items-center"
-                >
-                  <Briefcase className="mr-2 text-blue-400" size={20} />
+              {/* Job Listings */}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl mb-8"
+              >
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <Briefcase className="mr-2 text-amber-400" size={20} />
                   Open Positions: {activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)}
-                </motion.h3>
+                </h3>
 
                 <div className="space-y-4">
-                  <AnimatePresence>
+                  <AnimatePresence mode="wait">
                     {jobsData[activeCategory].map((job, index) => (
                       <motion.div
                         key={job.id}
                         variants={itemVariants}
-                        className="border border-gray-700 rounded-lg overflow-hidden hover:border-blue-500 transition-colors duration-300"
+                        className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
                       >
                         <button
                           onClick={() => toggleJob(job.id)}
-                          className={`w-full p-4 md:p-5 text-left transition-colors duration-300 ${
-                            openJobId === job.id ? "bg-gray-750" : "hover:bg-gray-750"
+                          className={`w-full p-5 text-left transition-colors ${
+                            openJobId === job.id ? "bg-gray-900" : "hover:bg-gray-900"
                           }`}
                         >
-                          <div className="flex flex-col md:flex-row md:items-center justify-between">
-                            <div>
-                              <h4 className="font-medium text-white text-lg">{job.title}</h4>
-                              <div className="flex flex-col md:flex-row md:items-center text-sm text-gray-400 mt-2 md:space-x-4">
-                                <span className="flex items-center mb-1 md:mb-0">
-                                  <MapPin size={14} className="mr-1 text-blue-400" /> {job.location}
+                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-white text-lg mb-2">{job.title}</h4>
+                              <div className="flex flex-wrap gap-3 text-sm text-gray-400">
+                                <span className="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded-full">
+                                  <MapPin size={14} className="text-purple-400" /> {job.location}
                                 </span>
-                                <span className="flex items-center mb-1 md:mb-0">
-                                  <Clock size={14} className="mr-1 text-blue-400" /> {job.type}
+                                <span className="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded-full">
+                                  <Clock size={14} className="text-blue-400" /> {job.type}
                                 </span>
-                                <span className="flex items-center">
-                                  <Award size={14} className="mr-1 text-blue-400" /> {job.salary}
+                                <span className="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded-full">
+                                  <DollarSign size={14} className="text-green-400" /> {job.salary}
                                 </span>
                               </div>
                             </div>
-                            <motion.span
-                              animate={{ rotate: openJobId === job.id ? 180 : 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="text-blue-400 flex-shrink-0 hidden md:block"
-                            >
-                              <ChevronDown size={18} />
-                            </motion.span>
+                            <ChevronDown 
+                              className={`w-5 h-5 text-amber-400 transition-transform duration-200 ${
+                                openJobId === job.id ? 'rotate-180' : ''
+                              }`}
+                            />
                           </div>
                         </button>
                         
@@ -532,40 +653,39 @@ export default function CareersComponent() {
                               initial={{ height: 0, opacity: 0 }}
                               animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.3 }}
+                              transition={{ duration: 0.2 }}
                               className="overflow-hidden"
                             >
-                              <div className="p-4 md:p-5 text-gray-300 bg-gray-750 border-t border-gray-700">
+                              <div className="p-5 text-gray-300 bg-gray-900 border-t border-gray-700">
                                 <p className="mb-4">{job.description}</p>
-                                <h5 className="font-medium text-white mb-2">Requirements:</h5>
-                                <ul className="space-y-2 mb-4">
+                                <h5 className="font-medium text-white mb-3 flex items-center">
+                                  <CheckCircle className="w-4 h-4 mr-2 text-green-400" />
+                                  Requirements
+                                </h5>
+                                <ul className="space-y-2 mb-6">
                                   {job.requirements.map((req, idx) => (
                                     <li key={idx} className="flex items-start text-sm">
-                                      <span className="text-blue-400 mr-2 mt-1">•</span>
+                                      <span className="text-amber-400 mr-2 mt-1">•</span>
                                       <span>{req}</span>
                                     </li>
                                   ))}
                                 </ul>
-                                <motion.button
-                                  whileHover={{ scale: 1.03 }}
-                                  whileTap={{ scale: 0.97 }}
-                                  className="bg-blue-500 text-gray-900 py-2 px-5 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg flex items-center text-sm"
+                                <button
+                                  className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 rounded-xl font-bold transition-colors shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2"
                                   onClick={() => {
-                                    // Set the position in the form when "Apply Now" is clicked
                                     setFormData({
                                       ...formData,
                                       position: job.title
                                     });
-                                    // Scroll to the application form
                                     document.getElementById('application-form').scrollIntoView({ 
                                       behavior: 'smooth',
                                       block: 'start'
                                     });
                                   }}
                                 >
-                                  <Briefcase size={16} className="mr-2" />
+                                  <Send size={18} />
                                   Apply Now
-                                </motion.button>
+                                </button>
                               </div>
                             </motion.div>
                           )}
@@ -574,51 +694,41 @@ export default function CareersComponent() {
                     ))}
                   </AnimatePresence>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
 
-            {/* Application Form */}
-            <motion.div 
-              id="application-form"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.7 }}
-              className="mt-8 bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-            >
-              {/* Decorative elements */}
+              {/* Application Form */}
               <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.3, duration: 1 }}
-                className="absolute -left-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.4, duration: 1 }}
-                className="absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-
-              <div className="relative z-10">
-                <motion.h3 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1, duration: 0.5 }}
-                  className="text-xl font-bold text-white mb-6 flex items-center"
-                >
-                  <FileText className="mr-2 text-blue-400" size={20} />
+                id="application-form"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 0.5 }}
+                className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl"
+              >
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <FileText className="mr-2 text-amber-400" size={20} />
                   Submit Your Application
-                </motion.h3>
+                </h3>
+
+                {/* Error Message */}
+                <AnimatePresence>
+                  {submitError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6 flex items-start gap-3"
+                    >
+                      <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-red-400 text-sm">{submitError}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.1, duration: 0.5 }}
-                    >
+                    <div>
                       <label htmlFor="name" className="block text-gray-400 text-sm font-medium mb-2">
-                        Full Name
+                        Full Name *
                       </label>
                       <input
                         type="text"
@@ -627,17 +737,14 @@ export default function CareersComponent() {
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
+                        disabled={isSubmitting}
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         placeholder="John Doe"
                       />
-                    </motion.div>
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.2, duration: 0.5 }}
-                    >
+                    </div>
+                    <div>
                       <label htmlFor="email" className="block text-gray-400 text-sm font-medium mb-2">
-                        Email Address
+                        Email Address *
                       </label>
                       <input
                         type="email"
@@ -646,20 +753,17 @@ export default function CareersComponent() {
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
+                        disabled={isSubmitting}
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         placeholder="your@email.com"
                       />
-                    </motion.div>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.3, duration: 0.5 }}
-                    >
-                <label htmlFor="phone" className="block text-gray-400 text-sm font-medium mb-2">
-                        Phone Number
+                    <div>
+                      <label htmlFor="phone" className="block text-gray-400 text-sm font-medium mb-2">
+                        Phone Number *
                       </label>
                       <input
                         type="tel"
@@ -668,17 +772,14 @@ export default function CareersComponent() {
                         value={formData.phone}
                         onChange={handleInputChange}
                         required
-                        className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
-                        placeholder="(123) 456-7890"
+                        disabled={isSubmitting}
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        placeholder="+91-9876543210"
                       />
-                    </motion.div>
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.4, duration: 0.5 }}
-                    >
+                    </div>
+                    <div>
                       <label htmlFor="position" className="block text-gray-400 text-sm font-medium mb-2">
-                        Position
+                        Position *
                       </label>
                       <input
                         type="text"
@@ -687,19 +788,16 @@ export default function CareersComponent() {
                         value={formData.position}
                         onChange={handleInputChange}
                         required
-                        className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
+                        disabled={isSubmitting}
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         placeholder="Position you're applying for"
                       />
-                    </motion.div>
+                    </div>
                   </div>
 
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.5, duration: 0.5 }}
-                  >
+                  <div>
                     <label htmlFor="experience" className="block text-gray-400 text-sm font-medium mb-2">
-                      Years of Experience
+                      Years of Experience *
                     </label>
                     <select
                       id="experience"
@@ -707,7 +805,8 @@ export default function CareersComponent() {
                       value={formData.experience}
                       onChange={handleInputChange}
                       required
-                      className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
+                      disabled={isSubmitting}
+                      className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <option value="">Select your experience</option>
                       <option value="0-1">Less than 1 year</option>
@@ -716,15 +815,11 @@ export default function CareersComponent() {
                       <option value="5-10">5-10 years</option>
                       <option value="10+">10+ years</option>
                     </select>
-                  </motion.div>
+                  </div>
 
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.6, duration: 0.5 }}
-                  >
+                  <div>
                     <label htmlFor="coverLetter" className="block text-gray-400 text-sm font-medium mb-2">
-                      Cover Letter
+                      Cover Letter (Optional)
                     </label>
                     <textarea
                       id="coverLetter"
@@ -732,163 +827,155 @@ export default function CareersComponent() {
                       value={formData.coverLetter}
                       onChange={handleInputChange}
                       rows={4}
-                      className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
+                      disabled={isSubmitting}
+                      className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Tell us why you're a good fit for this position..."
                     ></textarea>
-                  </motion.div>
+                  </div>
 
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.7, duration: 0.5 }}
-                    className="relative"
-                  >
+                  <div className="relative">
                     <label htmlFor="resume" className="block text-gray-400 text-sm font-medium mb-2">
-                      Resume/CV
+                      Resume/CV *
                     </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        id="resume"
-                        name="resume"
-                        onChange={handleFileUpload}
-                        className="hidden"
-                        accept=".pdf,.doc,.docx"
-                      />
-                      <label
-                        htmlFor="resume"
-                        className={`flex items-center justify-center gap-2 cursor-pointer border ${
-                          fileUploaded 
-                            ? "border-green-500 bg-green-500 bg-opacity-10" 
-                            : "border-gray-700 bg-gray-750"
-                        } rounded-lg px-4 py-3 w-full text-white transition-all duration-200 hover:border-blue-500`}
-                      >
-                        {fileUploaded ? (
-                          <>
-                            <Upload size={18} className="text-green-500" />
-                            <span className="text-sm text-green-500">File uploaded successfully</span>
-                          </>
-                        ) : (
-                          <>
-                            <Upload size={18} className="text-blue-400" />
-                            <span className="text-sm text-gray-400">Upload your resume (PDF, DOC, DOCX)</span>
-                          </>
-                        )}
-                      </label>
-                    </div>
-                  </motion.div>
-
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.8, duration: 0.5 }}
-                    className="flex justify-end"
-                  >
-                    <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      type="submit"
-                      className="bg-blue-500 text-gray-900 py-3 px-6 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg flex items-center"
+                    <input
+                      type="file"
+                      id="resume"
+                      name="resume"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      accept=".pdf,.doc,.docx"
+                      disabled={isSubmitting}
+                    />
+                    <label
+                      htmlFor="resume"
+                      className={`flex items-center justify-center gap-2 cursor-pointer border ${
+                        fileUploaded 
+                          ? "border-green-500/50 bg-green-500/10" 
+                          : "border-gray-700 bg-gray-900"
+                      } rounded-xl px-4 py-3 w-full text-white transition-all hover:border-amber-500 ${
+                        isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
                     >
-                      <Send size={18} className="mr-2" /> Submit Application
-                    </motion.button>
-                  </motion.div>
-                </form>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* FAQ Section */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.7 }}
-            className="lg:col-span-1"
-          >
-            <div className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden h-full">
-              {/* Decorative elements */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.1, duration: 1 }}
-                className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-
-              <div className="relative z-10">
-                <motion.h3 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
-                  className="text-xl font-bold text-white mb-6 flex items-center"
-                >
-                  <HelpCircle className="mr-2 text-blue-400" size={20} />
-                  Frequently Asked Questions
-                </motion.h3>
-
-                <div className="space-y-4">
-                  <AnimatePresence>
-                    {faqData.map((faq, index) => (
-                      <motion.div
-                        key={faq.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.9 + (index * 0.1), duration: 0.5 }}
-                        className="border border-gray-700 rounded-lg overflow-hidden hover:border-blue-500 transition-colors duration-300"
-                      >
-                        <button
-                          onClick={() => toggleFaq(faq.id)}
-                          className={`w-full p-4 text-left transition-colors duration-300 flex justify-between items-center ${
-                            openFaqId === faq.id ? "bg-gray-750" : "hover:bg-gray-750"
-                          }`}
-                        >
-                          <span className="font-medium text-white">{faq.question}</span>
-                          <motion.span
-                            animate={{ rotate: openFaqId === faq.id ? 180 : 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="text-blue-400 flex-shrink-0"
+                      {fileUploaded ? (
+                        <>
+                          <CheckCircle size={18} className="text-green-400" />
+                          <span className="text-sm text-green-400 font-medium">{formData.resumeFile?.name}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (!isSubmitting) {
+                                setFormData({ ...formData, resumeFile: null });
+                                setFileUploaded(false);
+                              }
+                            }}
+                            disabled={isSubmitting}
+                            className="ml-auto p-1 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
                           >
-                            <ChevronDown size={18} />
-                          </motion.span>
-                        </button>
-                        
-                        <AnimatePresence>
-                          {openFaqId === faq.id && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="p-4 text-gray-300 text-sm bg-gray-750 border-t border-gray-700">
-                                {faq.answer}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+                            <X size={16} className="text-gray-400" />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <Upload size={18} className="text-amber-400" />
+                          <span className="text-sm text-gray-400">Upload your resume (PDF, DOC, DOCX - Max 5MB)</span>
+                        </>
+                      )}
+                    </label>
+                  </div>
+
+                  <div className="flex justify-end pt-4">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="py-3 px-8 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 rounded-xl font-bold transition-colors shadow-lg shadow-amber-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader size={18} className="animate-spin" />
+                          <span>Submitting...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send size={18} />
+                          <span>Submit Application</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </motion.div>
+
+            {/* FAQ Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.5 }}
+              className="lg:col-span-1"
+            >
+              <div className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl sticky top-24">
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <HelpCircle className="mr-2 text-amber-400" size={20} />
+                  Frequently Asked Questions
+                </h3>
+
+                <div className="space-y-3">
+                  {faqData.map((faq, index) => (
+                    <div
+                      key={faq.id}
+                      className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
+                    >
+                      <button
+                        onClick={() => toggleFaq(faq.id)}
+                        className={`w-full p-4 text-left transition-colors flex justify-between items-center ${
+                          openFaqId === faq.id ? "bg-gray-900" : "hover:bg-gray-900"
+                        }`}
+                      >
+                        <span className="font-medium text-white text-sm pr-2">{faq.question}</span>
+                        <ChevronDown 
+                          className={`w-4 h-4 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
+                            openFaqId === faq.id ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                      
+                      <AnimatePresence>
+                        {openFaqId === faq.id && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="p-4 text-gray-400 text-sm bg-gray-900 border-t border-gray-700">
+                              {faq.answer}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ))}
                 </div>
 
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.4, duration: 0.7 }}
-                  className="mt-6 p-4 bg-blue-500 bg-opacity-10 rounded-lg border border-blue-500 border-opacity-20"
-                >
-                  <p className="text-sm text-gray-300">
-                    Still have questions? Feel free to contact our recruitment team at{" "}
-                    <a href="mailto:careers@ysolecraft.com" className="text-blue-400 hover:underline">
-                      careers@yourfashionbrand.com
+                <div className="mt-6 p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                  <p className="text-sm text-gray-300 mb-2">
+                    <strong className="text-white">Still have questions?</strong>
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    Contact our recruitment team at{" "}
+                    <a href="mailto:careers@solecraft.com" className="text-amber-400 hover:underline">
+                      careers@solecraft.com
                     </a>
                   </p>
-                </motion.div>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
+        </main>
       </div>
+      
       <Footer />
     </div>
   );

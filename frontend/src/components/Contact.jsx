@@ -12,10 +12,62 @@ import {
   Users, 
   ShoppingBag, 
   CreditCard,
-  FileText
+  FileText,
+  CheckCircle,
+  AlertCircle,
+  Loader,
+  Headphones,
+  Package,
+  RefreshCw,
+  Star,
+  TrendingUp,
+  Zap
 } from 'lucide-react';
+import axios from 'axios';
 import Navbar from './Navbar';
 import Footer from './Footer';
+
+// Configure axios
+const API_BASE_URL = 'http://localhost:5000';
+axios.defaults.baseURL = API_BASE_URL;
+
+// Add token to requests if available
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { 
+      staggerChildren: 0.05,
+      delayChildren: 0
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { 
+    y: 0, 
+    opacity: 1,
+    transition: { 
+      type: 'tween',
+      duration: 0.3,
+      ease: "easeOut"
+    }
+  }
+};
 
 export default function ContactUsComponent() {
   const [activeCategory, setActiveCategory] = useState('general');
@@ -27,12 +79,16 @@ export default function ContactUsComponent() {
     message: '',
     orderNumber: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [messageId, setMessageId] = useState('');
 
   const contactCategories = [
-    { id: 'general', icon: <MessageSquare />, name: 'General Inquiries' },
-    { id: 'orders', icon: <ShoppingBag />, name: 'Order Support' },
-    { id: 'returns', icon: <CreditCard />, name: 'Returns & Refunds' },
-    { id: 'wholesale', icon: <Users />, name: 'Wholesale' }
+    { id: 'general', icon: MessageSquare, name: 'General Inquiries', color: 'blue' },
+    { id: 'orders', icon: ShoppingBag, name: 'Order Support', color: 'purple' },
+    { id: 'returns', icon: RefreshCw, name: 'Returns & Refunds', color: 'green' },
+    { id: 'wholesale', icon: Users, name: 'Wholesale', color: 'amber' }
   ];
 
   const faqData = {
@@ -106,12 +162,47 @@ export default function ContactUsComponent() {
     ]
   };
 
-  const contactInfo = {
-    email: 'support@yourfashionbrand.com',
-    phone: '+1 (800) 123-4567',
-    address: '123 Fashion Avenue, Suite 500, New York, NY 10001',
-    hours: 'Monday - Friday: 9 AM - 6 PM ET'
-  };
+  const contactInfo = [
+    {
+      icon: Mail,
+      title: 'Email Us',
+      content: 'support@solecraft.com',
+      subtext: 'We reply within 24 hours',
+      color: 'blue',
+      action: 'mailto:support@solecraft.com'
+    },
+    {
+      icon: Phone,
+      title: 'Call Us',
+      content: '+91-9168495030',
+      subtext: 'Mon-Fri: 9 AM - 6 PM ET',
+      color: 'green',
+      action: 'tel:+18001234567'
+    },
+    {
+      icon: MapPin,
+      title: 'Visit Us',
+      content: '123 Sneaker Ave, NY 10001',
+      subtext: 'View all locations',
+      color: 'purple',
+      action: '/about#locations'
+    },
+    {
+      icon: Headphones,
+      title: 'Live Chat',
+      content: 'Chat with our team',
+      subtext: 'Available during business hours',
+      color: 'amber',
+      action: '#live-chat'
+    }
+  ];
+
+  const stats = [
+    { label: 'Response Time', value: '< 24h', icon: Clock, color: 'blue' },
+    { label: 'Satisfaction', value: '98%', icon: Star, color: 'amber' },
+    { label: 'Support Channels', value: '4', icon: Headphones, color: 'green' },
+    { label: 'Tickets Resolved', value: '50K+', icon: CheckCircle, color: 'purple' }
+  ];
 
   const toggleFaq = (faqId) => {
     setOpenFaqId(openFaqId === faqId ? null : faqId);
@@ -123,454 +214,547 @@ export default function ContactUsComponent() {
       ...formData,
       [name]: value
     });
+    if (submitError) setSubmitError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Thanks for your message! We\'ll get back to you soon.');
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: '',
-      orderNumber: ''
-    });
-  };
+    setIsSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+    setMessageId('');
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: 0.05,
-        delayChildren: 0.2
+    try {
+      // Validate required fields
+      if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+        throw new Error('Please fill in all required fields');
       }
-    }
-  };
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { 
-        type: 'spring', 
-        stiffness: 100,
-        damping: 12
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        throw new Error('Please provide a valid email address');
       }
+
+      // Validate message length
+      if (formData.message.length < 10) {
+        throw new Error('Message must be at least 10 characters long');
+      }
+
+      // Submit to API
+      const response = await axios.post('/api/contact/submit', {
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        category: activeCategory,
+        orderNumber: formData.orderNumber
+      });
+
+      if (response.data.success) {
+        setSubmitSuccess(true);
+        setMessageId(response.data.data.messageId);
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+          orderNumber: ''
+        });
+
+        // Scroll to success message
+        setTimeout(() => {
+          document.getElementById('success-message')?.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }, 100);
+
+        // Clear success message after 15 seconds
+        setTimeout(() => {
+          setSubmitSuccess(false);
+          setMessageId('');
+        }, 15000);
+      }
+
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+      setSubmitError(
+        error.response?.data?.message || 
+        error.message || 
+        'Failed to submit message. Please try again.'
+      );
+
+      // Scroll to error message
+      setTimeout(() => {
+        document.getElementById('error-message')?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 100);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
-        <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-40">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-12 text-center"
-        >
-          <div className="inline-block mb-5">
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-gray-800 p-4 rounded-full"
-            >
-              <MessageSquare size={40} className="text-blue-400" />
-            </motion.div>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white relative inline-block">
-            Contact Us
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="absolute -bottom-1 left-0 h-1 bg-blue-500 rounded-full"
-            ></motion.div>
-          </h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-gray-400 text-lg max-w-2xl mx-auto"
-          >
-            We're here to help! Reach out to our team with any questions, concerns, or feedback.
-          </motion.p>
-        </motion.div>
-
-        {/* Contact Information Cards */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
-        >
-          {[
-            { icon: <Mail size={24} />, title: "Email Us", content: contactInfo.email, delay: 0 },
-            { icon: <Phone size={24} />, title: "Call Us", content: contactInfo.phone, delay: 0.1 },
-            { icon: <MapPin size={24} />, title: "Visit Us", content: contactInfo.address, delay: 0.2 },
-            { icon: <Clock size={24} />, title: "Hours", content: contactInfo.hours, delay: 0.3 }
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + item.delay, duration: 0.5 }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.1)" }}
-              className="bg-gray-800 rounded-xl p-6 border border-gray-700 flex flex-col items-center text-center"
-            >
-              <div className="bg-gray-750 p-3 rounded-full mb-4 text-blue-400">
-                {item.icon}
-              </div>
-              <h3 className="font-medium text-white text-lg mb-2">{item.title}</h3>
-              <p className="text-gray-400 text-sm">{item.content}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Contact Form Section */}
+      <Navbar />
+      
+      <div className="pt-24 md:pt-28">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {/* Enhanced Header */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.7 }}
-            className="lg:col-span-2"
+            transition={{ duration: 0.5 }}
+            className="mb-8"
           >
-            {/* Category Navigation */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.7 }}
-              className="mb-6 overflow-x-auto pb-2 hide-scrollbar"
-            >
-              <div className="flex space-x-2 md:space-x-4">
-                {contactCategories.map((category) => (
-                  <motion.button
-                    key={category.id}
-                    whileHover={{ y: -3, backgroundColor: "#1f2937" }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setActiveCategory(category.id)}
-                    className={`px-4 py-3 rounded-lg flex items-center whitespace-nowrap transition-all duration-300 ${
-                      activeCategory === category.id 
-                        ? "bg-blue-500 text-gray-900 font-medium" 
-                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                    }`}
-                  >
-                    <span className={`mr-2 ${activeCategory === category.id ? "text-gray-900" : "text-blue-400"}`}>
-                      {category.icon}
-                    </span>
-                    <span className="text-sm">{category.name}</span>
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Contact Form */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-            >
-              {/* Decorative elements */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1, duration: 1 }}
-                className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.2, duration: 1 }}
-                className="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-
-              <form onSubmit={handleSubmit} className="relative z-10 space-y-5">
-                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label htmlFor="name" className="block text-gray-400 text-sm font-medium mb-2">
-                      Your Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-gray-400 text-sm font-medium mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <label htmlFor="subject" className="block text-gray-400 text-sm font-medium mb-2">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    required
-                    className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
-                    placeholder="How can we help you?"
-                  />
-                </motion.div>
-
-                {activeCategory === 'orders' && (
-                  <motion.div variants={itemVariants}>
-                    <label htmlFor="orderNumber" className="block text-gray-400 text-sm font-medium mb-2">
-                      Order Number (if applicable)
-                    </label>
-                    <input
-                      type="text"
-                      id="orderNumber"
-                      name="orderNumber"
-                      value={formData.orderNumber}
-                      onChange={handleInputChange}
-                      className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200"
-                      placeholder="e.g. ORD-12345678"
-                    />
-                  </motion.div>
-                )}
-
-                <motion.div variants={itemVariants}>
-                  <label htmlFor="message" className="block text-gray-400 text-sm font-medium mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows={5}
-                    className="bg-gray-750 border border-gray-700 rounded-lg px-4 py-3 w-full text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all duration-200 resize-none"
-                    placeholder="Please provide details about your inquiry..."
-                  ></textarea>
-                </motion.div>
-
-                <motion.div 
-                  variants={itemVariants}
-                  className="flex justify-end"
-                >
-                  <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    type="submit"
-                    className="bg-blue-500 text-gray-900 py-3 px-8 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg flex items-center"
-                  >
-                    <Send size={18} className="mr-2" />
-                    Send Message
-                  </motion.button>
-                </motion.div>
-              </form>
-            </motion.div>
-
-            {/* Live Chat Banner */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.7 }}
-              className="mt-8 bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center relative overflow-hidden"
-            >
-              {/* Animated gradient overlay */}
-              <motion.div 
-                animate={{ 
-                  x: [-100, 100],
-                  opacity: [0.1, 0.3, 0.1]
-                }}
-                transition={{ 
-                  duration: 8, 
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
-                style={{ backgroundSize: "200% 100%" }}
-              />
-              
-              <div className="relative z-10 text-center md:text-left mb-4 md:mb-0">
-                <motion.h3 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1, duration: 0.5 }}
-                  className="font-bold text-xl mb-2 text-gray-900"
-                >
-                  Need Immediate Assistance?
-                </motion.h3>
-                <motion.p 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.1, duration: 0.5 }}
-                  className="text-gray-800"
-                >
-                  Our live chat support is available during business hours for urgent inquiries.
-                </motion.p>
-              </div>
-              <motion.button 
-                whileHover={{ scale: 1.05, backgroundColor: "#111827" }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-                className="bg-gray-900 text-blue-400 py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-300 shadow-lg relative z-10 flex items-center"
+            <div className="text-center mb-8">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
               >
-                <MessageSquare className="mr-2" size={18} />
-                Start Live Chat
-              </motion.button>
-            </motion.div>
+                <MessageSquare className="w-5 h-5 text-amber-400" />
+                <span className="text-amber-400 text-sm font-semibold">Get In Touch</span>
+              </motion.div>
+              
+              <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
+                Contact Us
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "200px" }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                  className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
+                />
+              </h2>
+              
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
+              >
+                We're here to help! Reach out to our team with any questions, concerns, or feedback.
+              </motion.p>
+            </div>
           </motion.div>
 
-          {/* FAQ Section */}
+          {/* Stats Banner */}
           <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7, duration: 0.7 }}
-            className="lg:col-span-1"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
           >
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg">
-              <div className="flex items-center mb-6">
-                <HelpCircle size={24} className="text-blue-400 mr-3" />
-                <h3 className="text-xl font-bold text-white">Frequently Asked Questions</h3>
-              </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + index * 0.1, duration: 0.3 }}
+                    whileHover={{ y: -3 }}
+                    className="text-center"
+                  >
+                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                      <Icon className={`w-6 h-6 text-${stat.color}-400`} />
+                    </div>
+                    <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
 
-              <div className="space-y-3">
-                <AnimatePresence>
-                  {faqData[activeCategory].map((faq, index) => (
-                    <motion.div 
-                      key={faq.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.8 + (index * 0.1), duration: 0.5 }}
-                      className="border border-gray-700 rounded-lg overflow-hidden"
-                    >
+          {/* Contact Information Cards */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+          >
+            {contactInfo.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.a
+                  key={index}
+                  href={item.action}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + (index * 0.1), duration: 0.3 }}
+                  whileHover={{ y: -5 }}
+                  className={`bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-${item.color}-500/50 transition-all shadow-lg group cursor-pointer`}
+                >
+                  <div className={`inline-flex p-3 bg-${item.color}-500/10 rounded-xl mb-4 border border-${item.color}-500/20 group-hover:scale-110 transition-transform`}>
+                    <Icon className={`w-6 h-6 text-${item.color}-400`} />
+                  </div>
+                  <h3 className="font-medium text-white text-lg mb-2">{item.title}</h3>
+                  <p className={`text-${item.color}-400 text-sm font-medium mb-1`}>{item.content}</p>
+                  <p className="text-gray-500 text-xs">{item.subtext}</p>
+                </motion.a>
+              );
+            })}
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Contact Form Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+              className="lg:col-span-2"
+            >
+              {/* Success Message */}
+              <AnimatePresence>
+                {submitSuccess && (
+                  <motion.div
+                    id="success-message"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="bg-green-500/10 border border-green-500/30 rounded-2xl p-6 mb-6"
+                  >
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <h4 className="text-green-400 font-bold text-lg mb-2">Message Sent Successfully!</h4>
+                        <p className="text-gray-300 text-sm mb-3">
+                          Thank you for contacting us. Our support team will review your message and get back to you within 24 hours.
+                        </p>
+                        {messageId && (
+                          <div className="bg-gray-900 rounded-lg p-3 border border-green-500/20">
+                            <p className="text-gray-400 text-xs mb-1">Your Message ID:</p>
+                            <p className="text-green-400 font-mono text-sm font-bold">{messageId}</p>
+                            <p className="text-gray-500 text-xs mt-2">
+                              Save this ID to track your message status or reference it in future communications.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Category Navigation */}
+              <div className="mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-2">
+                  {contactCategories.map((category) => {
+                    const Icon = category.icon;
+                    return (
                       <button
-                        onClick={() => toggleFaq(faq.id)}
-                        className={`w-full p-4 text-left flex justify-between items-center transition-colors duration-300 ${
-                          openFaqId === faq.id ? "bg-gray-750" : "hover:bg-gray-750"
+                        key={category.id}
+                        onClick={() => setActiveCategory(category.id)}
+                        className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
+                          activeCategory === category.id 
+                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
+                            : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
                         }`}
                       >
-                        <span className="font-medium text-white text-sm">{faq.question}</span>
-                        <motion.span
-                          animate={{ rotate: openFaqId === faq.id ? 180 : 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="text-blue-400 flex-shrink-0 ml-2"
-                        >
-                          <ChevronDown size={18} />
-                        </motion.span>
+                        <Icon className="w-4 h-4" />
+                        <span className="text-sm">{category.name}</span>
                       </button>
-                      
-                      <AnimatePresence>
-                        {openFaqId === faq.id && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="overflow-hidden"
-                          >
-                            <div className="p-4 text-gray-400 text-sm bg-gray-750 border-t border-gray-700">
-                              {faq.answer}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                    );
+                  })}
+                </div>
               </div>
 
+              {/* Contact Form */}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl mb-8"
+              >
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <Send className="mr-2 text-amber-400" size={20} />
+                  Send Us a Message
+                </h3>
+
+                {/* Error Message */}
+                <AnimatePresence>
+                  {submitError && (
+                    <motion.div
+                      id="error-message"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6 flex items-start gap-3"
+                    >
+                      <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-red-400 text-sm">{submitError}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label htmlFor="name" className="block text-gray-400 text-sm font-medium mb-2">
+                        Your Name *
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isSubmitting}
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-gray-400 text-sm font-medium mb-2">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isSubmitting}
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        placeholder="your@email.com"
+                      />
+                    </div>
+                  </motion.div>
+
+                  <motion.div variants={itemVariants}>
+                    <label htmlFor="subject" className="block text-gray-400 text-sm font-medium mb-2">
+                      Subject *
+                    </label>
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      required
+                      disabled={isSubmitting}
+                      className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      placeholder="How can we help you?"
+                    />
+                  </motion.div>
+
+                  {activeCategory === 'orders' && (
+                    <motion.div 
+                      variants={itemVariants}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                    >
+                      <label htmlFor="orderNumber" className="block text-gray-400 text-sm font-medium mb-2">
+                        Order Number (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        id="orderNumber"
+                        name="orderNumber"
+                        value={formData.orderNumber}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        placeholder="e.g. SC-123456 or SO-789012"
+                      />
+                    </motion.div>
+                  )}
+
+                  <motion.div variants={itemVariants}>
+                    <label htmlFor="message" className="block text-gray-400 text-sm font-medium mb-2">
+                      Message *
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      required
+                      rows={5}
+                      disabled={isSubmitting}
+                      className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+                      placeholder="Please provide details about your inquiry..."
+                      minLength={10}
+                      maxLength={5000}
+                    ></textarea>
+                    <div className="mt-1 text-right">
+                      <span className={`text-xs ${formData.message.length > 4900 ? 'text-amber-400' : 'text-gray-500'}`}>
+                        {formData.message.length} / 5000
+                      </span>
+                    </div>
+                  </motion.div>
+
+                  <motion.div 
+                    variants={itemVariants}
+                    className="flex justify-end pt-4"
+                  >
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="py-3 px-8 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 rounded-xl font-bold transition-colors shadow-lg shadow-amber-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader size={18} className="animate-spin" />
+                          <span>Sending...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send size={18} />
+                          <span>Send Message</span>
+                        </>
+                      )}
+                    </button>
+                  </motion.div>
+                </form>
+              </motion.div>
+
+              {/* Live Chat CTA */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.3, duration: 0.5 }}
-                className="mt-6 bg-gray-750 p-4 rounded-lg border border-gray-700"
+                transition={{ delay: 1, duration: 0.5 }}
+                className="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
               >
-                <div className="flex items-center mb-3">
-                  <FileText size={16} className="text-blue-400 mr-2" />
-                  <h4 className="font-medium text-white">Additional Resources</h4>
+                <div className="absolute inset-0">
+                  <motion.div 
+                    animate={{ 
+                      x: [-100, 100, -100],
+                      opacity: [0.1, 0.2, 0.1]
+                    }}
+                    transition={{ 
+                      duration: 10, 
+                      repeat: Infinity,
+                      ease: "linear"
+                    }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+                  />
                 </div>
-                <ul className="space-y-2 text-sm">
-                  {[
-                    "Shipping & Delivery Information",
-                    "Return & Exchange Policy",
-                    "Size Guides",
-                    "Care Instructions"
-                  ].map((resource, idx) => (
-                    <motion.li 
-                      key={idx}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 1.4 + (idx * 0.1), duration: 0.3 }}
-                      className="flex items-start"
-                    >
-                      <span className="text-blue-400 mr-2 mt-1">•</span>
-                      <span className="text-gray-300 hover:text-blue-400 cursor-pointer transition-colors duration-200">{resource}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
 
-        {/* Contact Stats */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.5 }}
-          className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4"
-        >
-          {[
-            { label: "Response Time", value: "< 24 hrs", delay: 0 },
-            { label: "Customer Satisfaction", value: "98%", delay: 0.1 },
-            { label: "Support Channels", value: "4", delay: 0.2 },
-            { label: "Team Members", value: "24/7", delay: 0.3 }
-          ].map((stat, index) => (
+                <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+                  <div className="flex-1 text-center md:text-left">
+                    <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
+                      <Zap className="w-4 h-4 text-white" />
+                      <span className="text-white text-sm font-semibold">Need Immediate Help?</span>
+                    </div>
+                    <h3 className="text-3xl font-bold text-gray-900 mb-3">
+                      Start a Live Chat
+                    </h3>
+                    <p className="text-gray-800 leading-relaxed">
+                      Our support team is available during business hours for urgent inquiries and real-time assistance.
+                    </p>
+                  </div>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="bg-gray-900 text-amber-400 px-8 py-4 rounded-xl font-bold shadow-xl flex items-center gap-2 whitespace-nowrap"
+                  >
+                    <MessageSquare className="w-5 h-5" />
+                    <span>Start Chat</span>
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* FAQ Section */}
             <motion.div 
-              key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.6 + stat.delay, duration: 0.5 }}
-              whileHover={{ y: -5 }}
-              className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center"
+              transition={{ delay: 1.1, duration: 0.5 }}
+              className="lg:col-span-1"
             >
-              <motion.p 
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 1.7 + stat.delay, duration: 0.5 }}
-                className="text-xl md:text-2xl font-bold text-blue-400"
-              >
-                {stat.value}
-              </motion.p>
-              <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
+              <div className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl sticky top-24">
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <HelpCircle className="mr-2 text-amber-400" size={20} />
+                  Frequently Asked Questions
+                </h3>
+
+                <div className="space-y-3">
+                  <AnimatePresence mode="wait">
+                    {faqData[activeCategory].map((faq, index) => (
+                      <motion.div 
+                        key={faq.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.2 + (index * 0.1), duration: 0.3 }}
+                        className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
+                      >
+                        <button
+                          onClick={() => toggleFaq(faq.id)}
+                          className={`w-full p-4 text-left transition-colors flex justify-between items-center ${
+                            openFaqId === faq.id ? "bg-gray-900" : "hover:bg-gray-900"
+                          }`}
+                        >
+                          <span className="font-medium text-white text-sm pr-2">{faq.question}</span>
+                          <ChevronDown 
+                            className={`w-4 h-4 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
+                              openFaqId === faq.id ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </button>
+                        
+                        <AnimatePresence>
+                          {openFaqId === faq.id && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="p-4 text-gray-400 text-sm bg-gray-900 border-t border-gray-700">
+                                {faq.answer}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+
+                <div className="mt-6 p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                  <div className="flex items-center mb-3">
+                    <FileText className="w-4 h-4 text-amber-400 mr-2" />
+                    <h4 className="font-medium text-white text-sm">Additional Resources</h4>
+                  </div>
+                  <ul className="space-y-2 text-sm">
+                    {[
+                      "Shipping & Delivery Info",
+                      "Return & Exchange Policy",
+                      "Size Guides",
+                      "Care Instructions"
+                    ].map((resource, idx) => (
+                      <li 
+                        key={idx}
+                        className="flex items-start"
+                      >
+                        <span className="text-amber-400 mr-2 mt-0.5">•</span>
+                        <span className="text-gray-300 hover:text-amber-400 cursor-pointer transition-colors">{resource}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </motion.div>
-          ))}
-        </motion.div>
+          </div>
+        </main>
       </div>
+      
       <Footer />
     </div>
   );

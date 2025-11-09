@@ -483,7 +483,7 @@ const Profile = () => {
                         value={userData.phone}
                         onChange={handleInputChange}
                         disabled={!isEditing}
-                        placeholder="+1 (555) 000-0000"
+                        placeholder="+91-9876543210"
                         className="w-full px-4 py-2 bg-gray-900 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-amber-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>

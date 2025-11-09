@@ -1,12 +1,58 @@
-import { useState } from 'react';
+  import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Truck, Package, RefreshCw, CreditCard, Clock, MapPin, HelpCircle, MessageSquare } from 'lucide-react';
+import { 
+  ChevronDown, 
+  Truck, 
+  Package, 
+  RefreshCw, 
+  CreditCard, 
+  Clock, 
+  MapPin, 
+  HelpCircle, 
+  MessageSquare,
+  Globe,
+  AlertCircle,
+  CheckCircle,
+  Star,
+  TrendingUp,
+  Award,
+  Zap,
+  Shield,
+  Search,
+  ArrowRight
+} from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
 
 export default function ShippingReturnsComponent() {
   const [activeCategory, setActiveCategory] = useState('shipping');
   const [openQuestionId, setOpenQuestionId] = useState(null);
+  const [trackingNumber, setTrackingNumber] = useState('');
+
   const shippingReturnsData = {
     shipping: [
       {
@@ -43,7 +89,7 @@ export default function ShippingReturnsComponent() {
       },
       {
         id: 'delivery-3',
-        question: 'What if I amm not home for delivery?',
+        question: 'What if I am not home for delivery?',
         answer: 'Delivery procedures vary by carrier. Most packages not requiring a signature will be left at your door. For packages requiring signatures, carriers will usually leave a notice and attempt delivery the next business day, or you can arrange pickup at their facility.'
       },
       {
@@ -115,318 +161,503 @@ export default function ShippingReturnsComponent() {
       {
         id: 'international-4',
         question: 'How do international returns work?',
-        answer: 'International returns must be initiated within 30 days of delivery. After approval, you will receive a return authorization and instructions. Return shipping costs are the customer is responsibility unless the return is due to our error. International returns typically take 10-20 days to process after receipt.'
+        answer: 'International returns must be initiated within 30 days of delivery. After approval, you will receive a return authorization and instructions. Return shipping costs are the customer\'s responsibility unless the return is due to our error. International returns typically take 10-20 days to process after receipt.'
       }
     ]
   };
 
   const categories = [
-    { id: 'shipping', icon: <Truck />, name: 'Shipping Options' },
-    { id: 'delivery', icon: <Clock />, name: 'Delivery Times' },
-    { id: 'returns', icon: <RefreshCw />, name: 'Returns Process' },
-    { id: 'refunds', icon: <CreditCard />, name: 'Refund Policy' },
-    { id: 'international', icon: <MapPin />, name: 'International' }
+    { id: 'shipping', icon: Truck, name: 'Shipping Options', color: 'blue' },
+    { id: 'delivery', icon: Clock, name: 'Delivery Times', color: 'purple' },
+    { id: 'returns', icon: RefreshCw, name: 'Returns Process', color: 'green' },
+    { id: 'refunds', icon: CreditCard, name: 'Refund Policy', color: 'amber' },
+    { id: 'international', icon: Globe, name: 'International', color: 'red' }
+  ];
+
+  const shippingOptions = [
+    {
+      icon: Truck,
+      name: 'Standard Shipping',
+      time: '5-7 Business Days',
+      price: 'Free over $75',
+      color: 'blue',
+      features: ['Order tracking', 'Signature not required', 'Most economical']
+    },
+    {
+      icon: Zap,
+      name: 'Expedited Shipping',
+      time: '2-3 Business Days',
+      price: '$14.95',
+      color: 'purple',
+      features: ['Priority handling', 'Order tracking', 'Signature optional']
+    },
+    {
+      icon: Package,
+      name: 'Overnight Delivery',
+      time: 'Next Business Day',
+      price: '$24.95',
+      color: 'amber',
+      features: ['Order by 2pm EST', 'Signature required', 'Fastest option']
+    },
+    {
+      icon: Globe,
+      name: 'International',
+      time: '7-14 Business Days',
+      price: 'From $19.95',
+      color: 'green',
+      features: ['40+ countries', 'Customs included', 'Full tracking']
+    }
+  ];
+
+  const stats = [
+    { label: 'Avg. Shipping Time', value: '3.2 days', icon: Clock, color: 'blue' },
+    { label: 'Orders Processed', value: '1,500+', icon: Package, color: 'purple' },
+    { label: 'Return Satisfaction', value: '99%', icon: Star, color: 'green' },
+    { label: 'Countries Served', value: '40+', icon: Globe, color: 'amber' }
+  ];
+
+  const guarantees = [
+    {
+      icon: Shield,
+      title: 'Secure Packaging',
+      description: 'All orders carefully packed and protected',
+      color: 'blue'
+    },
+    {
+      icon: CheckCircle,
+      title: 'Quality Assurance',
+      description: 'Every item inspected before shipping',
+      color: 'green'
+    },
+    {
+      icon: RefreshCw,
+      title: 'Easy Returns',
+      description: '30-day hassle-free return policy',
+      color: 'purple'
+    },
+    {
+      icon: Award,
+      title: 'Customer Service',
+      description: '24/7 support for all shipping inquiries',
+      color: 'amber'
+    }
   ];
 
   const toggleQuestion = (questionId) => {
     setOpenQuestionId(openQuestionId === questionId ? null : questionId);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: 0.05,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { 
-        type: 'spring', 
-        stiffness: 100,
-        damping: 12
-      }
-    }
+  const handleTrackOrder = (e) => {
+    e.preventDefault();
+    // Implement tracking logic here
+    console.log('Tracking order:', trackingNumber);
   };
 
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-40">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-12 text-center"
-        >
-          <div className="inline-block mb-5">
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-gray-800 p-4 rounded-full"
-            >
-              <Package size={40} className="text-blue-400" />
-            </motion.div>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white relative inline-block">
-            Shipping & Returns
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="absolute -bottom-1 left-0 h-1 bg-blue-500 rounded-full"
-            ></motion.div>
-          </h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-gray-400 text-lg max-w-2xl mx-auto"
-          >
-            Everything you need to know about shipping options, delivery times, and our hassle-free return process.
-          </motion.p>
-        </motion.div>
-
-        {/* Category Navigation */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.7 }}
-          className="mb-10 overflow-x-auto pb-2 hide-scrollbar"
-        >
-          <div className="flex space-x-2 md:space-x-4 justify-center">
-            {categories.map((category) => (
-              <motion.button
-                key={category.id}
-                whileHover={{ y: -3, backgroundColor: "#1f2937" }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveCategory(category.id)}
-                className={`px-4 py-3 rounded-lg flex items-center whitespace-nowrap transition-all duration-300 ${
-                  activeCategory === category.id 
-                    ? "bg-blue-500 text-gray-900 font-medium" 
-                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                }`}
-              >
-                <span className={`mr-2 ${activeCategory === category.id ? "text-gray-900" : "text-blue-400"}`}>
-                  {category.icon}
-                </span>
-                <span>{category.name}</span>
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Questions & Answers */}
-        <motion.div 
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-        >
-          {/* Decorative elements */}
+      
+      <div className="pt-24 md:pt-28">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {/* Enhanced Header */}
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.03 }}
-            transition={{ delay: 1, duration: 1 }}
-            className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-          />
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.03 }}
-            transition={{ delay: 1.2, duration: 1 }}
-            className="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-blue-500"
-          />
-
-          <div className="relative z-10 space-y-4">
-            {shippingReturnsData[activeCategory]?.map((item, index) => (
-              <motion.div
-                key={item.id}
-                variants={itemVariants}
-                initial="hidden"
-                animate="visible"
-                custom={index}
-                className="border border-gray-700 rounded-lg overflow-hidden"
-              >
-                <button
-                  onClick={() => toggleQuestion(item.id)}
-                  className={`w-full p-4 text-left flex justify-between items-center transition-colors duration-300 ${
-                    openQuestionId === item.id ? "bg-gray-700" : "bg-gray-800 hover:bg-gray-750"
-                  }`}
-                >
-                  <span className="font-medium text-white">{item.question}</span>
-                  <motion.span
-                    animate={{ rotate: openQuestionId === item.id ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-blue-400 flex-shrink-0 ml-2"
-                  >
-                    <ChevronDown size={20} />
-                  </motion.span>
-                </button>
-                
-                <AnimatePresence>
-                  {openQuestionId === item.id && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="p-4 pt-0 bg-gray-800 border-t border-gray-700">
-                        <motion.p 
-                          initial={{ y: 10, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          transition={{ duration: 0.3, delay: 0.1 }}
-                          className="text-gray-300"
-                        >
-                          {item.answer}
-                        </motion.p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Shipping Status Checker */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.7 }}
-          className="mt-12 bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center relative overflow-hidden"
-        >
-          {/* Animated gradient overlay */}
-          <motion.div 
-            animate={{ 
-              x: [-100, 100],
-              opacity: [0.1, 0.3, 0.1]
-            }}
-            transition={{ 
-              duration: 8, 
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
-            style={{ backgroundSize: "200% 100%" }}
-          />
-          
-          <div className="relative z-10 text-center md:text-left mb-4 md:mb-0">
-            <motion.h3 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="font-bold text-xl mb-2 text-gray-900"
-            >
-              Need to Track Your Order?
-            </motion.h3>
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-              className="text-gray-800"
-            >
-              Enter your order or tracking number to check the real-time status of your shipment.
-            </motion.p>
-          </div>
-          <motion.button 
-            whileHover={{ scale: 1.05, backgroundColor: "#111827" }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-            className="bg-gray-900 text-blue-400 py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-300 shadow-lg relative z-10 flex items-center"
+            transition={{ duration: 0.5 }}
+            className="mb-8"
           >
-            <Truck className="mr-2" size={18} />
-            Track Order
-          </motion.button>
-        </motion.div>
-
-        {/* Contact Help Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.7 }}
-          className="mt-8 bg-gray-800 rounded-xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center border border-gray-700"
-        >
-          <div className="relative z-10 text-center md:text-left mb-4 md:mb-0 flex items-center">
-            <HelpCircle size={24} className="text-blue-400 mr-3 hidden md:block" />
-            <div>
-              <motion.h3 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.5 }}
-                className="font-bold text-xl mb-2 text-white"
+            <div className="text-center mb-8">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
               >
-                Still Have Questions?
-              </motion.h3>
+                <Package className="w-5 h-5 text-amber-400" />
+                <span className="text-amber-400 text-sm font-semibold">Delivery Information</span>
+              </motion.div>
+              
+              <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
+                Shipping & Returns
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "330px" }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                  className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
+                />
+              </h2>
+              
               <motion.p 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.1, duration: 0.5 }}
-                className="text-gray-400"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
               >
-                Our shipping specialists are available 24/7 to assist you.
+                Fast, reliable shipping with easy returns. Everything you need to know about our delivery and return policies.
               </motion.p>
             </div>
-          </div>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.5 }}
-            className="bg-blue-500 text-gray-900 py-3 px-6 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg relative z-10 flex items-center"
-          >
-            <MessageSquare className="mr-2" size={18} />
-            Contact Support
-          </motion.button>
-        </motion.div>
+          </motion.div>
 
-        {/* Quick Stats */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.3, duration: 0.5 }}
-          className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4"
-        >
-          {[
-            { label: "Average Shipping Time", value: "3.2 days", delay: 0 },
-            { label: "Orders Processed Daily", value: "1,500+", delay: 0.1 },
-            { label: "Return Satisfaction", value: "99%", delay: 0.2 },
-            { label: "Countries Served", value: "40+", delay: 0.3 }
-          ].map((stat, index) => (
+          {/* Stats Banner */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + index * 0.1, duration: 0.3 }}
+                    whileHover={{ y: -3 }}
+                    className="text-center"
+                  >
+                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                      <Icon className={`w-6 h-6 text-${stat.color}-400`} />
+                    </div>
+                    <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Shipping Options Cards */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+          >
+            {shippingOptions.map((option, index) => {
+              const Icon = option.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + (index * 0.1), duration: 0.3 }}
+                  whileHover={{ y: -5 }}
+                  className={`bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-${option.color}-500/50 transition-all shadow-lg group`}
+                >
+                  <div className={`inline-flex p-3 bg-${option.color}-500/10 rounded-xl mb-4 border border-${option.color}-500/20 group-hover:scale-110 transition-transform`}>
+                    <Icon className={`w-6 h-6 text-${option.color}-400`} />
+                  </div>
+                  <h3 className="font-medium text-white text-lg mb-2">{option.name}</h3>
+                  <p className={`text-${option.color}-400 text-sm font-medium mb-1`}>{option.time}</p>
+                  <p className="text-gray-500 text-xs mb-4">{option.price}</p>
+                  <ul className="space-y-2">
+                    {option.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center text-gray-400 text-xs">
+                        <CheckCircle className={`w-3 h-3 text-${option.color}-400 mr-2`} />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          {/* Order Tracking Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.5 }}
+            className="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 mb-8 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute inset-0">
+              <motion.div 
+                animate={{ 
+                  x: [-100, 100, -100],
+                  opacity: [0.1, 0.2, 0.1]
+                }}
+                transition={{ 
+                  duration: 10, 
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+              />
+            </div>
+
+            <div className="relative z-10">
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
+                  <Search className="w-4 h-4 text-white" />
+                  <span className="text-white text-sm font-semibold">Track Your Order</span>
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-2">
+                  Where's My Package?
+                </h3>
+                <p className="text-gray-800">
+                  Enter your tracking or order number to check real-time status
+                </p>
+              </div>
+
+              <form onSubmit={handleTrackOrder} className="max-w-2xl mx-auto">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={trackingNumber}
+                      onChange={(e) => setTrackingNumber(e.target.value)}
+                      placeholder="Enter tracking or order number"
+                      className="w-full bg-white/95 backdrop-blur-sm border-2 border-gray-900/10 rounded-xl px-6 py-4 text-gray-900 placeholder-gray-500 focus:border-gray-900 focus:ring-2 focus:ring-gray-900/20 outline-none transition-all text-lg"
+                    />
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    type="submit"
+                    className="bg-gray-900 text-amber-400 px-8 py-4 rounded-xl font-bold shadow-xl flex items-center justify-center gap-2 whitespace-nowrap hover:bg-gray-800 transition-colors"
+                  >
+                    <Search className="w-5 h-5" />
+                    <span>Track Order</span>
+                  </motion.button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+
+          {/* Guarantees Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.5 }}
+            className="bg-gray-800 rounded-2xl p-8 border border-gray-700 shadow-xl mb-8"
+          >
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-white mb-3 flex items-center justify-center">
+                <Award className="mr-2 text-amber-400" />
+                Our Shipping Guarantees
+              </h3>
+              <p className="text-gray-400 max-w-2xl mx-auto">
+                Committed to providing the best shipping experience
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {guarantees.map((guarantee, index) => {
+                const Icon = guarantee.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.1 + (index * 0.1), duration: 0.3 }}
+                    whileHover={{ y: -5 }}
+                    className={`bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-${guarantee.color}-500/50 transition-all text-center group`}
+                  >
+                    <div className={`inline-flex p-3 bg-${guarantee.color}-500/10 rounded-xl mb-4 border border-${guarantee.color}-500/20 group-hover:scale-110 transition-transform`}>
+                      <Icon className={`w-6 h-6 text-${guarantee.color}-400`} />
+                    </div>
+                    <h4 className="text-white font-medium text-lg mb-2">{guarantee.title}</h4>
+                    <p className="text-gray-400 text-sm">{guarantee.description}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* FAQ Section */}
             <motion.div 
-              key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4 + stat.delay, duration: 0.5 }}
-              whileHover={{ y: -5 }}
-              className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center"
+              transition={{ delay: 1.2, duration: 0.5 }}
+              className="lg:col-span-2"
             >
-              <motion.p 
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 1.5 + stat.delay, duration: 0.5 }}
-                className="text-xl md:text-2xl font-bold text-blue-400"
+              {/* Category Navigation */}
+              <div className="mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-2">
+                  {categories.map((category) => {
+                    const Icon = category.icon;
+                    return (
+                      <motion.button
+                        key={category.id}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setActiveCategory(category.id)}
+                        className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
+                          activeCategory === category.id 
+                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
+                            : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span className="text-sm">{category.name}</span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Questions & Answers */}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl"
               >
-                {stat.value}
-              </motion.p>
-              <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <HelpCircle className="mr-2 text-amber-400" size={20} />
+                  Frequently Asked Questions
+                </h3>
+
+                <div className="space-y-4">
+                  <AnimatePresence mode="wait">
+                    {shippingReturnsData[activeCategory]?.map((item) => (
+                      <motion.div
+                        key={item.id}
+                        variants={itemVariants}
+                        className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
+                      >
+                        <button
+                          onClick={() => toggleQuestion(item.id)}
+                          className={`w-full p-5 text-left transition-colors flex justify-between items-center ${
+                            openQuestionId === item.id ? "bg-gray-900" : "hover:bg-gray-900"
+                          }`}
+                        >
+                          <span className="font-medium text-white pr-4">{item.question}</span>
+                          <ChevronDown 
+                            className={`w-5 h-5 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
+                              openQuestionId === item.id ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </button>
+                        
+                        <AnimatePresence>
+                          {openQuestionId === item.id && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="p-5 bg-gray-900 border-t border-gray-700">
+                                <p className="text-gray-300 leading-relaxed">
+                                  {item.answer}
+                                </p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
             </motion.div>
-          ))}
-        </motion.div>
+
+            {/* Help & Support Sidebar */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.3, duration: 0.5 }}
+              className="lg:col-span-1"
+            >
+              <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl sticky top-24">
+                <div className="text-center mb-6">
+                  <div className="inline-flex p-3 bg-amber-500/10 rounded-xl mb-3 border border-amber-500/20">
+                    <MessageSquare className="w-5 h-5 text-amber-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">Need Help?</h3>
+                  <p className="text-gray-400 text-sm">
+                    Our support team is here 24/7
+                  </p>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <motion.a
+                    href="/contact"
+                    whileHover={{ x: 3 }}
+                    className="flex items-center justify-between p-4 bg-gray-900 rounded-xl border border-gray-700 hover:border-amber-500/50 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                        <MessageSquare className="w-4 h-4 text-blue-400" />
+                      </div>
+                      <div>
+                        <p className="text-white text-sm font-medium">Live Chat</p>
+                        <p className="text-gray-500 text-xs">Available now</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-amber-400 transition-colors" />
+                  </motion.a>
+
+                  <motion.a
+                    href="mailto:support@solecraft.com"
+                    whileHover={{ x: 3 }}
+                    className="flex items-center justify-between p-4 bg-gray-900 rounded-xl border border-gray-700 hover:border-amber-500/50 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                        <MessageSquare className="w-4 h-4 text-purple-400" />
+                      </div>
+                      <div>
+                        <p className="text-white text-sm font-medium">Email Us</p>
+                        <p className="text-gray-500 text-xs">Reply within 24h</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-amber-400 transition-colors" />
+                  </motion.a>
+
+                  <motion.a
+                    href="tel:+91-9876543210"
+                    whileHover={{ x: 3 }}
+                    className="flex items-center justify-between p-4 bg-gray-900 rounded-xl border border-gray-700 hover:border-amber-500/50 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-green-500/10 rounded-lg border border-green-500/20">
+                        <MessageSquare className="w-4 h-4 text-green-400" />
+                      </div>
+                      <div>
+                        <p className="text-white text-sm font-medium">Call Us</p>
+                        <p className="text-gray-500 text-xs">Mon-Fri 9AM-6PM</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-amber-400 transition-colors" />
+                  </motion.a>
+                </div>
+
+                <div className="p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                  <div className="flex items-center mb-3">
+                    <TrendingUp className="w-4 h-4 text-amber-400 mr-2" />
+                    <h4 className="font-medium text-white text-sm">Popular Resources</h4>
+                  </div>
+                  <ul className="space-y-2 text-sm">
+                        {[
+                          "Size & Fit Guide",
+                          "Shipping Calculator",
+                          "Return Portal",
+                          "Track My Order"
+                        ].map((resource, idx) => (
+                          <li 
+                            key={idx}
+                            className="flex items-start"
+                          >
+                            <span className="text-amber-400 mr-2 mt-0.5">•</span>
+                            <span className="text-gray-300 hover:text-amber-400 cursor-pointer transition-colors">{resource}</span>
+                          </li>
+                        ))}
+                      </ul>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </main>
       </div>
+      
       <Footer />
     </div>
   );

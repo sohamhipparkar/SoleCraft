@@ -6,10 +6,7 @@ import {
   Eye, 
   UserCheck, 
   Server, 
-  List, 
   ChevronDown, 
-  Users, 
-  Globe, 
   Mail, 
   Clock,
   Bell,
@@ -20,14 +17,46 @@ import {
   Gavel,
   BookOpen,
   Ban,
-  MessageSquare
+  MessageSquare,
+  CheckCircle,
+  Globe,
+  Award,
+  Zap,
+  Shield,
+  ArrowRight,
+  ExternalLink
 } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
+
 export default function TermsOfServiceComponent() {
   const [activeSection, setActiveSection] = useState('use');
   const [openSectionId, setOpenSectionId] = useState(null);
+  const [openFaqId, setOpenFaqId] = useState(null);
 
   const legalInfo = {
     email: 'legal@solecraft.com',
@@ -37,11 +66,11 @@ export default function TermsOfServiceComponent() {
   };
 
   const termsSections = [
-    { id: 'use', icon: <UserCheck />, name: 'Acceptable Use' },
-    { id: 'account', icon: <Eye />, name: 'Account Terms' },
-    { id: 'content', icon: <FileText />, name: 'Content Rights' },
-    { id: 'liability', icon: <ShieldAlert />, name: 'Limitations' },
-    { id: 'termination', icon: <Ban />, name: 'Termination' }
+    { id: 'use', icon: UserCheck, name: 'Acceptable Use', color: 'blue' },
+    { id: 'account', icon: Eye, name: 'Account Terms', color: 'purple' },
+    { id: 'content', icon: FileText, name: 'Content Rights', color: 'green' },
+    { id: 'liability', icon: ShieldAlert, name: 'Limitations', color: 'amber' },
+    { id: 'termination', icon: Ban, name: 'Termination', color: 'red' }
   ];
 
   const policySections = [
@@ -155,83 +184,86 @@ By continuing to access or use our Services after any revisions become effective
 
 Email: legal@solecraft.com
 Mail: Legal Department, SoleCraft Inc., 123 Fashion Street, New York, NY 10001, USA
-Phone: +1 (555) 123-4567`
+Phone: +91-7705481059`
     }
   ];
 
   const termsHighlights = [
     { 
-      icon: <Gavel />, 
+      icon: Gavel, 
       title: 'Legal Compliance', 
-      description: 'Our terms ensure compliance with laws and protect both parties legal rights.' 
+      description: 'Full compliance with laws protecting both parties.',
+      color: 'blue'
     },
     { 
-      icon: <BookOpen />, 
+      icon: BookOpen, 
       title: 'Clear Guidelines', 
-      description: 'Straightforward rules for using our services and platform properly.' 
+      description: 'Straightforward rules for using our platform.',
+      color: 'purple'
     },
     { 
-      icon: <MessageSquare />, 
+      icon: MessageSquare, 
       title: 'Open Communication', 
-      description: 'We are committed to addressing concerns and questions about our terms.' 
+      description: 'Address concerns about our terms anytime.',
+      color: 'green'
     },
     { 
-      icon: <RefreshCw />, 
+      icon: RefreshCw, 
       title: 'Regular Updates', 
-      description: 'We keep our terms current with evolving laws and business practices.' 
+      description: 'Terms kept current with evolving practices.',
+      color: 'amber'
     }
   ];
+
+  const stats = [
+    { label: 'Legal Compliance', value: '100%', icon: Shield, color: 'blue' },
+    { label: 'Countries Covered', value: '40+', icon: Globe, color: 'green' },
+    { label: 'Response Time', value: '<72h', icon: Clock, color: 'purple' },
+    { label: 'User Trust', value: '4.9/5', icon: Award, color: 'amber' }
+  ];
+
+  const faqData = [
+    {
+      id: 'faq-1',
+      question: 'How do I close my account?',
+      answer: 'You can close your account at any time by visiting your account settings page and selecting "Close Account." Alternatively, you can contact our support team for assistance. Please note that some information may be retained for legal purposes as outlined in our Privacy Policy.'
+    },
+    {
+      id: 'faq-2',
+      question: 'What happens to my data when I delete my account?',
+      answer: 'When you delete your account, your personal information will be removed from our active databases. Some information may be retained for legal, legitimate business purposes, or to prevent fraud as outlined in our Privacy Policy. We comply with all applicable data protection regulations.'
+    },
+    {
+      id: 'faq-3',
+      question: 'Can I download a copy of my data?',
+      answer: 'Yes, you can request a copy of your data from your account settings page or by contacting our support team. We will provide your data in a structured, commonly used, and machine-readable format within 30 days of your request.'
+    },
+    {
+      id: 'faq-4',
+      question: 'How do you handle copyright claims?',
+      answer: 'We respect intellectual property rights and respond to notices of alleged copyright infringement in accordance with the DMCA. Please refer to the DMCA Compliance section in our Terms of Service for the complete process and contact information.'
+    },
+    {
+      id: 'faq-5',
+      question: 'How often do you update the Terms of Service?',
+      answer: 'We update our Terms of Service periodically to reflect changes in our services, legal requirements, or business practices. We\'ll notify you of any material changes at least 30 days before they take effect via email or through a prominent notice on our website.'
+    }
+  ];
+
+  const sectionContent = {
+    use: ['section-1', 'section-3'],
+    account: ['section-2'],
+    content: ['section-4', 'section-5'],
+    liability: ['section-6', 'section-7', 'section-8'],
+    termination: ['section-9', 'section-10', 'section-11']
+  };
 
   const toggleSection = (sectionId) => {
     setOpenSectionId(openSectionId === sectionId ? null : sectionId);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: 0.05,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { 
-        type: 'spring', 
-        stiffness: 100,
-        damping: 12
-      }
-    }
-  };
-
-  const sectionContent = {
-    use: [
-      'section-1',
-      'section-3'
-    ],
-    account: [
-      'section-2'
-    ],
-    content: [
-      'section-4',
-      'section-5'
-    ],
-    liability: [
-      'section-6',
-      'section-7',
-      'section-8'
-    ],
-    termination: [
-      'section-9',
-      'section-10',
-      'section-11'
-    ]
+  const toggleFaq = (faqId) => {
+    setOpenFaqId(openFaqId === faqId ? null : faqId);
   };
 
   const filteredSections = policySections.filter(section => 
@@ -241,217 +273,218 @@ Phone: +1 (555) 123-4567`
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-40">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-12 text-center"
-        >
-          <div className="inline-block mb-5">
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-gray-800 p-4 rounded-full"
-            >
-              <Scale size={40} className="text-blue-400" />
-            </motion.div>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white relative inline-block">
-            Terms of Service
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="absolute -bottom-1 left-0 h-1 bg-blue-500 rounded-full"
-            ></motion.div>
-          </h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-gray-400 text-lg max-w-2xl mx-auto"
-          >
-            Please read these terms carefully before using our services.
-            By using our platform, you agree to be bound by these conditions.
-          </motion.p>
-        </motion.div>
-
-        {/* Legal Info Cards */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
-        >
-          {[
-            { icon: <Mail size={24} />, title: "Legal Contact", content: legalInfo.email, delay: 0 },
-            { icon: <Globe size={24} />, title: "Legal Office", content: legalInfo.location, delay: 0.1 },
-            { icon: <Clock size={24} />, title: "Response Time", content: legalInfo.response, delay: 0.2 },
-            { icon: <FileText size={24} />, title: "Last Updated", content: legalInfo.update, delay: 0.3 }
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + item.delay, duration: 0.5 }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.1)" }}
-              className="bg-gray-800 rounded-xl p-6 border border-gray-700 flex flex-col items-center text-center"
-            >
-              <div className="bg-gray-750 p-3 rounded-full mb-4 text-blue-400">
-                {item.icon}
-              </div>
-              <h3 className="font-medium text-white text-lg mb-2">{item.title}</h3>
-              <p className="text-gray-400 text-sm">{item.content}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Terms Highlights Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.7 }}
-          className="mb-12"
-        >
-          <div className="text-center mb-8">
-            <motion.h3 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="text-2xl font-bold text-white inline-block relative"
-            >
-              Terms Highlights
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: "80%" }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-                className="absolute -bottom-1 left-0 right-0 mx-auto h-1 bg-blue-500 rounded-full"
-              ></motion.div>
-            </motion.h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {termsHighlights.map((highlight, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + (index * 0.1), duration: 0.5 }}
-                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.1)" }}
-                className="bg-gray-800 rounded-xl p-6 border border-gray-700 text-center hover:border-blue-500 transition-all duration-300"
-              >
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.8 + (index * 0.1), duration: 0.5 }}
-                  className="bg-blue-500 bg-opacity-10 p-3 rounded-full mx-auto mb-4 inline-block"
-                >
-                  <span className="text-blue-400">
-                    {highlight.icon}
-                  </span>
-                </motion.div>
-                <h4 className="text-white font-medium text-lg mb-2">{highlight.title}</h4>
-                <p className="text-gray-400 text-sm">{highlight.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Main Terms Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Terms Sections */}
+      
+      <div className="pt-24 md:pt-28">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {/* Enhanced Header */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.7 }}
-            className="lg:col-span-2"
+            transition={{ duration: 0.5 }}
+            className="mb-8"
           >
-            {/* Section Navigation */}
+            <div className="text-center mb-8">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
+              >
+                <Scale className="w-5 h-5 text-amber-400" />
+                <span className="text-amber-400 text-sm font-semibold">Legal Agreement</span>
+              </motion.div>
+              
+              <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
+                Terms of Service
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "280px" }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                  className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
+                />
+              </h2>
+              
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
+              >
+                Please read these terms carefully before using our services. By using our platform, you agree to be bound by these conditions.
+              </motion.p>
+            </div>
+          </motion.div>
+
+          {/* Stats Banner */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + index * 0.1, duration: 0.3 }}
+                    whileHover={{ y: -3 }}
+                    className="text-center"
+                  >
+                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                      <Icon className={`w-6 h-6 text-${stat.color}-400`} />
+                    </div>
+                    <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Legal Info Cards */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+          >
+            {[
+              { icon: Mail, title: "Legal Contact", content: legalInfo.email, color: 'blue', delay: 0 },
+              { icon: Globe, title: "Legal Office", content: legalInfo.location, color: 'purple', delay: 0.1 },
+              { icon: Clock, title: "Response Time", content: legalInfo.response, color: 'green', delay: 0.2 },
+              { icon: FileText, title: "Last Updated", content: legalInfo.update, color: 'amber', delay: 0.3 }
+            ].map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + item.delay, duration: 0.3 }}
+                  whileHover={{ y: -5 }}
+                  className={`bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-${item.color}-500/50 transition-all shadow-lg text-center group`}
+                >
+                  <div className={`inline-flex p-3 bg-${item.color}-500/10 rounded-xl mb-4 border border-${item.color}-500/20 group-hover:scale-110 transition-transform`}>
+                    <Icon className={`w-5 h-5 text-${item.color}-400`} />
+                  </div>
+                  <h3 className="font-medium text-white text-lg mb-2">{item.title}</h3>
+                  <p className={`text-${item.color}-400 text-sm font-medium`}>{item.content}</p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          {/* Terms Highlights */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.5 }}
+            className="bg-gray-800 rounded-2xl p-8 border border-gray-700 shadow-xl mb-8"
+          >
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-white mb-3 flex items-center justify-center">
+                <Zap className="mr-2 text-amber-400" />
+                Terms Highlights
+              </h3>
+              <p className="text-gray-400 max-w-2xl mx-auto">
+                Key aspects of our Terms of Service
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {termsHighlights.map((highlight, index) => {
+                const Icon = highlight.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1 + (index * 0.1), duration: 0.3 }}
+                    whileHover={{ y: -5 }}
+                    className={`bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-${highlight.color}-500/50 transition-all text-center group`}
+                  >
+                    <div className={`inline-flex p-3 bg-${highlight.color}-500/10 rounded-xl mb-4 border border-${highlight.color}-500/20 group-hover:scale-110 transition-transform`}>
+                      <Icon className={`w-6 h-6 text-${highlight.color}-400`} />
+                    </div>
+                    <h4 className="text-white font-medium text-lg mb-2">{highlight.title}</h4>
+                    <p className="text-gray-400 text-sm">{highlight.description}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Terms Content */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.7 }}
-              className="mb-6 overflow-x-auto pb-2 hide-scrollbar"
+              transition={{ delay: 1.1, duration: 0.5 }}
+              className="lg:col-span-2"
             >
-              <div className="flex space-x-2 md:space-x-4">
-                {termsSections.map((section) => (
-                  <motion.button
-                    key={section.id}
-                    whileHover={{ y: -3, backgroundColor: "#1f2937" }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setActiveSection(section.id)}
-                    className={`px-4 py-3 rounded-lg flex items-center whitespace-nowrap transition-all duration-300 ${
-                      activeSection === section.id 
-                        ? "bg-blue-500 text-gray-900 font-medium" 
-                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                    }`}
-                  >
-                    <span className={`mr-2 ${activeSection === section.id ? "text-gray-900" : "text-blue-400"}`}>
-                      {section.icon}
-                    </span>
-                    <span className="text-sm">{section.name}</span>
-                  </motion.button>
-                ))}
+              {/* Category Navigation */}
+              <div className="mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-2">
+                  {termsSections.map((section) => {
+                    const Icon = section.icon;
+                    return (
+                      <motion.button
+                        key={section.id}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setActiveSection(section.id)}
+                        className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
+                          activeSection === section.id 
+                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
+                            : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span className="text-sm">{section.name}</span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
               </div>
-            </motion.div>
 
-            {/* Terms Content */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-            >
-              {/* Decorative elements */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1, duration: 1 }}
-                className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.2, duration: 1 }}
-                className="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-
-              <div className="relative z-10">
-                <motion.h3 
-                  variants={itemVariants}
-                  className="text-xl font-bold text-white mb-6 flex items-center"
-                >
-                  <List className="mr-2 text-blue-400" size={20} />
+              {/* Terms Content */}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl mb-8"
+              >
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <FileText className="mr-2 text-amber-400" size={20} />
                   {termsSections.find(section => section.id === activeSection)?.name || 'Terms of Service'}
-                </motion.h3>
+                </h3>
 
                 <div className="space-y-4">
-                  <AnimatePresence>
-                    {filteredSections.map((section, index) => (
+                  <AnimatePresence mode="wait">
+                    {filteredSections.map((section) => (
                       <motion.div
                         key={section.id}
                         variants={itemVariants}
-                        className="border border-gray-700 rounded-lg overflow-hidden hover:border-blue-500 transition-colors duration-300"
+                        className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
                       >
                         <button
                           onClick={() => toggleSection(section.id)}
-                          className={`w-full p-4 text-left transition-colors duration-300 ${
-                            openSectionId === section.id ? "bg-gray-750" : "hover:bg-gray-750"
+                          className={`w-full p-5 text-left transition-colors flex justify-between items-center ${
+                            openSectionId === section.id ? "bg-gray-900" : "hover:bg-gray-900"
                           }`}
                         >
-                          <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-white text-lg">{section.title}</h4>
-                            <motion.span
-                              animate={{ rotate: openSectionId === section.id ? 180 : 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="text-blue-400 flex-shrink-0"
-                            >
-                              <ChevronDown size={18} />
-                            </motion.span>
-                          </div>
+                          <h4 className="font-medium text-white text-lg pr-2">{section.title}</h4>
+                          <ChevronDown 
+                            className={`w-5 h-5 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
+                              openSectionId === section.id ? 'rotate-180' : ''
+                            }`}
+                          />
                         </button>
                         
                         <AnimatePresence>
@@ -463,7 +496,7 @@ Phone: +1 (555) 123-4567`
                               transition={{ duration: 0.3 }}
                               className="overflow-hidden"
                             >
-                              <div className="p-4 md:p-5 text-gray-300 bg-gray-750 border-t border-gray-700 whitespace-pre-line">
+                              <div className="p-5 text-gray-300 bg-gray-900 border-t border-gray-700 whitespace-pre-line leading-relaxed">
                                 {section.content}
                               </div>
                             </motion.div>
@@ -473,273 +506,224 @@ Phone: +1 (555) 123-4567`
                     ))}
                   </AnimatePresence>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
 
-            {/* Dispute Resolution Section */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.7 }}
-              className="mt-8 bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-            >
-              {/* Decorative elements */}
+              {/* Dispute Resolution Process */}
               <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.3, duration: 1 }}
-                className="absolute -left-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-
-              <div className="relative z-10">
-                <motion.h3 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1, duration: 0.5 }}
-                  className="text-xl font-bold text-white mb-4 flex items-center"
-                >
-                  <Server className="mr-2 text-blue-400" size={20} />
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.2, duration: 0.5 }}
+                className="bg-gray-800 rounded-2xl p-6 lg:p-8 border border-gray-700 shadow-xl"
+              >
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                  <Server className="mr-2 text-amber-400" size={20} />
                   Dispute Resolution Process
-                </motion.h3>
+                </h3>
 
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.1, duration: 0.5 }}
-                  className="text-gray-400 mb-6"
-                >
+                <p className="text-gray-400 mb-6">
                   Our streamlined process for resolving any disputes that may arise during your use of our services.
-                </motion.p>
+                </p>
 
                 <div className="space-y-4">
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.2, duration: 0.5 }}
-                    className="bg-gray-750 p-4 rounded-lg border-l-4 border-blue-500"
-                  >
-                    <h4 className="text-white font-medium mb-2">1. Direct Communication</h4>
-                    <p className="text-gray-400 text-sm">Before initiating formal procedures, please contact our customer service team to address any concerns or misunderstandings.</p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.3, duration: 0.5 }}
-                    className="bg-gray-750 p-4 rounded-lg border-l-4 border-blue-500"
-                  >
-                    <h4 className="text-white font-medium mb-2">2. Formal Complaint</h4>
-                    <p className="text-gray-400 text-sm">If the issue remains unresolved, submit a formal complaint to legal@solecraft.com with all relevant details and documentation.</p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.4, duration: 0.5 }}
-                    className="bg-gray-750 p-4 rounded-lg border-l-4 border-blue-500"
-                  >
-                    <h4 className="text-white font-medium mb-2">3. Mediation Process</h4>
-                    <p className="text-gray-400 text-sm">If we cannot resolve the dispute directly, we offer a mediation service with a neutral third party to help reach a mutually acceptable solution.</p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.5, duration: 0.5 }}
-                    className="bg-gray-750 p-4 rounded-lg border-l-4 border-blue-500"
-                  >
-                    <h4 className="text-white font-medium mb-2">4. Binding Arbitration</h4>
-                    <p className="text-gray-400 text-sm">As a final step, disputes will be resolved through binding arbitration in accordance with the rules specified in our Terms of Service.</p>
-                  </motion.div>
+                  {[
+                    {
+                      title: '1. Direct Communication',
+                      description: 'Before initiating formal procedures, please contact our customer service team to address any concerns or misunderstandings.',
+                      color: 'blue'
+                    },
+                    {
+                      title: '2. Formal Complaint',
+                      description: 'If the issue remains unresolved, submit a formal complaint to legal@solecraft.com with all relevant details and documentation.',
+                      color: 'purple'
+                    },
+                    {
+                      title: '3. Mediation Process',
+                      description: 'If we cannot resolve the dispute directly, we offer a mediation service with a neutral third party to help reach a mutually acceptable solution.',
+                      color: 'green'
+                    },
+                    {
+                      title: '4. Binding Arbitration',
+                      description: 'As a final step, disputes will be resolved through binding arbitration in accordance with the rules specified in our Terms of Service.',
+                      color: 'amber'
+                    }
+                  ].map((step, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 1.3 + (index * 0.1), duration: 0.3 }}
+                      className={`bg-gray-900 p-5 rounded-xl border-l-4 border-${step.color}-500`}
+                    >
+                      <h4 className="text-white font-medium mb-2">{step.title}</h4>
+                      <p className="text-gray-400 text-sm">{step.description}</p>
+                    </motion.div>
+                  ))}
                 </div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.6, duration: 0.5 }}
-                  className="flex justify-end mt-6"
-                >
+                <div className="flex justify-end mt-6">
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className="bg-blue-500 text-gray-900 py-2 px-5 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg flex items-center"
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 py-3 px-6 rounded-xl font-bold shadow-lg shadow-amber-500/20 flex items-center gap-2 transition-colors"
                   >
-                    <Mail size={18} className="mr-2" />
+                    <Mail size={18} />
                     Contact Legal Team
                   </motion.button>
-                </motion.div>
-              </div>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
 
-          {/* FAQ Section */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.7 }}
-            className="lg:col-span-1"
-          >
-            <div className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden h-full">
-              {/* Decorative elements */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ delay: 1.1, duration: 1 }}
-                className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-              />
-
-              <div className="relative z-10">
-                <motion.h3 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
-                  className="text-xl font-bold text-white mb-4 flex items-center"
-                >
-                  <HelpCircle className="mr-2 text-blue-400" size={20} />
+            {/* FAQ Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.3, duration: 0.5 }}
+              className="lg:col-span-1"
+            >
+              <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl sticky top-24">
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <HelpCircle className="mr-2 text-amber-400" size={20} />
                   Frequently Asked Questions
-                </motion.h3>
+                </h3>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9, duration: 0.5 }}
-                  className="space-y-6"
-                >
-                  <div>
-                    <h4 className="text-white font-medium mb-2">How do I close my account?</h4>
-                    <p className="text-gray-400 text-sm">You can close your account at any time by visiting your account settings page and selecting "Close Account." Alternatively, you can contact our support team for assistance.</p>
-                  </div>
+                <div className="space-y-3">
+                  {faqData.map((faq) => (
+                    <div
+                      key={faq.id}
+                      className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
+                    >
+                      <button
+                        onClick={() => toggleFaq(faq.id)}
+                        className={`w-full p-4 text-left transition-colors flex justify-between items-center ${
+                          openFaqId === faq.id ? "bg-gray-900" : "hover:bg-gray-900"
+                        }`}
+                      >
+                        <span className="font-medium text-white text-sm pr-2">{faq.question}</span>
+                        <ChevronDown 
+                          className={`w-4 h-4 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
+                            openFaqId === faq.id ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                      
+                      <AnimatePresence>
+                        {openFaqId === faq.id && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="p-4 text-gray-400 text-sm bg-gray-900 border-t border-gray-700">
+                              {faq.answer}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ))}
+                </div>
 
-                  <div>
-                    <h4 className="text-white font-medium mb-2">What happens to my data when I delete my account?</h4>
-                    <p className="text-gray-400 text-sm">When you delete your account, your personal information will be removed from our active databases. Some information may be retained for legal, legitimate business purposes, or to prevent fraud as outlined in our Privacy Policy.</p>
-                  </div>
-
-                  <div>
-                    <h4 className="text-white font-medium mb-2">Can I download a copy of my data?</h4>
-                    <p className="text-gray-400 text-sm">Yes, you can request a copy of your data from your account settings page or by contacting our support team. We will provide your data in a structured, commonly used, and machine-readable format.</p>
-                  </div>
-
-                  <div>
-                    <h4 className="text-white font-medium mb-2">How do you handle copyright claims?</h4>
-                    <p className="text-gray-400 text-sm">We respect intellectual property rights and respond to notices of alleged copyright infringement. Please refer to the DMCA Compliance section in our Terms of Service for the complete process.</p>
-                  </div>
-
-                  <div>
-                    <h4 className="text-white font-medium mb-2">How often do you update the Terms of Service?</h4>
-                    <p className="text-gray-400 text-sm">We update our Terms of Service periodically to reflect changes in our services, legal requirements, or business practices. We'll notify you of any material changes at least 30 days before they take effect.</p>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.0, duration: 0.5 }}
-                  className="mt-8 bg-gray-750 p-5 rounded-lg border border-gray-700"
-                >
-                  <h4 className="text-white font-medium mb-3 flex items-center">
-                    <AlertTriangle size={18} className="mr-2 text-yellow-500" />
+                <div className="mt-6 p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                  <h4 className="font-medium text-white mb-2 text-sm flex items-center">
+                    <AlertTriangle size={16} className="mr-2 text-amber-400" />
                     Need More Help?
                   </h4>
-                  <p className="text-gray-400 text-sm mb-4">Can't find the answer you're looking for? Our legal team is here to help with any questions about our Terms of Service.</p>
+                  <p className="text-gray-400 text-xs mb-4">
+                    Can't find the answer you're looking for? Our legal team is here to help with any questions about our Terms of Service.
+                  </p>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className="bg-gray-700 hover:bg-gray-650 text-white py-2 px-4 rounded-lg text-sm flex items-center transition-colors duration-300 w-full justify-center"
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 py-2 px-4 rounded-xl font-medium transition-colors w-full flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
                   >
-                    <HelpCircle size={16} className="mr-2" />
+                    <MessageSquare size={16} />
                     Contact Support
                   </motion.button>
-                </motion.div>
+                </div>
 
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.2, duration: 0.8 }}
-                  className="mt-8 pt-6 border-t border-gray-700"
-                >
-                  <div className="flex items-center justify-between">
+                <div className="mt-6 pt-6 border-t border-gray-700">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center">
-                      <Bell size={18} className="text-blue-400 mr-2" />
+                      <Bell size={18} className="text-amber-400 mr-2" />
                       <span className="text-sm text-gray-400">Stay Updated</span>
                     </div>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="text-sm text-blue-400 hover:text-blue-300 transition-colors duration-300"
+                      className="text-sm text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1"
                     >
-                      Subscribe
+                      <span>Subscribe</span>
+                      <ExternalLink size={14} />
                     </motion.button>
                   </div>
-                </motion.div>
+                  <p className="text-gray-500 text-xs">
+                    Get notified about updates to our Terms of Service
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Acceptance Banner */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4, duration: 0.5 }}
+            className="mt-8 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute inset-0">
+              <motion.div 
+                animate={{ 
+                  x: [-100, 100, -100],
+                  opacity: [0.1, 0.2, 0.1]
+                }}
+                transition={{ 
+                  duration: 10, 
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+              />
+            </div>
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="text-center md:text-left">
+                <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
+                  <CheckCircle className="w-4 h-4 text-white" />
+                  <span className="text-white text-sm font-semibold">Legal Agreement</span>
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-2">
+                  Accept Our Terms of Service
+                </h3>
+                <p className="text-gray-800 text-lg">
+                  By using our services, you agree to be bound by these terms.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-gray-900 text-amber-400 px-6 py-3 rounded-xl font-bold shadow-xl flex items-center justify-center gap-2 whitespace-nowrap hover:bg-gray-800 transition-colors"
+                >
+                  <CheckCircle className="w-5 h-5" />
+                  <span>Accept Terms</span>
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-white/95 backdrop-blur-sm text-gray-900 px-6 py-3 rounded-xl font-bold shadow-xl flex items-center justify-center gap-2 whitespace-nowrap hover:bg-white transition-colors"
+                >
+                  <FileText className="w-5 h-5" />
+                  <span>Learn More</span>
+                </motion.button>
               </div>
             </div>
           </motion.div>
-        </div>
-
-        {/* Acceptance Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.7 }}
-          className="mt-12 bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl p-8 shadow-xl relative overflow-hidden"
-        >
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.1 }}
-            transition={{ delay: 1.2, duration: 1 }}
-            className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-white"
-          />
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.1 }}
-            transition={{ delay: 1.3, duration: 1 }}
-            className="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-white"
-          />
-
-          <div className="relative z-10 text-center md:text-left md:flex md:items-center md:justify-between">
-            <div className="mb-6 md:mb-0">
-              <motion.h3 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.1, duration: 0.5 }}
-                className="text-2xl font-bold text-white mb-2"
-              >
-                Accept Our Terms of Service
-              </motion.h3>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-                className="text-blue-100"
-              >
-                By using our services, you agree to be bound by these terms.
-              </motion.p>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.3, duration: 0.5 }}
-              className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-center md:justify-end"
-            >
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="bg-white text-blue-600 py-3 px-6 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-300 shadow-lg"
-              >
-                Accept Terms
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="bg-transparent text-white py-3 px-6 rounded-lg font-medium border border-white hover:bg-white hover:bg-opacity-10 transition-colors duration-300"
-              >
-                Learn More
-              </motion.button>
-            </motion.div>
-          </div>
-        </motion.div>
+        </main>
       </div>
+      
       <Footer />
     </div>
   );

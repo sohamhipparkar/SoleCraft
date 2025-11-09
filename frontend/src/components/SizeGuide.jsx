@@ -1,8 +1,51 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Ruler, Shirt, ShoppingBag, Footprints, User, File, HelpCircle, MessageSquare, FileText } from 'lucide-react';
+import { 
+  ChevronDown, 
+  Ruler, 
+  Shirt, 
+  ShoppingBag, 
+  Footprints, 
+  User, 
+  HelpCircle, 
+  MessageSquare, 
+  FileText,
+  Star,
+  CheckCircle,
+  TrendingUp,
+  Award,
+  Zap,
+  Video,
+  Download,
+  ArrowRight,
+  Package
+} from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
 
 export default function SizeGuideComponent() {
   const [activeCategory, setActiveCategory] = useState('apparel');
@@ -481,32 +524,6 @@ export default function SizeGuideComponent() {
             "Hand length is measured from the wrist crease to the tip of your middle finger.",
             "For winter gloves, consider sizing up if you plan to wear liners underneath."
           ]
-        },
-        {
-          id: 'accessories-4',
-          title: 'Scarves & Neckwear',
-          content: {
-            headers: ['Type', 'Standard Length (in)', 'Standard Width (in)', 'Notes'],
-            inches: [
-              ['Winter Scarf', '60-80', '8-12', 'Longer for multiple wraps'],
-              ['Fashion Scarf', '40-60', '6-10', 'Lighter material, decorative'],
-              ['Infinity Scarf', '50-70 (circumference)', '8-12', 'Continuous loop design'],
-              ['Necktie', '52-58', '2.5-3.5', 'Standard width at widest point'],
-              ['Bow Tie', 'One Size (adjustable)', '2-3', 'Pre-tied or self-tie available']
-            ],
-            cm: [
-              ['Winter Scarf', '152-203', '20-30', 'Longer for multiple wraps'],
-              ['Fashion Scarf', '102-152', '15-25', 'Lighter material, decorative'],
-              ['Infinity Scarf', '127-178 (circumference)', '20-30', 'Continuous loop design'],
-              ['Necktie', '132-147', '6-9', 'Standard width at widest point'],
-              ['Bow Tie', 'One Size (adjustable)', '5-8', 'Pre-tied or self-tie available']
-            ]
-          },
-          measurementTips: [
-            "Most scarves come in standard sizes, but lengths may vary by style and intended use.",
-            "For winter scarves, longer lengths (70+ inches) allow for multiple wrapping styles.",
-            "Square scarves typically range from 16-36 inches per side, with larger sizes offering more styling options."
-          ]
         }
       ]
     },
@@ -602,10 +619,10 @@ export default function SizeGuideComponent() {
   };
 
   const categories = [
-    { id: 'apparel', icon: <Shirt />, name: 'Apparel' },
-    { id: 'footwear', icon: <Footprints />, name: 'Footwear' },
-    { id: 'accessories', icon: <ShoppingBag />, name: 'Accessories' },
-    { id: 'outerwear', icon: <User />, name: 'Outerwear' }
+    { id: 'apparel', icon: Shirt, name: 'Apparel', color: 'blue' },
+    { id: 'footwear', icon: Footprints, name: 'Footwear', color: 'purple' },
+    { id: 'accessories', icon: ShoppingBag, name: 'Accessories', color: 'green' },
+    { id: 'outerwear', icon: User, name: 'Outerwear', color: 'amber' }
   ];
 
   const measurementTypeLabels = {
@@ -616,369 +633,415 @@ export default function SizeGuideComponent() {
     inches: 'Inches',
     cm: 'Centimeters'
   };
+
+  const stats = [
+    { label: 'Size Satisfaction', value: '95%', icon: Star, color: 'amber' },
+    { label: 'Free Exchanges', value: 'Always', icon: CheckCircle, color: 'green' },
+    { label: 'Fit Rating', value: '4.8/5', icon: TrendingUp, color: 'blue' },
+    { label: 'Size Options', value: '120+', icon: Package, color: 'purple' }
+  ];
+
+  const fitGuarantees = [
+    {
+      icon: Award,
+      title: 'Perfect Fit Guarantee',
+      description: 'Free exchanges until you find your perfect size',
+      color: 'blue'
+    },
+    {
+      icon: Ruler,
+      title: 'Accurate Measurements',
+      description: 'Detailed size charts for every product',
+      color: 'purple'
+    },
+    {
+      icon: CheckCircle,
+      title: 'Quality Assurance',
+      description: 'Consistent sizing across all products',
+      color: 'green'
+    },
+    {
+      icon: Zap,
+      title: 'Quick Exchanges',
+      description: 'Fast processing for size exchanges',
+      color: 'amber'
+    }
+  ];
+
   const toggleGuide = (guideId) => {
     setOpenGuideId(openGuideId === guideId ? null : guideId);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: 0.05,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { 
-        type: 'spring', 
-        stiffness: 100,
-        damping: 12
-      }
-    }
+  // Get the current category icon
+  const getCurrentCategoryIcon = () => {
+    const category = categories.find(c => c.id === activeCategory);
+    if (!category) return null;
+    const Icon = category.icon;
+    return <Icon className="mr-2 text-amber-400" size={24} />;
   };
 
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-40">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-12 text-center"
-        >
-          <div className="inline-block mb-5">
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-gray-800 p-4 rounded-full"
-            >
-              <Ruler size={40} className="text-blue-400" />
-            </motion.div>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white relative inline-block">
-            Size Guide
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="absolute -bottom-1 left-0 h-1 bg-blue-500 rounded-full"
-            ></motion.div>
-          </h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-gray-400 text-lg max-w-2xl mx-auto"
-          >
-            Find your perfect fit with our detailed size charts and measurement guides for all product categories.
-          </motion.p>
-        </motion.div>
-
-        {/* Category Navigation */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.7 }}
-          className="mb-10 overflow-x-auto pb-2 hide-scrollbar"
-        >
-          <div className="flex space-x-2 md:space-x-4 justify-center">
-            {categories.map((category) => (
-              <motion.button
-                key={category.id}
-                whileHover={{ y: -3, backgroundColor: "#1f2937" }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveCategory(category.id)}
-                className={`px-4 py-3 rounded-lg flex items-center whitespace-nowrap transition-all duration-300 ${
-                  activeCategory === category.id 
-                    ? "bg-blue-500 text-gray-900 font-medium" 
-                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                }`}
-              >
-                <span className={`mr-2 ${activeCategory === category.id ? "text-gray-900" : "text-blue-400"}`}>
-                  {category.icon}
-                </span>
-                <span>{category.name}</span>
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Category Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="mb-8"
-        >
-          <h3 className="text-2xl font-bold text-white mb-2">{sizeGuideData[activeCategory].title}</h3>
-          <p className="text-gray-400">{sizeGuideData[activeCategory].description}</p>
-          
-          {/* Measurement Type Selector */}
-          <div className="mt-4 bg-gray-800 inline-flex rounded-lg p-1">
-            {sizeGuideData[activeCategory].measurementTypes.map((type) => (
-              <button
-                key={type}
-                onClick={() => setActiveMeasurementType(type)}
-                className={`py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  activeMeasurementType === type 
-                    ? "bg-blue-500 text-gray-900" 
-                    : "text-gray-400 hover:text-white"
-                }`}
-              >
-                {measurementTypeLabels[type]}
-              </button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Size Guide Content */}
-        <motion.div 
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="bg-gray-800 rounded-xl p-6 lg:p-8 border border-gray-700 shadow-lg relative overflow-hidden"
-        >
-          {/* Decorative elements */}
+      
+      <div className="pt-24 md:pt-28">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {/* Enhanced Header */}
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.03 }}
-            transition={{ delay: 1, duration: 1 }}
-            className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"
-          />
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.03 }}
-            transition={{ delay: 1.2, duration: 1 }}
-            className="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-blue-500"
-          />
-
-          <div className="relative z-10 space-y-4">
-            {sizeGuideData[activeCategory].guides.map((guide, index) => (
-              <motion.div
-                key={guide.id}
-                variants={itemVariants}
-                initial="hidden"
-                animate="visible"
-                custom={index}
-                className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800"
-              >
-                <button
-                  onClick={() => toggleGuide(guide.id)}
-                  className={`w-full p-4 text-left flex justify-between items-center transition-colors duration-300 ${
-                    openGuideId === guide.id ? "bg-gray-700" : "hover:bg-gray-750"
-                  }`}
-                >
-                  <span className="font-medium text-white">{guide.title}</span>
-                  <motion.span
-                    animate={{ rotate: openGuideId === guide.id ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-blue-400 flex-shrink-0 ml-2"
-                  >
-                    <ChevronDown size={20} />
-                  </motion.span>
-                </button>
-                
-                <AnimatePresence>
-                  {openGuideId === guide.id && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="p-4 pt-2 bg-gray-800 border-t border-gray-700">
-                        {/* Size Table */}
-                        <div className="overflow-x-auto">
-                          <table className="min-w-full text-sm">
-                            <thead>
-                              <tr>
-                                {guide.content.headers.map((header, idx) => (
-                                  <th key={idx} className="px-4 py-2 text-left text-gray-400 font-medium">
-                                    {header}
-                                  </th>
-                                ))}
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-700">
-                              {guide.content[activeMeasurementType].map((row, rowIdx) => (
-                                <tr key={rowIdx} className="hover:bg-gray-750">
-                                  {row.map((cell, cellIdx) => (
-                                    <td 
-                                      key={cellIdx} 
-                                      className={`px-4 py-3 ${cellIdx === 0 ? 'font-medium text-white' : 'text-gray-300'}`}
-                                    >
-                                      {cell}
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                        
-                        {/* Measurement Tips */}
-                        <div className="mt-4 bg-gray-750 p-4 rounded-lg border border-gray-700">
-                          <div className="flex items-center mb-2">
-                            <Ruler size={16} className="text-blue-400 mr-2" />
-                            <h4 className="font-medium text-white">Measurement Tips</h4>
-                          </div>
-                          <ul className="space-y-2">
-                            {guide.measurementTips.map((tip, index) => (
-                              <li key={index} className="flex items-start">
-                                <span className="text-blue-400 mr-2 mt-1">•</span>
-                                <span className="text-gray-300 text-sm">{tip}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* How to Measure Banner */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.7 }}
-          className="mt-12 bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center relative overflow-hidden"
-        >
-          {/* Animated gradient overlay */}
-          <motion.div 
-            animate={{ 
-              x: [-100, 100],
-              opacity: [0.1, 0.3, 0.1]
-            }}
-            transition={{ 
-              duration: 8, 
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
-            style={{ backgroundSize: "200% 100%" }}
-          />
-          
-          <div className="relative z-10 text-center md:text-left mb-4 md:mb-0">
-            <motion.h3 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="font-bold text-xl mb-2 text-gray-900"
-            >
-              Not Sure How to Measure?
-            </motion.h3>
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-              className="text-gray-800"
-            >
-              Watch our step-by-step video guide on how to take accurate body measurements at home.
-            </motion.p>
-          </div>
-          <motion.button 
-            whileHover={{ scale: 1.05, backgroundColor: "#111827" }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-            className="bg-gray-900 text-blue-400 py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-300 shadow-lg relative z-10 flex items-center"
+            transition={{ duration: 0.5 }}
+            className="mb-8"
           >
-            <FileText className="mr-2" size={18} />
-            Measurement Guide
-          </motion.button>
-        </motion.div>
-
-        {/* Help Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.7 }}
-          className="mt-8 bg-gray-800 rounded-xl p-6 shadow-lg flex flex-col md:flex-row justify-between items-center border border-gray-700"
-        >
-          <div className="relative z-10 text-center md:text-left mb-4 md:mb-0 flex items-center">
-            <HelpCircle size={24} className="text-blue-400 mr-3 hidden md:block" />
-            <div>
-              <motion.h3 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.5 }}
-                className="font-bold text-xl mb-2 text-white"
+            <div className="text-center mb-8">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
               >
-                Still Unsure About Sizing?
-              </motion.h3>
+                <Ruler className="w-5 h-5 text-amber-400" />
+                <span className="text-amber-400 text-sm font-semibold">Find Your Perfect Fit</span>
+              </motion.div>
+              
+              <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
+                Size Guide
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "160px" }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                  className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
+                />
+              </h2>
+              
               <motion.p 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.1, duration: 0.5 }}
-                className="text-gray-400"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
               >
-                Our fit specialists can help you find the perfect size for your body type.
+                Find your perfect fit with our detailed size charts and measurement guides for all product categories.
               </motion.p>
             </div>
-          </div>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 10 }}
+          </motion.div>
+
+          {/* Stats Banner */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + index * 0.1, duration: 0.3 }}
+                    whileHover={{ y: -3 }}
+                    className="text-center"
+                  >
+                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                      <Icon className={`w-6 h-6 text-${stat.color}-400`} />
+                    </div>
+                    <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Fit Guarantees */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+          >
+            {fitGuarantees.map((guarantee, index) => {
+              const Icon = guarantee.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + (index * 0.1), duration: 0.3 }}
+                  whileHover={{ y: -5 }}
+                  className={`bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-${guarantee.color}-500/50 transition-all shadow-lg text-center group`}
+                >
+                  <div className={`inline-flex p-3 bg-${guarantee.color}-500/10 rounded-xl mb-4 border border-${guarantee.color}-500/20 group-hover:scale-110 transition-transform`}>
+                    <Icon className={`w-6 h-6 text-${guarantee.color}-400`} />
+                  </div>
+                  <h3 className="font-medium text-white text-lg mb-2">{guarantee.title}</h3>
+                  <p className="text-gray-400 text-sm">{guarantee.description}</p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          {/* Category Navigation */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.5 }}
+            className="mb-6 overflow-x-auto pb-2 scrollbar-hide"
+          >
+            <div className="flex gap-2">
+              {categories.map((category) => {
+                const Icon = category.icon;
+                return (
+                  <motion.button
+                    key={category.id}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setActiveCategory(category.id)}
+                    className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
+                      activeCategory === category.id 
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
+                        : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-sm">{category.name}</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Category Header & Measurement Type Selector */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.5 }}
+            className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl mb-6"
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2 flex items-center">
+                  {getCurrentCategoryIcon()}
+                  {sizeGuideData[activeCategory].title}
+                </h3>
+                <p className="text-gray-400">{sizeGuideData[activeCategory].description}</p>
+              </div>
+              
+              <div className="bg-gray-900 inline-flex rounded-xl p-1 border border-gray-700">
+                {sizeGuideData[activeCategory].measurementTypes.map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setActiveMeasurementType(type)}
+                    className={`py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                      activeMeasurementType === type 
+                        ? "bg-amber-500 text-gray-900 shadow-lg" 
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    {measurementTypeLabels[type]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Size Charts */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-4 mb-8"
+          >
+            <AnimatePresence mode="wait">
+              {sizeGuideData[activeCategory].guides.map((guide) => (
+                <motion.div
+                  key={guide.id}
+                  variants={itemVariants}
+                  className="border border-gray-700 rounded-xl overflow-hidden bg-gray-800 hover:border-amber-500/50 transition-colors"
+                >
+                  <button
+                    onClick={() => toggleGuide(guide.id)}
+                    className={`w-full p-5 text-left transition-colors flex justify-between items-center ${
+                      openGuideId === guide.id ? "bg-gray-900" : "hover:bg-gray-900"
+                    }`}
+                  >
+                    <span className="font-medium text-white text-lg">{guide.title}</span>
+                    <ChevronDown 
+                      className={`w-5 h-5 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
+                        openGuideId === guide.id ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {openGuideId === guide.id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="p-6 bg-gray-900 border-t border-gray-700">
+                          {/* Size Table */}
+                          <div className="overflow-x-auto mb-6">
+                            <table className="min-w-full">
+                              <thead>
+                                <tr className="border-b border-gray-700">
+                                  {guide.content.headers.map((header, idx) => (
+                                    <th key={idx} className="px-4 py-3 text-left text-amber-400 font-semibold">
+                                      {header}
+                                    </th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-gray-700">
+                                {guide.content[activeMeasurementType].map((row, rowIdx) => (
+                                  <tr key={rowIdx} className="hover:bg-gray-800 transition-colors">
+                                    {row.map((cell, cellIdx) => (
+                                      <td 
+                                        key={cellIdx} 
+                                        className={`px-4 py-3 ${cellIdx === 0 ? 'font-semibold text-white' : 'text-gray-300'}`}
+                                      >
+                                        {cell}
+                                      </td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          
+                          {/* Measurement Tips */}
+                          <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
+                            <div className="flex items-center mb-4">
+                              <div className="p-2 bg-amber-500/10 rounded-lg border border-amber-500/20 mr-3">
+                                <Ruler size={18} className="text-amber-400" />
+                              </div>
+                              <h4 className="font-semibold text-white text-lg">Measurement Tips</h4>
+                            </div>
+                            <ul className="space-y-3">
+                              {guide.measurementTips.map((tip, index) => (
+                                <li key={index} className="flex items-start">
+                                  <CheckCircle className="w-5 h-5 text-amber-400 mr-3 flex-shrink-0 mt-0.5" />
+                                  <span className="text-gray-300">{tip}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+
+          {/* Measurement Guide Banner */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1, duration: 0.5 }}
+            className="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 mb-8 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute inset-0">
+              <motion.div 
+                animate={{ 
+                  x: [-100, 100, -100],
+                  opacity: [0.1, 0.2, 0.1]
+                }}
+                transition={{ 
+                  duration: 10, 
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+              />
+            </div>
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="text-center md:text-left">
+                <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
+                  <Video className="w-4 h-4 text-white" />
+                  <span className="text-white text-sm font-semibold">Video Tutorial Available</span>
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-2">
+                  Not Sure How to Measure?
+                </h3>
+                <p className="text-gray-800 text-lg">
+                  Watch our step-by-step video guide on how to take accurate body measurements at home.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <motion.button 
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-gray-900 text-amber-400 px-6 py-3 rounded-xl font-bold shadow-xl flex items-center justify-center gap-2 whitespace-nowrap hover:bg-gray-800 transition-colors"
+                >
+                  <Video className="w-5 h-5" />
+                  <span>Watch Video</span>
+                </motion.button>
+                <motion.button 
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-white/95 backdrop-blur-sm text-gray-900 px-6 py-3 rounded-xl font-bold shadow-xl flex items-center justify-center gap-2 whitespace-nowrap hover:bg-white transition-colors"
+                >
+                  <Download className="w-5 h-5" />
+                  <span>Download PDF</span>
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Help Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.5 }}
-            className="bg-blue-500 text-gray-900 py-3 px-6 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-300 shadow-lg relative z-10 flex items-center"
+            className="bg-gray-800 rounded-2xl p-6 lg:p-8 shadow-xl border border-gray-700"
           >
-            <MessageSquare className="mr-2" size={18} />
-            Contact Fit Expert
-          </motion.button>
-        </motion.div>
-
-        {/* Size Facts */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.3, duration: 0.5 }}
-          className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4"
-        >
-          {[
-            { label: "Size Satisfaction", value: "95%", delay: 0 },
-            { label: "Free Exchanges", value: "Always", delay: 0.1 },
-            { label: "Size Types", value: "Regular/Petite/Tall", delay: 0.2 },
-            { label: "True to Size Rating", value: "4.8/5", delay: 0.3 }
-          ].map((stat, index) => (
-            <motion.div 
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4 + stat.delay, duration: 0.5 }}
-              whileHover={{ y: -5 }}
-              className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-center"
-            >
-              <motion.p 
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 1.5 + stat.delay, duration: 0.5 }}
-                className="text-xl md:text-2xl font-bold text-blue-400"
-              >
-                {stat.value}
-              </motion.p>
-              <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                  <HelpCircle className="w-6 h-6 text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    Still Unsure About Sizing?
+                  </h3>
+                  <p className="text-gray-400 text-lg">
+                    Our fit specialists can help you find the perfect size for your body type.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <motion.button 
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 px-6 py-3 rounded-xl font-bold shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 whitespace-nowrap transition-colors"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  <span>Contact Expert</span>
+                </motion.button>
+                <motion.button 
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 whitespace-nowrap transition-colors"
+                >
+                  <FileText className="w-5 h-5" />
+                  <span>Size FAQ</span>
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        </main>
       </div>
+      
       <Footer />
     </div>
   );
