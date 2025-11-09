@@ -307,7 +307,7 @@ export default function FAQComponent() {
                 Frequently Asked Questions
                 <motion.div 
                   initial={{ width: 0 }}
-                  animate={{ width: "320px" }}
+                  animate={{ width: "470px" }}
                   transition={{ delay: 0.3, duration: 0.8 }}
                   className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
                 />
