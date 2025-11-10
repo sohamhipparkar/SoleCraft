@@ -76,7 +76,7 @@ export default function PrivacyPolicyComponent() {
 
   const dpoInfo = {
     email: 'privacy@solecraft.com',
-    location: 'New York, NY',
+    location: 'Pune, India',
     response: 'Within 48 hours',
     update: 'Last updated: April 15, 2025'
   };

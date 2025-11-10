@@ -6,20 +6,15 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 
-// Load environment variables
 dotenv.config();
 
-// Initialize Express app
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(cors());
 
-// Serve static files from public/images directory
 app.use("/images", express.static(path.join(__dirname, "public", "images")));
 
-// MongoDB Connection
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/solecraft";
 const JWT_SECRET =
@@ -34,7 +29,6 @@ mongoose
   .then(() => console.log("✅ MongoDB Connected Successfully"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// User Schema
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -81,7 +75,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// Hash password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -94,14 +87,12 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-// Method to compare password
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
 const User = mongoose.model("User", userSchema);
 
-// Middleware to verify JWT token
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
@@ -119,9 +110,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// ==================== NEW SCHEMAS ====================
-
-// Shoe Schema
 const shoeSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -201,7 +189,6 @@ const shoeSchema = new mongoose.Schema({
 
 const Shoe = mongoose.model("Shoe", shoeSchema);
 
-// Order Schema
 const orderSchema = new mongoose.Schema({
   orderId: {
     type: String,
@@ -287,7 +274,6 @@ const orderSchema = new mongoose.Schema({
 
 const Order = mongoose.model("Order", orderSchema);
 
-// Wishlist/Favorites Schema
 const wishlistSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -309,7 +295,6 @@ wishlistSchema.index({ userId: 1, shoeId: 1 }, { unique: true });
 
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 
-// Newsletter Subscription Schema
 const subscriptionSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -330,9 +315,6 @@ const subscriptionSchema = new mongoose.Schema({
 
 const Subscription = mongoose.model("Subscription", subscriptionSchema);
 
-// ==================== SERVICE SCHEMAS ====================
-
-// Service Schema
 const serviceSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -390,7 +372,6 @@ const serviceSchema = new mongoose.Schema({
 
 const Service = mongoose.model("Service", serviceSchema);
 
-// Service Booking Schema
 const serviceBookingSchema = new mongoose.Schema({
   bookingId: {
     type: String,
@@ -482,7 +463,6 @@ const serviceBookingSchema = new mongoose.Schema({
 
 const ServiceBooking = mongoose.model("ServiceBooking", serviceBookingSchema);
 
-// Service Review Schema
 const serviceReviewSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -523,9 +503,6 @@ const serviceReviewSchema = new mongoose.Schema({
 
 const ServiceReview = mongoose.model("ServiceReview", serviceReviewSchema);
 
-// ==================== SHOP/PRODUCT ROUTES ====================
-
-// Product Schema (for shop items - different from resell shoes)
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -615,7 +592,6 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", productSchema);
 
-// Cart Schema
 const cartSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -659,7 +635,6 @@ const cartSchema = new mongoose.Schema({
 
 const Cart = mongoose.model("Cart", cartSchema);
 
-// Product Wishlist Schema (separate from resell wishlist)
 const productWishlistSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -684,7 +659,6 @@ const ProductWishlist = mongoose.model(
   productWishlistSchema
 );
 
-// Shop Order Schema
 const shopOrderSchema = new mongoose.Schema({
   orderId: {
     type: String,
@@ -795,9 +769,6 @@ const shopOrderSchema = new mongoose.Schema({
 
 const ShopOrder = mongoose.model("ShopOrder", shopOrderSchema);
 
-// ==================== ROUTES ====================
-
-// Health Check Route
 app.get("/", (req, res) => {
   res.json({
     message: "SoleCraft API Server Running",
@@ -806,12 +777,10 @@ app.get("/", (req, res) => {
   });
 });
 
-// Register Route
 app.post("/api/auth/register", async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
 
-    // Validation checks
     if (!name || !email || !phone || !password) {
       return res.status(400).json({
         success: false,
@@ -827,7 +796,6 @@ app.post("/api/auth/register", async (req, res) => {
       });
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
@@ -836,7 +804,6 @@ app.post("/api/auth/register", async (req, res) => {
       });
     }
 
-    // Phone validation (basic - at least 10 digits)
     const phoneDigits = phone.replace(/\D/g, "");
     if (phoneDigits.length < 10) {
       return res.status(400).json({
@@ -845,7 +812,6 @@ app.post("/api/auth/register", async (req, res) => {
       });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
@@ -854,7 +820,6 @@ app.post("/api/auth/register", async (req, res) => {
       });
     }
 
-    // Create new user
     const user = new User({
       name,
       email,
@@ -863,14 +828,12 @@ app.post("/api/auth/register", async (req, res) => {
     });
     await user.save();
 
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    // Return success response
     res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -893,12 +856,10 @@ app.post("/api/auth/register", async (req, res) => {
   }
 });
 
-// Login Route
 app.post("/api/auth/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validation
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -906,7 +867,6 @@ app.post("/api/auth/login", async (req, res) => {
       });
     }
 
-    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({
@@ -915,7 +875,6 @@ app.post("/api/auth/login", async (req, res) => {
       });
     }
 
-    // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -924,11 +883,9 @@ app.post("/api/auth/login", async (req, res) => {
       });
     }
 
-    // Update last login
     user.lastLogin = new Date();
     await user.save();
 
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       JWT_SECRET,
@@ -957,7 +914,6 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-// Get User Profile (Protected Route)
 app.get("/api/auth/profile", authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("-password");
@@ -993,7 +949,6 @@ app.get("/api/auth/profile", authenticateToken, async (req, res) => {
   }
 });
 
-// Forgot Password - Send Reset Link (Simulation)
 app.post("/api/auth/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
@@ -1005,10 +960,8 @@ app.post("/api/auth/forgot-password", async (req, res) => {
       });
     }
 
-    // Find user
     const user = await User.findOne({ email });
     if (!user) {
-      // Don't reveal if user exists or not for security
       return res.json({
         success: true,
         message:
@@ -1016,19 +969,15 @@ app.post("/api/auth/forgot-password", async (req, res) => {
       });
     }
 
-    // Generate reset token (in production, save this to DB with expiry)
     const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // In production, send email with reset link
-    // For now, just return the token
     console.log(`Password reset token for ${email}: ${resetToken}`);
 
     res.json({
       success: true,
       message: "Password reset link has been sent to your email",
-      // Remove this in production, only for testing
       resetToken: resetToken,
     });
   } catch (error) {
@@ -1041,7 +990,6 @@ app.post("/api/auth/forgot-password", async (req, res) => {
   }
 });
 
-// Reset Password
 app.post("/api/auth/reset-password", async (req, res) => {
   try {
     const { token, newPassword } = req.body;
@@ -1060,10 +1008,8 @@ app.post("/api/auth/reset-password", async (req, res) => {
       });
     }
 
-    // Verify token
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Find user and update password
     const user = await User.findById(decoded.userId);
     if (!user) {
       return res.status(404).json({
@@ -1100,7 +1046,6 @@ app.post("/api/auth/reset-password", async (req, res) => {
   }
 });
 
-// Update Profile (Protected Route)
 app.put("/api/auth/profile", authenticateToken, async (req, res) => {
   try {
     const { name, phone, address, bio, avatar } = req.body;
@@ -1113,10 +1058,8 @@ app.put("/api/auth/profile", authenticateToken, async (req, res) => {
       });
     }
 
-    // Update fields if provided
     if (name) user.name = name;
     if (phone) {
-      // Validate phone number
       const phoneDigits = phone.replace(/\D/g, "");
       if (phoneDigits.length < 10) {
         return res.status(400).json({
@@ -1155,7 +1098,6 @@ app.put("/api/auth/profile", authenticateToken, async (req, res) => {
   }
 });
 
-// Verify Token Route
 app.post("/api/auth/verify", authenticateToken, (req, res) => {
   res.json({
     success: true,
@@ -1164,7 +1106,6 @@ app.post("/api/auth/verify", authenticateToken, (req, res) => {
   });
 });
 
-// Logout Route (Client-side handles token removal, but useful for logging)
 app.post("/api/auth/logout", authenticateToken, (req, res) => {
   res.json({
     success: true,
@@ -1172,9 +1113,6 @@ app.post("/api/auth/logout", authenticateToken, (req, res) => {
   });
 });
 
-// ==================== SHOE ROUTES ====================
-
-// Get all shoes with filters
 app.get("/api/shoes", async (req, res) => {
   try {
     const {
@@ -1190,7 +1128,6 @@ app.get("/api/shoes", async (req, res) => {
 
     let query = { status: "available" };
 
-    // Search filter
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: "i" } },
@@ -1199,24 +1136,20 @@ app.get("/api/shoes", async (req, res) => {
       ];
     }
 
-    // Brand filter
     if (brand && brand !== "all") {
       query.brand = brand;
     }
 
-    // Size filter
     if (size) {
       query.size = size;
     }
 
-    // Price range filter
     if (minPrice || maxPrice) {
       query.resellPrice = {};
       if (minPrice) query.resellPrice.$gte = Number(minPrice);
       if (maxPrice) query.resellPrice.$lte = Number(maxPrice);
     }
 
-    // Build sort option
     let sort = {};
     switch (sortBy) {
       case "price-low":
@@ -1262,7 +1195,6 @@ app.get("/api/shoes", async (req, res) => {
   }
 });
 
-// Get single shoe by ID
 app.get("/api/shoes/:id", async (req, res) => {
   try {
     const shoe = await Shoe.findById(req.params.id).populate(
@@ -1277,7 +1209,6 @@ app.get("/api/shoes/:id", async (req, res) => {
       });
     }
 
-    // Increment views
     shoe.views += 1;
     await shoe.save();
 
@@ -1295,7 +1226,6 @@ app.get("/api/shoes/:id", async (req, res) => {
   }
 });
 
-// Add new shoe listing (Protected)
 app.post("/api/shoes", authenticateToken, async (req, res) => {
   try {
     const {
@@ -1309,7 +1239,6 @@ app.post("/api/shoes", authenticateToken, async (req, res) => {
       size,
     } = req.body;
 
-    // Validation
     if (
       !name ||
       !brand ||
@@ -1355,7 +1284,6 @@ app.post("/api/shoes", authenticateToken, async (req, res) => {
   }
 });
 
-// Update shoe listing (Protected)
 app.put("/api/shoes/:id", authenticateToken, async (req, res) => {
   try {
     const shoe = await Shoe.findById(req.params.id);
@@ -1367,7 +1295,6 @@ app.put("/api/shoes/:id", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if user owns this listing
     if (shoe.sellerId.toString() !== req.user.userId) {
       return res.status(403).json({
         success: false,
@@ -1400,7 +1327,6 @@ app.put("/api/shoes/:id", authenticateToken, async (req, res) => {
   }
 });
 
-// Delete shoe listing (Protected)
 app.delete("/api/shoes/:id", authenticateToken, async (req, res) => {
   try {
     const shoe = await Shoe.findById(req.params.id);
@@ -1412,7 +1338,6 @@ app.delete("/api/shoes/:id", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if user owns this listing
     if (shoe.sellerId.toString() !== req.user.userId) {
       return res.status(403).json({
         success: false,
@@ -1436,9 +1361,6 @@ app.delete("/api/shoes/:id", authenticateToken, async (req, res) => {
   }
 });
 
-// ==================== ORDER ROUTES ====================
-
-// Create new order (Protected)
 app.post("/api/orders", authenticateToken, async (req, res) => {
   try {
     const {
@@ -1450,7 +1372,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       paymentMethod,
     } = req.body;
 
-    // Validation
     if (
       !shoeId ||
       !buyerName ||
@@ -1465,7 +1386,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if shoe exists and is available
     const shoe = await Shoe.findById(shoeId);
     if (!shoe) {
       return res.status(404).json({
@@ -1481,23 +1401,19 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       });
     }
 
-    // Calculate costs
     const itemPrice = shoe.resellPrice;
     const shippingCost = 15;
     const tax = itemPrice * 0.08;
     const totalAmount = itemPrice + shippingCost + tax;
 
-    // Generate order ID
     const orderId = `SC${Date.now().toString().slice(-6)}${Math.random()
       .toString(36)
       .substr(2, 2)
       .toUpperCase()}`;
 
-    // Calculate estimated delivery (3-5 business days)
     const estimatedDelivery = new Date();
     estimatedDelivery.setDate(estimatedDelivery.getDate() + 5);
 
-    // Create order
     const order = new Order({
       orderId,
       userId: req.user.userId,
@@ -1517,7 +1433,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
 
     await order.save();
 
-    // Update shoe status
     shoe.status = "sold";
     shoe.updatedAt = Date.now();
     await shoe.save();
@@ -1549,7 +1464,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
   }
 });
 
-// Get user orders (Protected)
 app.get("/api/orders", authenticateToken, async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.user.userId })
@@ -1570,7 +1484,6 @@ app.get("/api/orders", authenticateToken, async (req, res) => {
   }
 });
 
-// Get single order (Protected)
 app.get("/api/orders/:orderId", authenticateToken, async (req, res) => {
   try {
     const order = await Order.findOne({ orderId: req.params.orderId })
@@ -1584,7 +1497,6 @@ app.get("/api/orders/:orderId", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if user owns this order
     if (order.userId._id.toString() !== req.user.userId) {
       return res.status(403).json({
         success: false,
@@ -1606,7 +1518,6 @@ app.get("/api/orders/:orderId", authenticateToken, async (req, res) => {
   }
 });
 
-// Update order status (Admin only - for now, any authenticated user)
 app.put("/api/orders/:orderId/status", authenticateToken, async (req, res) => {
   try {
     const { status, trackingNumber } = req.body;
@@ -1646,9 +1557,6 @@ app.put("/api/orders/:orderId/status", authenticateToken, async (req, res) => {
   }
 });
 
-// ==================== WISHLIST/FAVORITES ROUTES ====================
-
-// Get user favorites (Protected)
 app.get("/api/wishlist", authenticateToken, async (req, res) => {
   try {
     const wishlist = await Wishlist.find({ userId: req.user.userId })
@@ -1673,12 +1581,10 @@ app.get("/api/wishlist", authenticateToken, async (req, res) => {
   }
 });
 
-// Add to favorites (Protected)
 app.post("/api/wishlist/:shoeId", authenticateToken, async (req, res) => {
   try {
     const { shoeId } = req.params;
 
-    // Check if shoe exists
     const shoe = await Shoe.findById(shoeId);
     if (!shoe) {
       return res.status(404).json({
@@ -1687,7 +1593,6 @@ app.post("/api/wishlist/:shoeId", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if already in wishlist
     const existing = await Wishlist.findOne({
       userId: req.user.userId,
       shoeId,
@@ -1722,7 +1627,6 @@ app.post("/api/wishlist/:shoeId", authenticateToken, async (req, res) => {
   }
 });
 
-// Remove from favorites (Protected)
 app.delete("/api/wishlist/:shoeId", authenticateToken, async (req, res) => {
   try {
     const { shoeId } = req.params;
@@ -1753,9 +1657,6 @@ app.delete("/api/wishlist/:shoeId", authenticateToken, async (req, res) => {
   }
 });
 
-// ==================== SUBSCRIPTION ROUTES ====================
-
-// Subscribe to newsletter
 app.post("/api/subscribe", async (req, res) => {
   try {
     const { email } = req.body;
@@ -1767,7 +1668,6 @@ app.post("/api/subscribe", async (req, res) => {
       });
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
@@ -1776,7 +1676,6 @@ app.post("/api/subscribe", async (req, res) => {
       });
     }
 
-    // Check if already subscribed
     let subscription = await Subscription.findOne({ email });
 
     if (subscription) {
@@ -1786,7 +1685,6 @@ app.post("/api/subscribe", async (req, res) => {
           message: "Email is already subscribed",
         });
       } else {
-        // Reactivate subscription
         subscription.isActive = true;
         subscription.subscribedAt = Date.now();
         await subscription.save();
@@ -1798,7 +1696,6 @@ app.post("/api/subscribe", async (req, res) => {
       }
     }
 
-    // Create new subscription
     subscription = new Subscription({ email });
     await subscription.save();
 
@@ -1816,7 +1713,6 @@ app.post("/api/subscribe", async (req, res) => {
   }
 });
 
-// Unsubscribe from newsletter
 app.post("/api/unsubscribe", async (req, res) => {
   try {
     const { email } = req.body;
@@ -1854,9 +1750,6 @@ app.post("/api/unsubscribe", async (req, res) => {
   }
 });
 
-// ==================== SERVICE ROUTES ====================
-
-// Get all services
 app.get("/api/services", async (req, res) => {
   try {
     const services = await Service.find({ isActive: true }).sort({
@@ -1877,7 +1770,6 @@ app.get("/api/services", async (req, res) => {
   }
 });
 
-// Get single service
 app.get("/api/services/:id", async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
@@ -1889,7 +1781,6 @@ app.get("/api/services/:id", async (req, res) => {
       });
     }
 
-    // Get reviews for this service
     const reviews = await ServiceReview.find({ serviceId: req.params.id })
       .populate("userId", "name avatar")
       .sort({ createdAt: -1 })
@@ -1910,7 +1801,6 @@ app.get("/api/services/:id", async (req, res) => {
   }
 });
 
-// Create new service (Admin only - for now, any authenticated user)
 app.post("/api/services", authenticateToken, async (req, res) => {
   try {
     const { title, description, price, turnaround, bgImage, features, icon } =
@@ -1950,7 +1840,6 @@ app.post("/api/services", authenticateToken, async (req, res) => {
   }
 });
 
-// Book a service (Protected)
 app.post("/api/services/:id/book", authenticateToken, async (req, res) => {
   try {
     const {
@@ -1963,7 +1852,6 @@ app.post("/api/services/:id/book", authenticateToken, async (req, res) => {
       scheduledDate,
     } = req.body;
 
-    // Validation
     if (!customerName || !customerEmail || !customerPhone || !address) {
       return res.status(400).json({
         success: false,
@@ -1971,7 +1859,6 @@ app.post("/api/services/:id/book", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if service exists
     const service = await Service.findById(req.params.id);
     if (!service) {
       return res.status(404).json({
@@ -1986,14 +1873,12 @@ app.post("/api/services/:id/book", authenticateToken, async (req, res) => {
       .substr(2, 2)
       .toUpperCase()}`;
 
-    // Parse estimated cost from service price
     let estimatedCost = 0;
     const priceMatch = service.price.match(/\d+/);
     if (priceMatch) {
       estimatedCost = parseInt(priceMatch[0]);
     }
 
-    // Create booking
     const booking = new ServiceBooking({
       bookingId,
       userId: req.user.userId,
@@ -2006,14 +1891,13 @@ app.post("/api/services/:id/book", authenticateToken, async (req, res) => {
       specialInstructions: specialInstructions || "",
       scheduledDate: scheduledDate
         ? new Date(scheduledDate)
-        : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // Default: 2 days from now
+        : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
       estimatedCost,
       status: "confirmed",
     });
 
     await booking.save();
 
-    // Update service popularity count
     const currentCount = parseInt(
       service.popularCount.match(/\d+/)?.[0] || "0"
     );
@@ -2042,7 +1926,6 @@ app.post("/api/services/:id/book", authenticateToken, async (req, res) => {
   }
 });
 
-// Get user's service bookings (Protected)
 app.get("/api/service-bookings", authenticateToken, async (req, res) => {
   try {
     const bookings = await ServiceBooking.find({ userId: req.user.userId })
@@ -2063,7 +1946,6 @@ app.get("/api/service-bookings", authenticateToken, async (req, res) => {
   }
 });
 
-// Get single booking (Protected)
 app.get(
   "/api/service-bookings/:bookingId",
   authenticateToken,
@@ -2082,7 +1964,6 @@ app.get(
         });
       }
 
-      // Check if user owns this booking
       if (booking.userId._id.toString() !== req.user.userId) {
         return res.status(403).json({
           success: false,
@@ -2105,9 +1986,6 @@ app.get(
   }
 );
 
-// ==================== COBBLER SCHEMAS ====================
-
-// Cobbler/Service Provider Schema
 const cobblerSchema = new mongoose.Schema({
   cobblerId: {
     type: String,
@@ -2141,7 +2019,7 @@ const cobblerSchema = new mongoose.Schema({
       default: "Point",
     },
     coordinates: {
-      type: [Number], // [longitude, latitude]
+      type: [Number],
       required: true,
     },
   },
@@ -2205,12 +2083,10 @@ const cobblerSchema = new mongoose.Schema({
   },
 });
 
-// Create geospatial index for location-based queries
 cobblerSchema.index({ location: "2dsphere" });
 
 const Cobbler = mongoose.model("Cobbler", cobblerSchema);
 
-// Cobbler Appointment Schema
 const cobblerAppointmentSchema = new mongoose.Schema({
   appointmentId: {
     type: String,
@@ -2287,7 +2163,6 @@ const CobblerAppointment = mongoose.model(
   cobblerAppointmentSchema
 );
 
-// Cobbler Review Schema
 const cobblerReviewSchema = new mongoose.Schema({
   cobblerId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -2331,9 +2206,6 @@ const cobblerReviewSchema = new mongoose.Schema({
 
 const CobblerReview = mongoose.model("CobblerReview", cobblerReviewSchema);
 
-// ==================== SHOP/PRODUCT ROUTES ====================
-
-// Get all products with filters
 app.get("/api/products", async (req, res) => {
   try {
     const {
@@ -2349,7 +2221,6 @@ app.get("/api/products", async (req, res) => {
 
     let query = {};
 
-    // Search filter
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: "i" } },
@@ -2359,7 +2230,6 @@ app.get("/api/products", async (req, res) => {
       ];
     }
 
-    // Brand filter
     if (brand) {
       if (Array.isArray(brand)) {
         query.brand = { $in: brand };
@@ -2368,7 +2238,6 @@ app.get("/api/products", async (req, res) => {
       }
     }
 
-    // Category filter
     if (category) {
       if (Array.isArray(category)) {
         query.category = { $in: category };
@@ -2377,14 +2246,12 @@ app.get("/api/products", async (req, res) => {
       }
     }
 
-    // Price range filter
     if (minPrice || maxPrice) {
       query.price = {};
       if (minPrice) query.price.$gte = Number(minPrice);
       if (maxPrice) query.price.$lte = Number(maxPrice);
     }
 
-    // Build sort
     let sort = {};
     switch (sortBy) {
       case "price-low":
@@ -2437,7 +2304,6 @@ app.get("/api/products", async (req, res) => {
   }
 });
 
-// Get single product
 app.get("/api/products/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -2466,7 +2332,6 @@ app.get("/api/products/:id", async (req, res) => {
   }
 });
 
-// Get brands
 app.get("/api/products/filters/brands", async (req, res) => {
   try {
     const brands = await Product.distinct("brand");
@@ -2484,7 +2349,6 @@ app.get("/api/products/filters/brands", async (req, res) => {
   }
 });
 
-// Get categories
 app.get("/api/products/filters/categories", async (req, res) => {
   try {
     const categories = await Product.distinct("category");
@@ -2502,7 +2366,6 @@ app.get("/api/products/filters/categories", async (req, res) => {
   }
 });
 
-// Get shop stats
 app.get("/api/shop/stats", async (req, res) => {
   try {
     const totalProducts = await Product.countDocuments();
@@ -2526,7 +2389,7 @@ app.get("/api/shop/stats", async (req, res) => {
         totalProducts,
         inStockProducts,
         totalOrders,
-        averageRating: Number(averageRating), // Return as number, not string
+        averageRating: Number(averageRating), 
       },
     });
   } catch (error) {
@@ -2539,7 +2402,6 @@ app.get("/api/shop/stats", async (req, res) => {
   }
 });
 
-// Cart routes
 app.get("/api/cart", authenticateToken, async (req, res) => {
   try {
     let cart = await Cart.findOne({ userId: req.user.userId }).populate(
@@ -2725,7 +2587,6 @@ app.delete("/api/cart/remove/:itemId", authenticateToken, async (req, res) => {
   }
 });
 
-// Shop Checkout Route (Protected)
 app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
   try {
     const {
@@ -2738,7 +2599,6 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
       notes,
     } = req.body;
 
-    // Validation
     if (
       !items ||
       !Array.isArray(items) ||
@@ -2755,11 +2615,9 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
       });
     }
 
-    // Calculate order totals
     let subtotal = 0;
     const orderItems = [];
 
-    // Validate and process each item
     for (const item of items) {
       const product = await Product.findById(item.productId);
 
@@ -2798,7 +2656,6 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
         price: product.price,
       });
 
-      // Update product stock and sales
       product.stockQuantity -= item.quantity;
       product.sales += item.quantity;
       if (product.stockQuantity === 0) {
@@ -2807,22 +2664,18 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
       await product.save();
     }
 
-    // Calculate additional costs
     const shippingCost = subtotal > 100 ? 0 : 9.99;
     const tax = subtotal * 0.08;
     const totalAmount = subtotal + shippingCost + tax;
 
-    // Generate order ID
     const orderId = `SO${Date.now().toString().slice(-6)}${Math.random()
       .toString(36)
       .substr(2, 2)
       .toUpperCase()}`;
 
-    // Calculate estimated delivery (5-7 business days)
     const estimatedDelivery = new Date();
     estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
 
-    // Create shop order
     const order = new ShopOrder({
       orderId,
       userId: req.user.userId,
@@ -2844,7 +2697,6 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
 
     await order.save();
 
-    // Clear user's cart after successful order
     await Cart.findOneAndUpdate(
       { userId: req.user.userId },
       { $set: { items: [], updatedAt: Date.now() } }
@@ -2872,7 +2724,6 @@ app.post("/api/shop/checkout", authenticateToken, async (req, res) => {
   }
 });
 
-// Get user's shop orders (Protected)
 app.get("/api/shop/orders", authenticateToken, async (req, res) => {
   try {
     const orders = await ShopOrder.find({ userId: req.user.userId })
@@ -2893,7 +2744,6 @@ app.get("/api/shop/orders", authenticateToken, async (req, res) => {
   }
 });
 
-// Get single shop order (Protected)
 app.get("/api/shop/orders/:orderId", authenticateToken, async (req, res) => {
   try {
     const order = await ShopOrder.findOne({ orderId: req.params.orderId })
@@ -2907,7 +2757,6 @@ app.get("/api/shop/orders/:orderId", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if user owns this order
     if (order.userId._id.toString() !== req.user.userId) {
       return res.status(403).json({
         success: false,
@@ -2929,7 +2778,6 @@ app.get("/api/shop/orders/:orderId", authenticateToken, async (req, res) => {
   }
 });
 
-// Cancel shop order (Protected)
 app.put(
   "/api/shop/orders/:orderId/cancel",
   authenticateToken,
@@ -2944,7 +2792,6 @@ app.put(
         });
       }
 
-      // Check if user owns this order
       if (order.userId.toString() !== req.user.userId) {
         return res.status(403).json({
           success: false,
@@ -2952,7 +2799,6 @@ app.put(
         });
       }
 
-      // Check if order can be cancelled
       if (["shipped", "delivered"].includes(order.status)) {
         return res.status(400).json({
           success: false,
@@ -2967,7 +2813,6 @@ app.put(
         });
       }
 
-      // Restore product stock
       for (const item of order.items) {
         const product = await Product.findById(item.productId);
         if (product) {
@@ -2999,15 +2844,12 @@ app.put(
   }
 );
 
-// ==================== COBBLER ROUTES ====================
-
-// Get all cobblers with filters and location-based search
 app.get("/api/cobblers", async (req, res) => {
   try {
     const {
       lat,
       lng,
-      maxDistance = 50000, // 50km default
+      maxDistance = 50000, 
       search,
       services,
       verified,
@@ -3018,7 +2860,6 @@ app.get("/api/cobblers", async (req, res) => {
 
     let query = { isActive: true };
 
-    // Search filter
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: "i" } },
@@ -3027,18 +2868,15 @@ app.get("/api/cobblers", async (req, res) => {
       ];
     }
 
-    // Services filter
     if (services) {
       const serviceArray = Array.isArray(services) ? services : [services];
       query.services = { $all: serviceArray };
     }
 
-    // Verified filter
     if (verified === "true") {
       query.verified = true;
     }
 
-    // Location-based query
     let cobblers;
     if (lat && lng) {
       const coordinates = [parseFloat(lng), parseFloat(lat)];
@@ -3064,7 +2902,6 @@ app.get("/api/cobblers", async (req, res) => {
         },
       ]);
 
-      // Add formatted distance
       cobblers = cobblers.map((cobbler) => ({
         ...cobbler,
         distance:
@@ -3073,7 +2910,6 @@ app.get("/api/cobblers", async (req, res) => {
             : `${(cobbler.distance / 1000).toFixed(1)} km`,
       }));
     } else {
-      // No location provided, just fetch all matching cobblers
       const skip = (parseInt(page) - 1) * parseInt(limit);
       cobblers = await Cobbler.find(query)
         .skip(skip)
@@ -3081,13 +2917,11 @@ app.get("/api/cobblers", async (req, res) => {
         .lean();
     }
 
-    // Sort results
     if (sortBy === "rating") {
       cobblers.sort((a, b) => b.rating - a.rating);
     } else if (sortBy === "reviews") {
       cobblers.sort((a, b) => b.reviews - a.reviews);
     }
-    // distance sorting is already done by $geoNear
 
     const total = await Cobbler.countDocuments(query);
 
@@ -3111,7 +2945,6 @@ app.get("/api/cobblers", async (req, res) => {
   }
 });
 
-// Get single cobbler by ID
 app.get("/api/cobblers/:id", async (req, res) => {
   try {
     const cobbler = await Cobbler.findById(req.params.id);
@@ -3137,7 +2970,6 @@ app.get("/api/cobblers/:id", async (req, res) => {
   }
 });
 
-// Book appointment with cobbler (Protected)
 app.post("/api/cobblers/:id/book", authenticateToken, async (req, res) => {
   try {
     const {
@@ -3150,7 +2982,6 @@ app.post("/api/cobblers/:id/book", authenticateToken, async (req, res) => {
       notes,
     } = req.body;
 
-    // Validation
     if (
       !customerName ||
       !customerEmail ||
@@ -3165,7 +2996,6 @@ app.post("/api/cobblers/:id/book", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if cobbler exists
     const cobbler = await Cobbler.findById(req.params.id);
     if (!cobbler) {
       return res.status(404).json({
@@ -3181,7 +3011,6 @@ app.post("/api/cobblers/:id/book", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check if service is available
     if (!cobbler.services.includes(serviceType)) {
       return res.status(400).json({
         success: false,
@@ -3189,13 +3018,11 @@ app.post("/api/cobblers/:id/book", authenticateToken, async (req, res) => {
       });
     }
 
-    // Generate appointment ID
     const appointmentId = `CA${Date.now().toString().slice(-6)}${Math.random()
       .toString(36)
       .substr(2, 2)
       .toUpperCase()}`;
 
-    // Create appointment
     const appointment = new CobblerAppointment({
       appointmentId,
       cobblerId: req.params.id,
@@ -3212,7 +3039,6 @@ app.post("/api/cobblers/:id/book", authenticateToken, async (req, res) => {
 
     await appointment.save();
 
-    // Update cobbler's total bookings
     cobbler.totalBookings += 1;
     await cobbler.save();
 
@@ -3238,7 +3064,6 @@ app.post("/api/cobblers/:id/book", authenticateToken, async (req, res) => {
   }
 });
 
-// Get user's cobbler appointments (Protected)
 app.get("/api/cobbler-appointments", authenticateToken, async (req, res) => {
   try {
     const appointments = await CobblerAppointment.find({
@@ -3261,7 +3086,6 @@ app.get("/api/cobbler-appointments", authenticateToken, async (req, res) => {
   }
 });
 
-// Get single appointment (Protected)
 app.get(
   "/api/cobbler-appointments/:appointmentId",
   authenticateToken,
@@ -3280,7 +3104,6 @@ app.get(
         });
       }
 
-      // Check if user owns this appointment
       if (appointment.userId._id.toString() !== req.user.userId) {
         return res.status(403).json({
           success: false,
@@ -3303,7 +3126,6 @@ app.get(
   }
 );
 
-// Cancel appointment (Protected)
 app.put(
   "/api/cobbler-appointments/:appointmentId/cancel",
   authenticateToken,
@@ -3320,7 +3142,6 @@ app.put(
         });
       }
 
-      // Check if user owns this appointment
       if (appointment.userId.toString() !== req.user.userId) {
         return res.status(403).json({
           success: false,
@@ -3355,7 +3176,6 @@ app.put(
   }
 );
 
-// Get cobbler stats
 app.get("/api/cobblers/stats", async (req, res) => {
   try {
     const totalCobblers = await Cobbler.countDocuments({ isActive: true });
@@ -3395,9 +3215,6 @@ app.get("/api/cobblers/stats", async (req, res) => {
   }
 });
 
-// ==================== PRESS SCHEMAS ====================
-
-// Press Release Schema
 const pressReleaseSchema = new mongoose.Schema({
   releaseId: {
     type: String,
@@ -3458,7 +3275,6 @@ const pressReleaseSchema = new mongoose.Schema({
 
 const PressRelease = mongoose.model("PressRelease", pressReleaseSchema);
 
-// Media Coverage Schema
 const mediaCoverageSchema = new mongoose.Schema({
   coverageId: {
     type: String,
@@ -3511,7 +3327,6 @@ const mediaCoverageSchema = new mongoose.Schema({
 
 const MediaCoverage = mongoose.model("MediaCoverage", mediaCoverageSchema);
 
-// Press Kit Schema
 const pressKitSchema = new mongoose.Schema({
   kitId: {
     type: String,
@@ -3564,7 +3379,6 @@ const pressKitSchema = new mongoose.Schema({
 
 const PressKit = mongoose.model("PressKit", pressKitSchema);
 
-// Media Asset Schema
 const mediaAssetSchema = new mongoose.Schema({
   assetId: {
     type: String,
@@ -3618,7 +3432,6 @@ const mediaAssetSchema = new mongoose.Schema({
 
 const MediaAsset = mongoose.model("MediaAsset", mediaAssetSchema);
 
-// Press Contact Schema
 const pressContactSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -3650,7 +3463,6 @@ const pressContactSchema = new mongoose.Schema({
 
 const PressContact = mongoose.model("PressContact", pressContactSchema);
 
-// Press Inquiry Schema
 const pressInquirySchema = new mongoose.Schema({
   inquiryId: {
     type: String,
@@ -3702,9 +3514,6 @@ const pressInquirySchema = new mongoose.Schema({
 
 const PressInquiry = mongoose.model("PressInquiry", pressInquirySchema);
 
-// ==================== PRESS ROUTES ====================
-
-// Get all press releases
 app.get("/api/press/releases", async (req, res) => {
   try {
     const { limit = 50, page = 1 } = req.query;
@@ -3736,7 +3545,6 @@ app.get("/api/press/releases", async (req, res) => {
   }
 });
 
-// Record press release download
 app.post("/api/press/releases/:releaseId/download", async (req, res) => {
   try {
     const release = await PressRelease.findOne({
@@ -3767,7 +3575,6 @@ app.post("/api/press/releases/:releaseId/download", async (req, res) => {
   }
 });
 
-// Get all media coverage
 app.get("/api/press/coverage", async (req, res) => {
   try {
     const { limit = 50, page = 1 } = req.query;
@@ -3799,7 +3606,6 @@ app.get("/api/press/coverage", async (req, res) => {
   }
 });
 
-// Get all press kits
 app.get("/api/press/kits", async (req, res) => {
   try {
     const kits = await PressKit.find({ isActive: true }).sort({
@@ -3820,7 +3626,6 @@ app.get("/api/press/kits", async (req, res) => {
   }
 });
 
-// Download press kit
 app.post("/api/press/kits/:kitId/download", async (req, res) => {
   try {
     const kit = await PressKit.findOne({ kitId: req.params.kitId });
@@ -3849,7 +3654,6 @@ app.post("/api/press/kits/:kitId/download", async (req, res) => {
   }
 });
 
-// Get all media assets
 app.get("/api/press/assets", async (req, res) => {
   try {
     const assets = await MediaAsset.find({ isActive: true }).sort({
@@ -3870,7 +3674,6 @@ app.get("/api/press/assets", async (req, res) => {
   }
 });
 
-// Download media asset
 app.post("/api/press/assets/:assetId/download", async (req, res) => {
   try {
     const asset = await MediaAsset.findOne({ assetId: req.params.assetId });
@@ -3899,7 +3702,6 @@ app.post("/api/press/assets/:assetId/download", async (req, res) => {
   }
 });
 
-// Get press contacts
 app.get("/api/press/contacts", async (req, res) => {
   try {
     const contacts = await PressContact.find({ isActive: true });
@@ -3918,7 +3720,6 @@ app.get("/api/press/contacts", async (req, res) => {
   }
 });
 
-// Submit press inquiry
 app.post("/api/press/inquiries", async (req, res) => {
   try {
     const {
@@ -3931,7 +3732,6 @@ app.post("/api/press/inquiries", async (req, res) => {
       deadline,
     } = req.body;
 
-    // Validation
     if (!name || !email || !organization || !inquiryType || !message) {
       return res.status(400).json({
         success: false,
@@ -3939,7 +3739,6 @@ app.post("/api/press/inquiries", async (req, res) => {
       });
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
@@ -3948,7 +3747,6 @@ app.post("/api/press/inquiries", async (req, res) => {
       });
     }
 
-    // Generate inquiry ID
     const inquiryId = `PI${Date.now().toString().slice(-6)}${Math.random()
       .toString(36)
       .substr(2, 2)
@@ -3985,7 +3783,6 @@ app.post("/api/press/inquiries", async (req, res) => {
   }
 });
 
-// ==================== 404 HANDLER (MUST BE LAST) ====================
 
 app.use((req, res) => {
   res.status(404).json({
@@ -3994,7 +3791,6 @@ app.use((req, res) => {
   });
 });
 
-// ==================== ERROR HANDLER ====================
 
 app.use((err, req, res, next) => {
   console.error("Server Error:", err);
@@ -4005,7 +3801,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📍 Local: http://localhost:${PORT}`);

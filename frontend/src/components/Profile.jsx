@@ -536,7 +536,7 @@ const Profile = () => {
                 <div className="space-y-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center">
+                      <label className="text-gray-300 text-sm font-medium mb-2 flex items-center">
                         <User size={16} className="inline mr-2 text-amber-400" />
                         Full Name
                       </label>
@@ -551,7 +551,7 @@ const Profile = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center">
+                      <label className="text-gray-300 text-sm font-medium mb-2 flex items-center">
                         <Mail size={16} className="inline mr-2 text-amber-400" />
                         Email Address
                       </label>
@@ -568,7 +568,7 @@ const Profile = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center">
+                      <label className="text-gray-300 text-sm font-medium mb-2 flex items-center">
                         <Phone size={16} className="inline mr-2 text-amber-400" />
                         Phone Number
                       </label>
@@ -583,7 +583,7 @@ const Profile = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center">
+                      <label className="text-gray-300 text-sm font-medium mb-2 flex items-center">
                         <MapPin size={16} className="inline mr-2 text-amber-400" />
                         Address
                       </label>
@@ -600,7 +600,7 @@ const Profile = () => {
                   </div>
 
                   <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center">
+                    <label className="text-gray-300 text-sm font-medium mb-2 flex items-center">
                       <FileText size={16} className="inline mr-2 text-amber-400" />
                       Bio
                     </label>
