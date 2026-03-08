@@ -4,25 +4,20 @@ import { ShoppingBag, Heart, Star, Filter, ChevronDown, Search, ShoppingCart, Ta
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import axios from 'axios';
+import axios from '../utils/axiosConfig';
 
-// Configure axios
-const API_BASE_URL = 'http://localhost:5000';
-axios.defaults.baseURL = API_BASE_URL;
-
-// Add token to requests if available
-axios.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+// Get API base URL for image references
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
   }
-);
+  if (import.meta.env.PROD) {
+    return "https://sole-craft-backend.vercel.app";
+  }
+  return "http://localhost:5000";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -59,7 +54,6 @@ export default function ShoeShopComponent() {
     priceRange: [0, 200],
     showFilter: false
   });
-  const [wishlist, setWishlist] = useState([]);
   const [showCart, setShowCart] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
@@ -177,20 +171,6 @@ export default function ShoeShopComponent() {
     }
   };
 
-  // Fetch wishlist
-  const fetchWishlist = async () => {
-    if (!isAuthenticated) return;
-
-    try {
-      const response = await axios.get('/api/product-wishlist');
-      if (response.data.success) {
-        setWishlist(response.data.wishlist.map(item => item._id));
-      }
-    } catch (error) {
-      console.error('Error fetching wishlist:', error);
-    }
-  };
-
   // Add to cart
   const addToCart = async (product) => {
     if (!isAuthenticated) {
@@ -258,35 +238,6 @@ export default function ShoeShopComponent() {
     }
   };
 
-  // Toggle wishlist
-  const toggleWishlist = async (productId) => {
-    if (!isAuthenticated) {
-      showNotification('Please login to add to wishlist', 'error');
-      navigate('/login');
-      return;
-    }
-
-    try {
-      const isInWishlist = wishlist.includes(productId);
-
-      if (isInWishlist) {
-        await axios.delete(`/api/product-wishlist/${productId}`);
-        setWishlist(wishlist.filter(id => id !== productId));
-        showNotification('Removed from wishlist', 'success');
-      } else {
-        await axios.post(`/api/product-wishlist/${productId}`);
-        setWishlist([...wishlist, productId]);
-        showNotification('Added to wishlist', 'success');
-      }
-    } catch (error) {
-      console.error('Error toggling wishlist:', error);
-      showNotification(
-        error.response?.data?.message || 'Failed to update wishlist',
-        'error'
-      );
-    }
-  };
-
   // Handle brand filter
   const handleBrandFilter = (brand) => {
     if (filterOptions.brands.includes(brand)) {
@@ -345,7 +296,6 @@ export default function ShoeShopComponent() {
       
       if (isAuthenticated) {
         await fetchCart();
-        await fetchWishlist();
       }
     };
 
@@ -356,11 +306,9 @@ export default function ShoeShopComponent() {
   useEffect(() => {
     if (isAuthenticated) {
       fetchCart();
-      fetchWishlist();
     } else {
-      // Clear cart and wishlist if not authenticated
+      // Clear cart if not authenticated
       setCart({ items: [], subtotal: 0, itemCount: 0 });
-      setWishlist([]);
     }
   }, [isAuthenticated]);
 
@@ -805,30 +753,6 @@ export default function ShoeShopComponent() {
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
 
-                          {/* Wishlist Button */}
-                          <motion.button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleWishlist(product._id);
-                            }}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="absolute top-3 right-3 bg-gray-900/80 backdrop-blur-sm rounded-full p-2 z-10 border border-gray-700"
-                            aria-label={
-                              wishlist.includes(product._id)
-                                ? 'Remove from wishlist'
-                                : 'Add to wishlist'
-                            }
-                          >
-                            <Heart
-                              className={`w-5 h-5 transition-colors ${
-                                wishlist.includes(product._id)
-                                  ? 'text-red-500 fill-red-500'
-                                  : 'text-gray-400'
-                              }`}
-                            />
-                          </motion.button>
-
                           {/* Rating Badge */}
                           <div className="absolute top-3 left-3 bg-gray-900/80 backdrop-blur-sm px-3 py-1 rounded-full border border-gray-700 flex items-center gap-1">
                             <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
@@ -858,7 +782,7 @@ export default function ShoeShopComponent() {
                           </p>
 
                           <div className="flex items-center gap-2 mb-4">
-                            {product.colors.slice(0, 3).map((color, i) => (
+                            {product.colors && product.colors.length > 0 && product.colors.slice(0, 3).map((color, i) => (
                               <motion.div
                                 key={i}
                                 whileHover={{ scale: 1.3 }}

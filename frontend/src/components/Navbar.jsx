@@ -411,14 +411,15 @@ export default function CobblersNavbar() {
               whileHover={{ scale: 1.05 }}
             >
               <div className="relative">
-                <motion.a 
-                  href="/"
+                <motion.div 
+                  role="img"
+                  aria-hidden="true"
                   className="w-12 h-12 bg-gradient-to-br from-purple-600 via-violet-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-900/40"
                   transition={{ duration: 0.6 }}
                   onMouseMove={(e) => generateSparkle(e)}
                 >
                   <ShoppingBag className="text-white" size={24} />
-                </motion.a>
+                </motion.div>
                 <motion.div 
                   className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full"
                   animate={{ 
