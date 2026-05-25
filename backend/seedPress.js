@@ -15,6 +15,7 @@ mongoose
   .then(() => console.log("✅ MongoDB Connected Successfully"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
+// Define Schemas and Models
 // Press Release Schema
 const pressReleaseSchema = new mongoose.Schema({
   releaseId: { type: String, required: true, unique: true },
