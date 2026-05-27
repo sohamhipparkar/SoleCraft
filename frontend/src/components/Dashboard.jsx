@@ -71,6 +71,8 @@ export default function EnhancedCobblerDashboard() {
     };
   }, []);
 
+
+//Service cards data with enhanced details and categories for filtering
   const serviceCards = [
     { 
       id: 1, 
