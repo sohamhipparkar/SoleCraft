@@ -535,7 +535,7 @@ export default function EnhancedLoginPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              {/* Glow effect */}
+              {/* Glow effect  animation*/}
               <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl opacity-20 blur-xl" />
               
               <div className="relative">
