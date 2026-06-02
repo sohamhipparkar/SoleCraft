@@ -410,7 +410,7 @@ export default function EnhancedLoginPage() {
         )}
       </AnimatePresence>
 
-      {/* Main container */}
+      {/* ---------- Main container ---------- */}
       <motion.div 
         className="w-full max-w-6xl relative z-10"
         variants={containerVariants}

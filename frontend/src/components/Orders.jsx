@@ -831,19 +831,18 @@ export default function Orders() {
             <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
               My Orders
               <motion.div
-                                  initial={{ width: 0 }}
-                                  animate={{ width: '180px' }}
-                                  transition={{ delay: 0.3, duration: 0.8 }}
-                                  className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2"
-                                />
-
+                initial={{ width: 0 }}
+                animate={{ width: "180px" }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+                className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2"
+              />
             </h1>
             <p className="text-gray-400 mt-3">
               Track and manage all your orders in one place
             </p>
           </motion.div>
 
-          {/* Search and Filters */}
+          {/* ---------- Search and Filters ---------- */}
           <div className="mb-8">
             <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl">
               <div className="flex flex-col md:flex-row gap-4">
@@ -869,8 +868,8 @@ export default function Orders() {
                         onClick={() => setTypeFilter(option.value)}
                         className={`px-4 py-2.5 rounded-xl font-medium transition-colors duration-200 whitespace-nowrap flex items-center gap-2 ${
                           typeFilter === option.value
-                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900'
-                            : 'bg-gray-900 text-gray-400 hover:text-white border border-gray-700'
+                            ? "bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900"
+                            : "bg-gray-900 text-gray-400 hover:text-white border border-gray-700"
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -889,10 +888,13 @@ export default function Orders() {
                     <div className="flex items-center gap-2">
                       <Filter className="w-5 h-5" />
                       <span className="font-medium">
-                        {statusOptions.find(opt => opt.value === statusFilter)?.label || 'Filter'}
+                        {statusOptions.find((opt) => opt.value === statusFilter)
+                          ?.label || "Filter"}
                       </span>
                     </div>
-                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showFilters ? 'rotate-180' : ''}`} />
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-200 ${showFilters ? "rotate-180" : ""}`}
+                    />
                   </button>
 
                   <AnimatePresence>
@@ -913,8 +915,8 @@ export default function Orders() {
                             }}
                             className={`w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors ${
                               statusFilter === option.value
-                                ? 'bg-amber-500/10 text-amber-400 font-medium'
-                                : 'text-gray-300'
+                                ? "bg-amber-500/10 text-amber-400 font-medium"
+                                : "text-gray-300"
                             }`}
                           >
                             {option.label}
@@ -945,13 +947,15 @@ export default function Orders() {
             <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-8 text-center">
               <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-red-400 mb-2">
-                {error.includes('log in') ? 'Authentication Required' : 'Error Loading Orders'}
+                {error.includes("log in")
+                  ? "Authentication Required"
+                  : "Error Loading Orders"}
               </h3>
               <p className="text-gray-400 mb-4">{error}</p>
               <div className="flex gap-3 justify-center">
-                {error.includes('log in') ? (
+                {error.includes("log in") ? (
                   <button
-                    onClick={() => navigate('/login')}
+                    onClick={() => navigate("/login")}
                     className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-gray-900 rounded-xl font-bold transition-colors duration-200"
                   >
                     Log In
@@ -969,9 +973,11 @@ export default function Orders() {
           ) : filteredOrders.length === 0 ? (
             <div className="bg-gray-800 border border-gray-700 rounded-2xl p-12 text-center">
               <Package className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">No Orders Found</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                No Orders Found
+              </h3>
               <p className="text-gray-400 mb-6">
-                {searchQuery || statusFilter !== 'all' || typeFilter !== 'all'
+                {searchQuery || statusFilter !== "all" || typeFilter !== "all"
                   ? "Try adjusting your search or filters"
                   : "You haven't placed any orders yet"}
               </p>
@@ -1009,8 +1015,13 @@ export default function Orders() {
           {!loading && !error && filteredOrders.length > 0 && (
             <div className="mt-8 text-center">
               <p className="text-gray-400">
-                Showing <span className="text-amber-400 font-bold">{filteredOrders.length}</span> of{' '}
-                <span className="text-white font-bold">{allOrders.length}</span> orders
+                Showing{" "}
+                <span className="text-amber-400 font-bold">
+                  {filteredOrders.length}
+                </span>{" "}
+                of{" "}
+                <span className="text-white font-bold">{allOrders.length}</span>{" "}
+                orders
               </p>
             </div>
           )}
