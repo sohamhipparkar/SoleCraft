@@ -54,6 +54,7 @@ export default function FAQComponent() {
   const [openQuestionId, setOpenQuestionId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  //FAQ Data
   const faqData = {
     exchange: [
       {
