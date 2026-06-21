@@ -202,6 +202,8 @@ const containerVariants = {
   }
 };
 
+
+//Item variants for shoe cards
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
