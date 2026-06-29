@@ -34,11 +34,11 @@ import axios from 'axios';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-// Configure axios
+// Axios configuration
 const API_BASE_URL = 'http://localhost:5000';
 axios.defaults.baseURL = API_BASE_URL;
 
-// Add token to requests if available
+// Add token
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
