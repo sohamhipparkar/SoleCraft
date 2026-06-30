@@ -228,9 +228,7 @@ export default function ErrorPage() {
   const currentMessage = creativeMessages[currentMessageIndex];
 
   return (
-    <div 
-      className="bg-gray-900 text-gray-100 min-h-screen font-sans flex flex-col"
-    >
+    <div className="bg-gray-900 text-gray-100 min-h-screen font-sans flex flex-col">
       <Navbar />
 
       {/* Simplified Background */}
@@ -241,26 +239,28 @@ export default function ErrorPage() {
 
       {/* Main Error Content */}
       <main className="flex-grow flex flex-col items-center justify-center p-4 md:p-6 pt-24 md:pt-28 pb-16 relative z-10">
-        <motion.div 
+        <motion.div
           className="max-w-6xl w-full mx-auto"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
         >
           {/* Main Error Card */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="bg-gray-800 rounded-2xl p-6 md:p-10 shadow-2xl border border-gray-700 relative overflow-hidden mb-6"
           >
             {/* Background Gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-purple-500/5" />
-            
+
             <div className="relative z-10">
               {/* Error Badge */}
               <div className="flex justify-center mb-4">
                 <div className="inline-flex items-center gap-2 bg-red-500/10 px-4 py-2 rounded-full border border-red-500/20">
                   <AlertCircle className="w-5 h-5 text-red-400" />
-                  <span className="text-red-400 text-sm font-semibold">Page Not Found</span>
+                  <span className="text-red-400 text-sm font-semibold">
+                    Page Not Found
+                  </span>
                 </div>
               </div>
 
@@ -278,11 +278,11 @@ export default function ErrorPage() {
                     <motion.span
                       initial={{ scale: 0, rotate: -180 }}
                       animate={{ scale: 1, rotate: 0 }}
-                      transition={{ 
+                      transition={{
                         type: "spring",
                         stiffness: 200,
                         damping: 15,
-                        delay: 0.1
+                        delay: 0.1,
                       }}
                       className="text-6xl md:text-7xl inline-block"
                     >
@@ -295,19 +295,19 @@ export default function ErrorPage() {
                   <p className="text-gray-400 text-sm md:text-base">
                     {currentMessage.subtext}
                   </p>
-                  
+
                   {/* Rotation indicator dots */}
                   <div className="flex justify-center gap-2 mt-4">
                     {creativeMessages.map((_, index) => (
                       <motion.div
                         key={index}
                         className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                          index === currentMessageIndex 
-                            ? 'bg-amber-500 w-8' 
-                            : 'bg-gray-600'
+                          index === currentMessageIndex
+                            ? "bg-amber-500 w-8"
+                            : "bg-gray-600"
                         }`}
                         animate={{
-                          scale: index === currentMessageIndex ? 1.2 : 1
+                          scale: index === currentMessageIndex ? 1.2 : 1,
                         }}
                       />
                     ))}
@@ -317,20 +317,20 @@ export default function ErrorPage() {
 
               {/* Error Code */}
               <div className="text-center mb-6">
-                <motion.h1 
+                <motion.h1
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ 
+                  transition={{
                     type: "spring",
                     stiffness: 200,
                     damping: 20,
-                    delay: 0.2
+                    delay: 0.2,
                   }}
                   className="text-7xl md:text-8xl font-bold mb-2 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 bg-clip-text text-transparent"
                 >
                   404
                 </motion.h1>
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "80px" }}
                   transition={{ delay: 0.4, duration: 0.8 }}
@@ -343,20 +343,23 @@ export default function ErrorPage() {
                 <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto mb-2">
                   The page you're looking for doesn't exist or has been moved.
                 </p>
-                {attemptedPath && attemptedPath !== '/' && (
-                  <motion.p 
+                {attemptedPath && attemptedPath !== "/" && (
+                  <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                     className="text-gray-500 text-sm"
                   >
-                    You tried to access: <code className="text-amber-400 bg-gray-900 px-2 py-1 rounded">{attemptedPath}</code>
+                    You tried to access:{" "}
+                    <code className="text-amber-400 bg-gray-900 px-2 py-1 rounded">
+                      {attemptedPath}
+                    </code>
                   </motion.p>
                 )}
               </div>
 
               {/* Fun Footprints Trail */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.3 }}
                 transition={{ delay: 0.6, duration: 1 }}
@@ -367,12 +370,12 @@ export default function ErrorPage() {
                     key={i}
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 0.3, scale: 1 }}
-                    transition={{ delay: 0.7 + (i * 0.1) }}
+                    transition={{ delay: 0.7 + i * 0.1 }}
                   >
-                    <Footprints 
-                      className="w-6 h-6 text-amber-500" 
-                      style={{ 
-                        transform: `rotate(${i % 2 === 0 ? '20deg' : '-20deg'})` 
+                    <Footprints
+                      className="w-6 h-6 text-amber-500"
+                      style={{
+                        transform: `rotate(${i % 2 === 0 ? "20deg" : "-20deg"})`,
                       }}
                     />
                   </motion.div>
@@ -381,7 +384,7 @@ export default function ErrorPage() {
 
               {/* Smart Suggestions */}
               {suggestions.length > 0 && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
@@ -389,7 +392,9 @@ export default function ErrorPage() {
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <Zap className="w-5 h-5 text-blue-400" />
-                    <p className="text-blue-300 font-semibold text-sm">Were you looking for:</p>
+                    <p className="text-blue-300 font-semibold text-sm">
+                      Were you looking for:
+                    </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {suggestions.map((suggestion, index) => {
@@ -412,7 +417,7 @@ export default function ErrorPage() {
               )}
 
               {/* Search Bar - More Prominent */}
-              <motion.form 
+              <motion.form
                 onSubmit={handleSearch}
                 variants={itemVariants}
                 className="mb-6"
@@ -422,9 +427,9 @@ export default function ErrorPage() {
                 </label>
                 <div className="relative max-w-2xl mx-auto">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
-                  <input 
-                    type="text" 
-                    placeholder="Try 'Nike Air Max', 'running shoes', 'men's sneakers'..." 
+                  <input
+                    type="text"
+                    placeholder="Try 'Nike Air Max', 'running shoes', 'men's sneakers'..."
                     className="w-full bg-gray-900 border border-gray-700 rounded-xl py-4 pl-12 pr-12 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -439,25 +444,25 @@ export default function ErrorPage() {
               </motion.form>
 
               {/* Primary Action Buttons */}
-              <motion.div 
+              <motion.div
                 className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"
                 variants={itemVariants}
               >
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 font-bold py-4 px-6 rounded-xl flex items-center justify-center transition-all shadow-lg shadow-amber-500/20"
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate("/")}
                 >
                   <Home className="mr-2 w-5 h-5" />
                   Go to Homepage
                 </motion.button>
-                
+
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="bg-gray-900 hover:bg-gray-700 border border-gray-700 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center transition-all"
-                  onClick={() => navigate('/shop')}
+                  onClick={() => navigate("/shop")}
                 >
                   <ShoppingBag className="mr-2 w-5 h-5" />
                   Browse Products
@@ -467,11 +472,10 @@ export default function ErrorPage() {
           </motion.div>
 
           {/* Quick Links Grid */}
-          <motion.div
-            variants={itemVariants}
-            className="mb-6"
-          >
-            <h3 className="text-lg font-bold text-white mb-3 text-center">Quick Navigation</h3>
+          <motion.div variants={itemVariants} className="mb-6">
+            <h3 className="text-lg font-bold text-white mb-3 text-center">
+              Quick Navigation
+            </h3>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {quickLinks.map((link, index) => {
                 const Icon = link.icon;
@@ -483,10 +487,14 @@ export default function ErrorPage() {
                     onClick={() => navigate(link.path)}
                     className={`bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-${link.color}-500/50 rounded-xl p-4 transition-all text-left group`}
                   >
-                    <div className={`inline-flex p-2.5 bg-${link.color}-500/10 rounded-lg mb-2 border border-${link.color}-500/20 group-hover:scale-110 transition-transform`}>
+                    <div
+                      className={`inline-flex p-2.5 bg-${link.color}-500/10 rounded-lg mb-2 border border-${link.color}-500/20 group-hover:scale-110 transition-transform`}
+                    >
                       <Icon className={`w-5 h-5 text-${link.color}-400`} />
                     </div>
-                    <p className="text-white font-semibold text-sm mb-0.5">{link.name}</p>
+                    <p className="text-white font-semibold text-sm mb-0.5">
+                      {link.name}
+                    </p>
                     <p className="text-gray-500 text-xs">{link.description}</p>
                   </motion.button>
                 );
@@ -515,7 +523,9 @@ export default function ErrorPage() {
                     className="bg-gray-900 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-all text-center group"
                   >
                     <Icon className="w-5 h-5 text-amber-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                    <p className="text-white text-sm font-medium">{category.name}</p>
+                    <p className="text-white text-sm font-medium">
+                      {category.name}
+                    </p>
                   </motion.button>
                 );
               })}
@@ -543,7 +553,9 @@ export default function ErrorPage() {
                       <Icon className="w-5 h-5 text-amber-400" />
                     </div>
                     <div>
-                      <h4 className="text-white font-semibold text-sm mb-1">{tip.title}</h4>
+                      <h4 className="text-white font-semibold text-sm mb-1">
+                        {tip.title}
+                      </h4>
                       <p className="text-gray-400 text-xs">{tip.description}</p>
                     </div>
                   </div>
@@ -553,7 +565,7 @@ export default function ErrorPage() {
           </motion.div>
 
           {/* Additional Actions */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="flex flex-wrap justify-center gap-2"
           >
@@ -566,12 +578,12 @@ export default function ErrorPage() {
               <ArrowLeft className="mr-1.5 w-4 h-4 text-amber-400" />
               <span>Go Back</span>
             </motion.button>
-            
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="flex items-center bg-gray-800 hover:bg-gray-700 border border-gray-700 px-4 py-2.5 rounded-lg text-sm font-medium transition-all"
-              onClick={() => navigate('/contact')}
+              onClick={() => navigate("/contact")}
             >
               <MessageCircle className="mr-1.5 w-4 h-4 text-amber-400" />
               <span>Contact Support</span>
@@ -581,32 +593,34 @@ export default function ErrorPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="flex items-center bg-gray-800 hover:bg-gray-700 border border-gray-700 px-4 py-2.5 rounded-lg text-sm font-medium transition-all"
-              onClick={() => navigate('/about')}
+              onClick={() => navigate("/about")}
             >
               <BookOpen className="mr-1.5 w-4 h-4 text-amber-400" />
               <span>About Us</span>
             </motion.button>
           </motion.div>
 
-          {/* Contact Info */}
+          {/* ------------ Contact Info ------------ */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
             className="mt-6 text-center bg-gray-800 rounded-xl p-5 border border-gray-700"
           >
-            <p className="text-gray-400 text-sm mb-3 font-medium">Need immediate assistance?</p>
+            <p className="text-gray-400 text-sm mb-3 font-medium">
+              Need immediate assistance?
+            </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
-              <a 
-                href="mailto:support@solecraft.com" 
+              <a
+                href="mailto:support@solecraft.com"
                 className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors font-medium"
               >
                 <Mail className="w-4 h-4" />
                 support@solecraft.com
               </a>
               <span className="text-gray-700">|</span>
-              <a 
-                href="tel:+91-9168495030" 
+              <a
+                href="tel:+91-9168495030"
                 className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors font-medium"
               >
                 <Phone className="w-4 h-4" />

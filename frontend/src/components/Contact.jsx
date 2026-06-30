@@ -302,11 +302,11 @@ export default function ContactUsComponent() {
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      
+
       <div className="pt-24 md:pt-28">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
           {/* Enhanced Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -320,39 +320,42 @@ export default function ContactUsComponent() {
                 className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
               >
                 <MessageSquare className="w-5 h-5 text-amber-400" />
-                <span className="text-amber-400 text-sm font-semibold">Get In Touch</span>
+                <span className="text-amber-400 text-sm font-semibold">
+                  Get In Touch
+                </span>
               </motion.div>
-              
+
               <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
                 Contact Us
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "200px" }}
                   transition={{ delay: 0.3, duration: 0.8 }}
                   className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
                 />
               </h2>
-              
-              <motion.p 
+
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
                 className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
               >
-                We're here to help! Reach out to our team with any questions, concerns, or feedback.
+                We're here to help! Reach out to our team with any questions,
+                concerns, or feedback.
               </motion.p>
             </div>
           </motion.div>
 
           {/* Stats Banner */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
             className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
-            
+
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
@@ -365,11 +368,15 @@ export default function ContactUsComponent() {
                     whileHover={{ y: -3 }}
                     className="text-center"
                   >
-                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                    <div
+                      className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}
+                    >
                       <Icon className={`w-6 h-6 text-${stat.color}-400`} />
                     </div>
                     <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
-                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                    <p className="text-2xl font-bold text-white">
+                      {stat.value}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -377,7 +384,7 @@ export default function ContactUsComponent() {
           </motion.div>
 
           {/* Contact Information Cards */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
@@ -391,15 +398,23 @@ export default function ContactUsComponent() {
                   href={item.action}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 + (index * 0.1), duration: 0.3 }}
+                  transition={{ delay: 0.8 + index * 0.1, duration: 0.3 }}
                   whileHover={{ y: -5 }}
                   className={`bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-${item.color}-500/50 transition-all shadow-lg group cursor-pointer`}
                 >
-                  <div className={`inline-flex p-3 bg-${item.color}-500/10 rounded-xl mb-4 border border-${item.color}-500/20 group-hover:scale-110 transition-transform`}>
+                  <div
+                    className={`inline-flex p-3 bg-${item.color}-500/10 rounded-xl mb-4 border border-${item.color}-500/20 group-hover:scale-110 transition-transform`}
+                  >
                     <Icon className={`w-6 h-6 text-${item.color}-400`} />
                   </div>
-                  <h3 className="font-medium text-white text-lg mb-2">{item.title}</h3>
-                  <p className={`text-${item.color}-400 text-sm font-medium mb-1`}>{item.content}</p>
+                  <h3 className="font-medium text-white text-lg mb-2">
+                    {item.title}
+                  </h3>
+                  <p
+                    className={`text-${item.color}-400 text-sm font-medium mb-1`}
+                  >
+                    {item.content}
+                  </p>
                   <p className="text-gray-500 text-xs">{item.subtext}</p>
                 </motion.a>
               );
@@ -408,7 +423,7 @@ export default function ContactUsComponent() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Contact Form Section */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.5 }}
@@ -427,16 +442,25 @@ export default function ContactUsComponent() {
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <h4 className="text-green-400 font-bold text-lg mb-2">Message Sent Successfully!</h4>
+                        <h4 className="text-green-400 font-bold text-lg mb-2">
+                          Message Sent Successfully!
+                        </h4>
                         <p className="text-gray-300 text-sm mb-3">
-                          Thank you for contacting us. Our support team will review your message and get back to you within 24 hours.
+                          Thank you for contacting us. Our support team will
+                          review your message and get back to you within 24
+                          hours.
                         </p>
                         {messageId && (
                           <div className="bg-gray-900 rounded-lg p-3 border border-green-500/20">
-                            <p className="text-gray-400 text-xs mb-1">Your Message ID:</p>
-                            <p className="text-green-400 font-mono text-sm font-bold">{messageId}</p>
+                            <p className="text-gray-400 text-xs mb-1">
+                              Your Message ID:
+                            </p>
+                            <p className="text-green-400 font-mono text-sm font-bold">
+                              {messageId}
+                            </p>
                             <p className="text-gray-500 text-xs mt-2">
-                              Save this ID to track your message status or reference it in future communications.
+                              Save this ID to track your message status or
+                              reference it in future communications.
                             </p>
                           </div>
                         )}
@@ -446,7 +470,7 @@ export default function ContactUsComponent() {
                 )}
               </AnimatePresence>
 
-              {/* Category Navigation */}
+              {/* ------------ Category Navigation ------------ */}
               <div className="mb-6 overflow-x-auto pb-2 scrollbar-hide">
                 <div className="flex gap-2">
                   {contactCategories.map((category) => {
@@ -456,9 +480,9 @@ export default function ContactUsComponent() {
                         key={category.id}
                         onClick={() => setActiveCategory(category.id)}
                         className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
-                          activeCategory === category.id 
-                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
-                            : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                          activeCategory === category.id
+                            ? "bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30"
+                            : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700"
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -498,9 +522,15 @@ export default function ContactUsComponent() {
                 </AnimatePresence>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <motion.div
+                    variants={itemVariants}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-5"
+                  >
                     <div>
-                      <label htmlFor="name" className="block text-gray-400 text-sm font-medium mb-2">
+                      <label
+                        htmlFor="name"
+                        className="block text-gray-400 text-sm font-medium mb-2"
+                      >
                         Your Name *
                       </label>
                       <input
@@ -516,7 +546,10 @@ export default function ContactUsComponent() {
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-gray-400 text-sm font-medium mb-2">
+                      <label
+                        htmlFor="email"
+                        className="block text-gray-400 text-sm font-medium mb-2"
+                      >
                         Email Address *
                       </label>
                       <input
@@ -534,7 +567,10 @@ export default function ContactUsComponent() {
                   </motion.div>
 
                   <motion.div variants={itemVariants}>
-                    <label htmlFor="subject" className="block text-gray-400 text-sm font-medium mb-2">
+                    <label
+                      htmlFor="subject"
+                      className="block text-gray-400 text-sm font-medium mb-2"
+                    >
                       Subject *
                     </label>
                     <input
@@ -550,14 +586,17 @@ export default function ContactUsComponent() {
                     />
                   </motion.div>
 
-                  {activeCategory === 'orders' && (
-                    <motion.div 
+                  {activeCategory === "orders" && (
+                    <motion.div
                       variants={itemVariants}
                       initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
+                      animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                     >
-                      <label htmlFor="orderNumber" className="block text-gray-400 text-sm font-medium mb-2">
+                      <label
+                        htmlFor="orderNumber"
+                        className="block text-gray-400 text-sm font-medium mb-2"
+                      >
                         Order Number (Optional)
                       </label>
                       <input
@@ -574,7 +613,10 @@ export default function ContactUsComponent() {
                   )}
 
                   <motion.div variants={itemVariants}>
-                    <label htmlFor="message" className="block text-gray-400 text-sm font-medium mb-2">
+                    <label
+                      htmlFor="message"
+                      className="block text-gray-400 text-sm font-medium mb-2"
+                    >
                       Message *
                     </label>
                     <textarea
@@ -591,13 +633,15 @@ export default function ContactUsComponent() {
                       maxLength={5000}
                     ></textarea>
                     <div className="mt-1 text-right">
-                      <span className={`text-xs ${formData.message.length > 4900 ? 'text-amber-400' : 'text-gray-500'}`}>
+                      <span
+                        className={`text-xs ${formData.message.length > 4900 ? "text-amber-400" : "text-gray-500"}`}
+                      >
                         {formData.message.length} / 5000
                       </span>
                     </div>
                   </motion.div>
 
-                  <motion.div 
+                  <motion.div
                     variants={itemVariants}
                     className="flex justify-end pt-4"
                   >
@@ -623,22 +667,22 @@ export default function ContactUsComponent() {
               </motion.div>
 
               {/* Live Chat CTA */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1, duration: 0.5 }}
                 className="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
               >
                 <div className="absolute inset-0">
-                  <motion.div 
-                    animate={{ 
+                  <motion.div
+                    animate={{
                       x: [-100, 100, -100],
-                      opacity: [0.1, 0.2, 0.1]
+                      opacity: [0.1, 0.2, 0.1],
                     }}
-                    transition={{ 
-                      duration: 10, 
+                    transition={{
+                      duration: 10,
                       repeat: Infinity,
-                      ease: "linear"
+                      ease: "linear",
                     }}
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
                   />
@@ -648,16 +692,19 @@ export default function ContactUsComponent() {
                   <div className="flex-1 text-center md:text-left">
                     <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
                       <Zap className="w-4 h-4 text-white" />
-                      <span className="text-white text-sm font-semibold">Need Immediate Help?</span>
+                      <span className="text-white text-sm font-semibold">
+                        Need Immediate Help?
+                      </span>
                     </div>
                     <h3 className="text-3xl font-bold text-gray-900 mb-3">
                       Start a Live Chat
                     </h3>
                     <p className="text-gray-800 leading-relaxed">
-                      Our support team is available during business hours for urgent inquiries and real-time assistance.
+                      Our support team is available during business hours for
+                      urgent inquiries and real-time assistance.
                     </p>
                   </div>
-                  
+
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
@@ -671,7 +718,7 @@ export default function ContactUsComponent() {
             </motion.div>
 
             {/* FAQ Section */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1, duration: 0.5 }}
@@ -686,27 +733,31 @@ export default function ContactUsComponent() {
                 <div className="space-y-3">
                   <AnimatePresence mode="wait">
                     {faqData[activeCategory].map((faq, index) => (
-                      <motion.div 
+                      <motion.div
                         key={faq.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 1.2 + (index * 0.1), duration: 0.3 }}
+                        transition={{ delay: 1.2 + index * 0.1, duration: 0.3 }}
                         className="border border-gray-700 rounded-xl overflow-hidden hover:border-amber-500/50 transition-colors"
                       >
                         <button
                           onClick={() => toggleFaq(faq.id)}
                           className={`w-full p-4 text-left transition-colors flex justify-between items-center ${
-                            openFaqId === faq.id ? "bg-gray-900" : "hover:bg-gray-900"
+                            openFaqId === faq.id
+                              ? "bg-gray-900"
+                              : "hover:bg-gray-900"
                           }`}
                         >
-                          <span className="font-medium text-white text-sm pr-2">{faq.question}</span>
-                          <ChevronDown 
+                          <span className="font-medium text-white text-sm pr-2">
+                            {faq.question}
+                          </span>
+                          <ChevronDown
                             className={`w-4 h-4 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
-                              openFaqId === faq.id ? 'rotate-180' : ''
+                              openFaqId === faq.id ? "rotate-180" : ""
                             }`}
                           />
                         </button>
-                        
+
                         <AnimatePresence>
                           {openFaqId === faq.id && (
                             <motion.div
@@ -730,21 +781,22 @@ export default function ContactUsComponent() {
                 <div className="mt-6 p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
                   <div className="flex items-center mb-3">
                     <FileText className="w-4 h-4 text-amber-400 mr-2" />
-                    <h4 className="font-medium text-white text-sm">Additional Resources</h4>
+                    <h4 className="font-medium text-white text-sm">
+                      Additional Resources
+                    </h4>
                   </div>
                   <ul className="space-y-2 text-sm">
                     {[
                       "Shipping & Delivery Info",
                       "Return & Exchange Policy",
                       "Size Guides",
-                      "Care Instructions"
+                      "Care Instructions",
                     ].map((resource, idx) => (
-                      <li 
-                        key={idx}
-                        className="flex items-start"
-                      >
+                      <li key={idx} className="flex items-start">
                         <span className="text-amber-400 mr-2 mt-0.5">•</span>
-                        <span className="text-gray-300 hover:text-amber-400 cursor-pointer transition-colors">{resource}</span>
+                        <span className="text-gray-300 hover:text-amber-400 cursor-pointer transition-colors">
+                          {resource}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -754,7 +806,7 @@ export default function ContactUsComponent() {
           </div>
         </main>
       </div>
-      
+
       <Footer />
     </div>
   );
