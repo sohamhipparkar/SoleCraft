@@ -532,7 +532,7 @@ export default function ErrorPage() {
             </div>
           </motion.div>
 
-          {/* Helpful Tips */}
+          {/* ------------- Helpful Tips ------------- */}
           <motion.div
             variants={itemVariants}
             className="bg-gray-800 rounded-2xl p-6 border border-gray-700 mb-6"
@@ -564,7 +564,7 @@ export default function ErrorPage() {
             </div>
           </motion.div>
 
-          {/* Additional Actions */}
+          {/* ------------- Additional Actions ------------- */}
           <motion.div
             variants={itemVariants}
             className="flex flex-wrap justify-center gap-2"
@@ -600,7 +600,7 @@ export default function ErrorPage() {
             </motion.button>
           </motion.div>
 
-          {/* ------------ Contact Info ------------ */}
+          {/* ------------- Contact Info ------------- */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

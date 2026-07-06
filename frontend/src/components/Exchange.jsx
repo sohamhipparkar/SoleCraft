@@ -250,11 +250,11 @@ export default function ShoeExchangeComponent() {
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      
+
       <div className="pt-24 md:pt-28">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
           {/* Enhanced Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -264,7 +264,7 @@ export default function ShoeExchangeComponent() {
               <div className="mb-4 md:mb-0">
                 <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
                   Shoe Exchange
-                  <motion.div 
+                  <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: "250px" }}
                     transition={{ delay: 0.3, duration: 0.8 }}
@@ -281,16 +281,16 @@ export default function ShoeExchangeComponent() {
               <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <div className="relative flex-1 md:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Search shoes..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full bg-gray-800 rounded-xl py-2.5 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-400 border border-gray-700 text-white placeholder-gray-500 transition-all"
                   />
                 </div>
-                
-                <select 
+
+                <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="bg-gray-800 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-400 border border-gray-700 text-white cursor-pointer"
@@ -313,18 +313,18 @@ export default function ShoeExchangeComponent() {
                   whileTap={{ scale: 0.97 }}
                   className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
                     selectedBrand === brand
-                      ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900'
-                      : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                      ? "bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900"
+                      : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700"
                   }`}
                 >
-                  {brand === 'all' ? 'All Brands' : brand}
+                  {brand === "all" ? "All Brands" : brand}
                 </motion.button>
               ))}
             </div>
           </motion.div>
-          
+
           {/* Enhanced Exchange Section */}
-          <motion.div 
+          <motion.div
             ref={exchangeRef}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -333,32 +333,32 @@ export default function ShoeExchangeComponent() {
           >
             {/* Animated Background */}
             <div className="absolute inset-0 overflow-hidden">
-              <motion.div 
-                animate={{ 
+              <motion.div
+                animate={{
                   scale: [1, 1.2, 1],
-                  rotate: [0, 90, 0]
+                  rotate: [0, 90, 0],
                 }}
-                transition={{ 
+                transition={{
                   duration: 20,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "linear",
                 }}
                 className="absolute -right-32 -top-32 w-96 h-96 rounded-full bg-amber-500 opacity-5 blur-3xl"
               />
-              <motion.div 
-                animate={{ 
+              <motion.div
+                animate={{
                   scale: [1, 1.3, 1],
-                  rotate: [0, -90, 0]
+                  rotate: [0, -90, 0],
                 }}
-                transition={{ 
+                transition={{
                   duration: 25,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "linear",
                 }}
                 className="absolute -left-32 -bottom-32 w-96 h-96 rounded-full bg-amber-500 opacity-5 blur-3xl"
               />
             </div>
-            
+
             <div className="relative z-10">
               {/* Header with Progress Indicator */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -368,24 +368,36 @@ export default function ShoeExchangeComponent() {
                     Exchange Shoes
                   </h3>
                   <div className="flex items-center gap-2 text-sm text-gray-400">
-                    <span className={`${selectedShoes.length >= 1 ? 'text-amber-400' : ''}`}>
+                    <span
+                      className={`${selectedShoes.length >= 1 ? "text-amber-400" : ""}`}
+                    >
                       Step 1: Select your shoe
                     </span>
                     <ChevronRight className="w-4 h-4" />
-                    <span className={`${selectedShoes.length >= 2 ? 'text-amber-400' : ''}`}>
+                    <span
+                      className={`${selectedShoes.length >= 2 ? "text-amber-400" : ""}`}
+                    >
                       Step 2: Choose exchange
                     </span>
                   </div>
                 </div>
-                
-                <motion.button 
+
+                <motion.button
                   onClick={handleExchange}
                   disabled={selectedShoes.length !== 2 || isExchanging}
-                  whileHover={selectedShoes.length === 2 && !isExchanging ? { scale: 1.02 } : {}}
-                  whileTap={selectedShoes.length === 2 && !isExchanging ? { scale: 0.98 } : {}}
+                  whileHover={
+                    selectedShoes.length === 2 && !isExchanging
+                      ? { scale: 1.02 }
+                      : {}
+                  }
+                  whileTap={
+                    selectedShoes.length === 2 && !isExchanging
+                      ? { scale: 0.98 }
+                      : {}
+                  }
                   className={`px-6 py-3 rounded-xl flex items-center gap-2 font-medium transition-all duration-300 ${
                     selectedShoes.length === 2 && !isExchanging
-                      ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 shadow-lg shadow-amber-500/30" 
+                      ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 shadow-lg shadow-amber-500/30"
                       : "bg-gray-700 text-gray-500 cursor-not-allowed"
                   }`}
                 >
@@ -402,11 +414,11 @@ export default function ShoeExchangeComponent() {
                   )}
                 </motion.button>
               </div>
-              
+
               {/* Exchange Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 {/* Left Selection */}
-                <motion.div 
+                <motion.div
                   className="relative"
                   whileHover={{ scale: selectedShoes[0] ? 1 : 1.01 }}
                   transition={{ duration: 0.2 }}
@@ -414,10 +426,10 @@ export default function ShoeExchangeComponent() {
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-gray-900 px-4 py-1 rounded-full text-sm font-semibold z-10">
                     Your Shoe
                   </div>
-                  
+
                   <AnimatePresence mode="wait">
                     {selectedShoes[0] ? (
-                      <motion.div 
+                      <motion.div
                         key="selected-left"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -426,14 +438,14 @@ export default function ShoeExchangeComponent() {
                         className="bg-gray-900 p-5 rounded-2xl border-2 border-amber-500/50 shadow-xl relative group"
                       >
                         <div className="relative rounded-xl overflow-hidden mb-4">
-                          <img 
-                            src={selectedShoes[0].image} 
+                          <img
+                            src={selectedShoes[0].image}
                             alt={selectedShoes[0].name}
                             className="w-full h-56 object-cover"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
-                          
-                          <motion.button 
+
+                          <motion.button
                             onClick={() => removeSelected(selectedShoes[0])}
                             whileHover={{ scale: 1.1, rotate: 90 }}
                             whileTap={{ scale: 0.9 }}
@@ -451,21 +463,29 @@ export default function ShoeExchangeComponent() {
                             </span>
                           </div>
                         </div>
-                        
+
                         <div>
-                          <h4 className="font-bold text-xl text-white mb-1">{selectedShoes[0].name}</h4>
-                          <p className="text-sm text-gray-400 mb-3">{selectedShoes[0].brand}</p>
+                          <h4 className="font-bold text-xl text-white mb-1">
+                            {selectedShoes[0].name}
+                          </h4>
+                          <p className="text-sm text-gray-400 mb-3">
+                            {selectedShoes[0].brand}
+                          </p>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1">
                               <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                              <span className="text-sm font-medium">{selectedShoes[0].rating}</span>
+                              <span className="text-sm font-medium">
+                                {selectedShoes[0].rating}
+                              </span>
                             </div>
-                            <span className="text-lg font-bold text-amber-400">${selectedShoes[0].price}</span>
+                            <span className="text-lg font-bold text-amber-400">
+                              ${selectedShoes[0].price}
+                            </span>
                           </div>
                         </div>
                       </motion.div>
                     ) : (
-                      <motion.div 
+                      <motion.div
                         key="empty-left"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -478,15 +498,19 @@ export default function ShoeExchangeComponent() {
                         >
                           <ShoppingBag className="w-16 h-16 mb-4 text-gray-600" />
                         </motion.div>
-                        <p className="text-center font-medium">Select your shoe from below</p>
-                        <p className="text-sm text-gray-600 mt-2">Click on any available shoe</p>
+                        <p className="text-center font-medium">
+                          Select your shoe from below
+                        </p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          Click on any available shoe
+                        </p>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </motion.div>
-                
+
                 {/* Right Selection */}
-                <motion.div 
+                <motion.div
                   className="relative"
                   whileHover={{ scale: selectedShoes[1] ? 1 : 1.01 }}
                   transition={{ duration: 0.2 }}
@@ -494,10 +518,10 @@ export default function ShoeExchangeComponent() {
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold z-10">
                     Exchange For
                   </div>
-                  
+
                   <AnimatePresence mode="wait">
                     {selectedShoes[1] ? (
-                      <motion.div 
+                      <motion.div
                         key="selected-right"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -506,14 +530,14 @@ export default function ShoeExchangeComponent() {
                         className="bg-gray-900 p-5 rounded-2xl border-2 border-purple-500/50 shadow-xl relative group"
                       >
                         <div className="relative rounded-xl overflow-hidden mb-4">
-                          <img 
-                            src={selectedShoes[1].image} 
+                          <img
+                            src={selectedShoes[1].image}
                             alt={selectedShoes[1].name}
                             className="w-full h-56 object-cover"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
-                          
-                          <motion.button 
+
+                          <motion.button
                             onClick={() => removeSelected(selectedShoes[1])}
                             whileHover={{ scale: 1.1, rotate: 90 }}
                             whileTap={{ scale: 0.9 }}
@@ -531,21 +555,29 @@ export default function ShoeExchangeComponent() {
                             </span>
                           </div>
                         </div>
-                        
+
                         <div>
-                          <h4 className="font-bold text-xl text-white mb-1">{selectedShoes[1].name}</h4>
-                          <p className="text-sm text-gray-400 mb-3">{selectedShoes[1].brand}</p>
+                          <h4 className="font-bold text-xl text-white mb-1">
+                            {selectedShoes[1].name}
+                          </h4>
+                          <p className="text-sm text-gray-400 mb-3">
+                            {selectedShoes[1].brand}
+                          </p>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1">
                               <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                              <span className="text-sm font-medium">{selectedShoes[1].rating}</span>
+                              <span className="text-sm font-medium">
+                                {selectedShoes[1].rating}
+                              </span>
                             </div>
-                            <span className="text-lg font-bold text-purple-400">${selectedShoes[1].price}</span>
+                            <span className="text-lg font-bold text-purple-400">
+                              ${selectedShoes[1].price}
+                            </span>
                           </div>
                         </div>
                       </motion.div>
                     ) : (
-                      <motion.div 
+                      <motion.div
                         key="empty-right"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -554,18 +586,26 @@ export default function ShoeExchangeComponent() {
                       >
                         <motion.div
                           animate={{ y: [0, -10, 0] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: 0.5,
+                          }}
                         >
                           <Package className="w-16 h-16 mb-4 text-gray-600" />
                         </motion.div>
-                        <p className="text-center font-medium">Select shoe to exchange</p>
-                        <p className="text-sm text-gray-600 mt-2">Choose from available options</p>
+                        <p className="text-center font-medium">
+                          Select shoe to exchange
+                        </p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          Choose from available options
+                        </p>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </motion.div>
               </div>
-              
+
               {/* Exchange Value Display */}
               {selectedShoes.length === 2 && (
                 <motion.div
@@ -576,27 +616,33 @@ export default function ShoeExchangeComponent() {
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
                       <Shield className="w-5 h-5 text-green-400" />
-                      <span className="text-gray-400">Exchange Value Match</span>
+                      <span className="text-gray-400">
+                        Exchange Value Match
+                      </span>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="text-amber-400 font-bold">${selectedShoes[0].price}</span>
+                      <span className="text-amber-400 font-bold">
+                        ${selectedShoes[0].price}
+                      </span>
                       <ArrowLeftRight className="w-4 h-4 text-gray-500" />
-                      <span className="text-purple-400 font-bold">${selectedShoes[1].price}</span>
+                      <span className="text-purple-400 font-bold">
+                        ${selectedShoes[1].price}
+                      </span>
                     </div>
                   </div>
                 </motion.div>
               )}
-              
+
               {/* Success overlay */}
               <AnimatePresence>
                 {exchangeSuccess && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     className="absolute inset-0 flex items-center justify-center bg-gray-900/95 backdrop-blur-md z-30 rounded-2xl"
                   >
-                    <motion.div 
+                    <motion.div
                       initial={{ scale: 0.5, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.5, opacity: 0 }}
@@ -609,30 +655,54 @@ export default function ShoeExchangeComponent() {
                       >
                         <Check className="w-12 h-12 text-gray-900" />
                       </motion.div>
-                      <h3 className="text-2xl font-bold mb-2">Exchange Successful!</h3>
-                      <p className="text-gray-400">Your shoes have been exchanged</p>
+                      <h3 className="text-2xl font-bold mb-2">
+                        Exchange Successful!
+                      </h3>
+                      <p className="text-gray-400">
+                        Your shoes have been exchanged
+                      </p>
                     </motion.div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           </motion.div>
-          
+
           {/* Enhanced Stats Banner */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
             className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
-            
+
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
               {[
-                { label: 'Total Exchanges', value: '2,547', icon: RefreshCw, color: 'amber' },
-                { label: 'Active Users', value: '1,234', icon: Users, color: 'purple' },
-                { label: 'Avg Rating', value: '4.7', icon: Star,  color: 'yellow' },
-                { label: 'Processing Time', value: '24h', icon: Clock,  color: 'green' }
+                {
+                  label: "Total Exchanges",
+                  value: "2,547",
+                  icon: RefreshCw,
+                  color: "amber",
+                },
+                {
+                  label: "Active Users",
+                  value: "1,234",
+                  icon: Users,
+                  color: "purple",
+                },
+                {
+                  label: "Avg Rating",
+                  value: "4.7",
+                  icon: Star,
+                  color: "yellow",
+                },
+                {
+                  label: "Processing Time",
+                  value: "24h",
+                  icon: Clock,
+                  color: "green",
+                },
               ].map((stat, index) => {
                 const Icon = stat.icon;
                 return (
@@ -644,21 +714,22 @@ export default function ShoeExchangeComponent() {
                     whileHover={{ y: -3 }}
                     className="text-center"
                   >
-                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                    <div
+                      className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}
+                    >
                       <Icon className={`w-6 h-6 text-${stat.color}-400`} />
                     </div>
                     <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
                     <p className="text-2xl font-bold mb-1">{stat.value}</p>
-                    <div className="flex items-center justify-center text-green-400 text-xs">
-                    </div>
+                    <div className="flex items-center justify-center text-green-400 text-xs"></div>
                   </motion.div>
                 );
               })}
             </div>
           </motion.div>
-          
-          {/* Available Shoes Section */}
-          <motion.div 
+
+          {/* ------------- Available Shoes Section ------------- */}
+          <motion.div
             className="mb-12"
             initial="hidden"
             animate="visible"
@@ -672,16 +743,18 @@ export default function ShoeExchangeComponent() {
                     ({filteredShoes.length} items)
                   </span>
                 </h3>
-                <p className="text-gray-500 text-sm mt-1">Click to select for exchange</p>
+                <p className="text-gray-500 text-sm mt-1">
+                  Click to select for exchange
+                </p>
               </div>
-              <motion.button 
+              <motion.button
                 whileHover={{ x: 3 }}
                 className="text-amber-400 flex items-center text-sm font-medium"
               >
                 View all <ChevronRight className="ml-1 w-4 h-4" />
               </motion.button>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <AnimatePresence>
                 {filteredShoes.map((shoe) => (
@@ -699,16 +772,16 @@ export default function ShoeExchangeComponent() {
                     onClick={() => selectShoe(shoe)}
                   >
                     <div className="relative overflow-hidden">
-                      <img 
-                        src={shoe.image} 
-                        alt={shoe.name} 
+                      <img
+                        src={shoe.image}
+                        alt={shoe.name}
                         className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                       />
-                      
+
                       <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
-                      
+
                       {/* Wishlist Button */}
-                      <motion.button 
+                      <motion.button
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleWishlist(shoe.id);
@@ -717,12 +790,12 @@ export default function ShoeExchangeComponent() {
                         whileTap={{ scale: 0.9 }}
                         className="absolute top-3 right-3 bg-gray-900/80 backdrop-blur-sm rounded-full p-2 z-10 border border-gray-700"
                       >
-                        <Heart 
+                        <Heart
                           className={`w-5 h-5 transition-colors ${
-                            wishlist.includes(shoe.id) 
-                              ? 'text-red-500 fill-red-500' 
-                              : 'text-gray-400'
-                          }`} 
+                            wishlist.includes(shoe.id)
+                              ? "text-red-500 fill-red-500"
+                              : "text-gray-400"
+                          }`}
                         />
                       </motion.button>
 
@@ -736,7 +809,7 @@ export default function ShoeExchangeComponent() {
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="p-4">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
@@ -745,14 +818,16 @@ export default function ShoeExchangeComponent() {
                           </h4>
                           <p className="text-sm text-gray-400">{shoe.brand}</p>
                         </div>
-                        <p className="font-bold text-amber-400 text-lg">${shoe.price}</p>
+                        <p className="font-bold text-amber-400 text-lg">
+                          ${shoe.price}
+                        </p>
                       </div>
-                      
+
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex gap-1">
                           {shoe.colors.map((color, i) => (
-                            <motion.div 
-                              key={i} 
+                            <motion.div
+                              key={i}
                               whileHover={{ scale: 1.3 }}
                               className={`w-5 h-5 rounded-full ${color} border-2 border-gray-700 cursor-pointer`}
                             />
@@ -760,11 +835,13 @@ export default function ShoeExchangeComponent() {
                         </div>
                         <div className="flex items-center gap-1">
                           <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                          <span className="text-sm font-medium">{shoe.rating}</span>
+                          <span className="text-sm font-medium">
+                            {shoe.rating}
+                          </span>
                         </div>
                       </div>
-                      
-                      <motion.button 
+
+                      <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className="w-full py-2.5 bg-gray-900 text-amber-400 border border-gray-700 hover:border-amber-500 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 group"
@@ -782,40 +859,43 @@ export default function ShoeExchangeComponent() {
               </AnimatePresence>
             </div>
           </motion.div>
-          
-          {/* Enhanced Features Banner */}
-          <motion.div 
+
+          {/* ------------- Enhanced Features Banner ------------- */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
             className="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
           >
             <div className="absolute inset-0">
-              <motion.div 
-                animate={{ 
+              <motion.div
+                animate={{
                   x: [-100, 100, -100],
-                  opacity: [0.1, 0.2, 0.1]
+                  opacity: [0.1, 0.2, 0.1],
                 }}
-                transition={{ 
-                  duration: 10, 
+                transition={{
+                  duration: 10,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "linear",
                 }}
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
               />
             </div>
-            
+
             <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="flex-1">
                 <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
                   <Zap className="w-4 h-4 text-white" />
-                  <span className="text-white text-sm font-semibold">Premium Feature</span>
+                  <span className="text-white text-sm font-semibold">
+                    Premium Feature
+                  </span>
                 </div>
                 <h3 className="font-bold text-3xl mb-3 text-gray-900">
                   Join Exchange Plus
                 </h3>
                 <p className="text-gray-800 leading-relaxed max-w-2xl">
-                  Get priority exchanges, exclusive access to limited editions, and earn 2x loyalty points on every transaction.
+                  Get priority exchanges, exclusive access to limited editions,
+                  and earn 2x loyalty points on every transaction.
                 </p>
                 <ul className="mt-4 space-y-2 text-gray-800">
                   <li className="flex items-center gap-2">
@@ -832,9 +912,9 @@ export default function ShoeExchangeComponent() {
                   </li>
                 </ul>
               </div>
-              
+
               <div className="flex flex-col gap-3">
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   className="bg-gray-900 text-amber-400 py-3 px-8 rounded-xl font-semibold flex items-center gap-2 shadow-xl whitespace-nowrap"
@@ -848,22 +928,22 @@ export default function ShoeExchangeComponent() {
               </div>
             </div>
           </motion.div>
-          
-          {/* Recently Exchanged Section */}
+
+          {/* ------------- Recently Exchanged Section ------------- */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={containerVariants}
             className="mt-12"
           >
-            <motion.h3 
+            <motion.h3
               variants={itemVariants}
               className="text-xl font-bold flex items-center mb-6"
             >
               <Clock className="mr-2 text-amber-400" />
               Recently Exchanged
             </motion.h3>
-            
+
             <motion.div
               variants={containerVariants}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
@@ -873,48 +953,57 @@ export default function ShoeExchangeComponent() {
                 <motion.div
                   key={`exchange-${index}`}
                   variants={itemVariants}
-                  whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)" }}
+                  whileHover={{
+                    y: -5,
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)",
+                  }}
                   className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 shadow-md"
                 >
                   <div className="p-4">
                     <div className="flex justify-between items-center mb-3">
-                      <span className="text-amber-400 text-sm font-medium">Exchange #{index + 20}</span>
+                      <span className="text-amber-400 text-sm font-medium">
+                        Exchange #{index + 20}
+                      </span>
                       <span className="text-gray-400 text-xs">1 day ago</span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="w-1/2 pr-2 border-r border-gray-700">
                         <div className="relative overflow-hidden rounded-md h-20">
-                          <img 
-                            src={shoesData[index].image} 
+                          <img
+                            src={shoesData[index].image}
                             alt={shoesData[index].name}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <p className="text-sm mt-2 font-medium text-white truncate">{shoesData[index].name}</p>
+                        <p className="text-sm mt-2 font-medium text-white truncate">
+                          {shoesData[index].name}
+                        </p>
                       </div>
-                      
+
                       <div className="flex items-center justify-center w-1/6">
-                        <motion.div 
+                        <motion.div
                           whileHover={{ rotate: 180 }}
                           transition={{ duration: 0.5 }}
                         >
                           <ArrowLeftRight className="text-amber-400 w-4 h-4" />
                         </motion.div>
                       </div>
-                      
+
                       <div className="w-1/2 pl-2">
                         <div className="relative overflow-hidden rounded-md h-20">
-                          <img 
-                            src={shoesData[index + 4].image} 
+                          <img
+                            src={shoesData[index + 4].image}
                             alt={shoesData[index + 4].name}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <p className="text-sm mt-2 font-medium text-white truncate">{shoesData[index + 4].name}</p>
+                        <p className="text-sm mt-2 font-medium text-white truncate">
+                          {shoesData[index + 4].name}
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="mt-4 pt-3 border-t border-gray-700 flex justify-between items-center">
                       <div className="flex items-center text-gray-400 text-xs">
                         <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center mr-2">
@@ -931,7 +1020,7 @@ export default function ShoeExchangeComponent() {
               ))}
             </motion.div>
           </motion.div>
-          
+
           {/* Testimonials Slider */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -939,8 +1028,10 @@ export default function ShoeExchangeComponent() {
             transition={{ delay: 0.7, duration: 0.7 }}
             className="mt-12 bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700"
           >
-            <h3 className="text-xl font-bold mb-6 text-center">What Our Community Says</h3>
-            
+            <h3 className="text-xl font-bold mb-6 text-center">
+              What Our Community Says
+            </h3>
+
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -951,18 +1042,18 @@ export default function ShoeExchangeComponent() {
                 {
                   name: "Alex Johnson",
                   text: "The exchange process was incredibly smooth. I got my dream shoes within days!",
-                  rating: 5
+                  rating: 5,
                 },
                 {
                   name: "Sarah Williams",
                   text: "I've been using this platform for months now. Best shoe exchange community I've found.",
-                  rating: 5
+                  rating: 5,
                 },
                 {
                   name: "Michael Chen",
                   text: "Great selection of shoes and the verification process makes exchanges feel safe.",
-                  rating: 4
-                }
+                  rating: 4,
+                },
               ].map((testimonial, idx) => (
                 <motion.div
                   key={idx}
@@ -973,17 +1064,37 @@ export default function ShoeExchangeComponent() {
                   className="bg-gray-900 p-4 rounded-lg shadow relative"
                 >
                   <div className="absolute -top-3 left-4 bg-amber-500 text-gray-900 rounded-full w-6 h-6 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                      />
                     </svg>
                   </div>
-                  <p className="text-gray-300 italic mb-4">{testimonial.text}</p>
+                  <p className="text-gray-300 italic mb-4">
+                    {testimonial.text}
+                  </p>
                   <div className="flex justify-between items-center">
-                    <span className="font-medium text-white">{testimonial.name}</span>
+                    <span className="font-medium text-white">
+                      {testimonial.name}
+                    </span>
                     <div className="flex">
-                      {Array(testimonial.rating).fill(0).map((_, i) => (
-                        <Star key={i} className="w-3 h-3 text-amber-400 fill-current" />
-                      ))}
+                      {Array(testimonial.rating)
+                        .fill(0)
+                        .map((_, i) => (
+                          <Star
+                            key={i}
+                            className="w-3 h-3 text-amber-400 fill-current"
+                          />
+                        ))}
                     </div>
                   </div>
                 </motion.div>
@@ -992,7 +1103,7 @@ export default function ShoeExchangeComponent() {
           </motion.div>
         </main>
       </div>
-      
+
       <Footer />
     </div>
   );
