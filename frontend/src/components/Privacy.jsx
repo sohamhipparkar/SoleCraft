@@ -373,11 +373,11 @@ For residents of the European Economic Area, we have appointed a data protection
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      
+
       <div className="pt-24 md:pt-28">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          {/* Enhanced Header */}
-          <motion.div 
+          {/* -----------------Enhanced Header ----------------- */}
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -391,40 +391,43 @@ For residents of the European Economic Area, we have appointed a data protection
                 className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
               >
                 <Shield className="w-5 h-5 text-amber-400" />
-                <span className="text-amber-400 text-sm font-semibold">Your Privacy Matters</span>
+                <span className="text-amber-400 text-sm font-semibold">
+                  Your Privacy Matters
+                </span>
               </motion.div>
-              
+
               <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
                 Privacy Policy
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "220px" }}
                   transition={{ delay: 0.3, duration: 0.8 }}
                   className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
                 />
               </h2>
-              
-              <motion.p 
+
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
                 className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
               >
-                We value your privacy and are committed to protecting your personal information. 
-                Learn how we collect, use, and safeguard your data.
+                We value your privacy and are committed to protecting your
+                personal information. Learn how we collect, use, and safeguard
+                your data.
               </motion.p>
             </div>
           </motion.div>
 
           {/* Stats Banner */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
             className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
-            
+
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
@@ -437,11 +440,15 @@ For residents of the European Economic Area, we have appointed a data protection
                     whileHover={{ y: -3 }}
                     className="text-center"
                   >
-                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                    <div
+                      className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}
+                    >
                       <Icon className={`w-6 h-6 text-${stat.color}-400`} />
                     </div>
                     <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
-                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                    <p className="text-2xl font-bold text-white">
+                      {stat.value}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -449,17 +456,41 @@ For residents of the European Economic Area, we have appointed a data protection
           </motion.div>
 
           {/* DPO Info Cards */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
           >
             {[
-              { icon: Mail, title: "Contact DPO", content: dpoInfo.email, color: 'blue', delay: 0 },
-              { icon: Globe, title: "DPO Office", content: dpoInfo.location, color: 'purple', delay: 0.1 },
-              { icon: Clock, title: "Response Time", content: dpoInfo.response, color: 'green', delay: 0.2 },
-              { icon: FileText, title: "Last Updated", content: dpoInfo.update, color: 'amber', delay: 0.3 }
+              {
+                icon: Mail,
+                title: "Contact DPO",
+                content: dpoInfo.email,
+                color: "blue",
+                delay: 0,
+              },
+              {
+                icon: Globe,
+                title: "DPO Office",
+                content: dpoInfo.location,
+                color: "purple",
+                delay: 0.1,
+              },
+              {
+                icon: Clock,
+                title: "Response Time",
+                content: dpoInfo.response,
+                color: "green",
+                delay: 0.2,
+              },
+              {
+                icon: FileText,
+                title: "Last Updated",
+                content: dpoInfo.update,
+                color: "amber",
+                delay: 0.3,
+              },
             ].map((item, index) => {
               const Icon = item.icon;
               return (
@@ -471,18 +502,26 @@ For residents of the European Economic Area, we have appointed a data protection
                   whileHover={{ y: -5 }}
                   className={`bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-${item.color}-500/50 transition-all shadow-lg text-center group`}
                 >
-                  <div className={`inline-flex p-3 bg-${item.color}-500/10 rounded-xl mb-4 border border-${item.color}-500/20 group-hover:scale-110 transition-transform`}>
+                  <div
+                    className={`inline-flex p-3 bg-${item.color}-500/10 rounded-xl mb-4 border border-${item.color}-500/20 group-hover:scale-110 transition-transform`}
+                  >
                     <Icon className={`w-5 h-5 text-${item.color}-400`} />
                   </div>
-                  <h3 className="font-medium text-white text-lg mb-2">{item.title}</h3>
-                  <p className={`text-${item.color}-400 text-sm font-medium mb-1`}>{item.content}</p>
+                  <h3 className="font-medium text-white text-lg mb-2">
+                    {item.title}
+                  </h3>
+                  <p
+                    className={`text-${item.color}-400 text-sm font-medium mb-1`}
+                  >
+                    {item.content}
+                  </p>
                 </motion.div>
               );
             })}
           </motion.div>
 
           {/* Privacy Highlights */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
@@ -506,15 +545,21 @@ For residents of the European Economic Area, we have appointed a data protection
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1 + (index * 0.1), duration: 0.3 }}
+                    transition={{ delay: 1 + index * 0.1, duration: 0.3 }}
                     whileHover={{ y: -5 }}
                     className={`bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-${highlight.color}-500/50 transition-all text-center group`}
                   >
-                    <div className={`inline-flex p-3 bg-${highlight.color}-500/10 rounded-xl mb-4 border border-${highlight.color}-500/20 group-hover:scale-110 transition-transform`}>
+                    <div
+                      className={`inline-flex p-3 bg-${highlight.color}-500/10 rounded-xl mb-4 border border-${highlight.color}-500/20 group-hover:scale-110 transition-transform`}
+                    >
                       <Icon className={`w-6 h-6 text-${highlight.color}-400`} />
                     </div>
-                    <h4 className="text-white font-medium text-lg mb-2">{highlight.title}</h4>
-                    <p className="text-gray-400 text-sm">{highlight.description}</p>
+                    <h4 className="text-white font-medium text-lg mb-2">
+                      {highlight.title}
+                    </h4>
+                    <p className="text-gray-400 text-sm">
+                      {highlight.description}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -523,7 +568,7 @@ For residents of the European Economic Area, we have appointed a data protection
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Policy Content */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1, duration: 0.5 }}
@@ -541,9 +586,9 @@ For residents of the European Economic Area, we have appointed a data protection
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setActiveSection(section.id)}
                         className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
-                          activeSection === section.id 
-                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
-                            : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                          activeSection === section.id
+                            ? "bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30"
+                            : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700"
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -563,7 +608,9 @@ For residents of the European Economic Area, we have appointed a data protection
               >
                 <h3 className="text-xl font-bold text-white mb-6 flex items-center">
                   <FileText className="mr-2 text-amber-400" size={20} />
-                  {privacySections.find(section => section.id === activeSection)?.name || 'Privacy Policy'}
+                  {privacySections.find(
+                    (section) => section.id === activeSection,
+                  )?.name || "Privacy Policy"}
                 </h3>
 
                 <div className="space-y-4">
@@ -577,17 +624,21 @@ For residents of the European Economic Area, we have appointed a data protection
                         <button
                           onClick={() => toggleSection(section.id)}
                           className={`w-full p-5 text-left transition-colors flex justify-between items-center ${
-                            openSectionId === section.id ? "bg-gray-900" : "hover:bg-gray-900"
+                            openSectionId === section.id
+                              ? "bg-gray-900"
+                              : "hover:bg-gray-900"
                           }`}
                         >
-                          <h4 className="font-medium text-white text-lg pr-2">{section.title}</h4>
-                          <ChevronDown 
+                          <h4 className="font-medium text-white text-lg pr-2">
+                            {section.title}
+                          </h4>
+                          <ChevronDown
                             className={`w-5 h-5 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
-                              openSectionId === section.id ? 'rotate-180' : ''
+                              openSectionId === section.id ? "rotate-180" : ""
                             }`}
                           />
                         </button>
-                        
+
                         <AnimatePresence>
                           {openSectionId === section.id && (
                             <motion.div
@@ -610,7 +661,7 @@ For residents of the European Economic Area, we have appointed a data protection
               </motion.div>
 
               {/* Cookie Management */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2, duration: 0.5 }}
@@ -622,45 +673,84 @@ For residents of the European Economic Area, we have appointed a data protection
                 </h3>
 
                 <p className="text-gray-400 mb-6">
-                  Control what types of cookies you allow us to use on our website.
+                  Control what types of cookies you allow us to use on our
+                  website.
                 </p>
 
                 <div className="space-y-4">
                   {[
-                    { id: 'essential', title: 'Essential Cookies', description: 'Required for basic website functionality. These cannot be disabled.', required: true, color: 'blue' },
-                    { id: 'analytics', title: 'Analytics Cookies', description: 'Help us understand how visitors interact with our website.', required: false, color: 'purple' },
-                    { id: 'functional', title: 'Functional Cookies', description: 'Enable personalized features and remember your preferences.', required: false, color: 'green' },
-                    { id: 'advertising', title: 'Advertising Cookies', description: 'Used to deliver relevant ads and track campaign performance.', required: false, color: 'amber' }
+                    {
+                      id: "essential",
+                      title: "Essential Cookies",
+                      description:
+                        "Required for basic website functionality. These cannot be disabled.",
+                      required: true,
+                      color: "blue",
+                    },
+                    {
+                      id: "analytics",
+                      title: "Analytics Cookies",
+                      description:
+                        "Help us understand how visitors interact with our website.",
+                      required: false,
+                      color: "purple",
+                    },
+                    {
+                      id: "functional",
+                      title: "Functional Cookies",
+                      description:
+                        "Enable personalized features and remember your preferences.",
+                      required: false,
+                      color: "green",
+                    },
+                    {
+                      id: "advertising",
+                      title: "Advertising Cookies",
+                      description:
+                        "Used to deliver relevant ads and track campaign performance.",
+                      required: false,
+                      color: "amber",
+                    },
                   ].map((cookie, index) => (
                     <motion.div
                       key={cookie.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.3 + (index * 0.1), duration: 0.3 }}
+                      transition={{ delay: 1.3 + index * 0.1, duration: 0.3 }}
                       className={`bg-gray-900 p-5 rounded-xl border border-gray-700 hover:border-${cookie.color}-500/50 transition-all`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <h4 className="text-white font-medium">{cookie.title}</h4>
+                            <h4 className="text-white font-medium">
+                              {cookie.title}
+                            </h4>
                             {cookie.required && (
                               <span className="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20">
                                 Required
                               </span>
                             )}
                           </div>
-                          <p className="text-gray-400 text-sm">{cookie.description}</p>
+                          <p className="text-gray-400 text-sm">
+                            {cookie.description}
+                          </p>
                         </div>
                         <div className="ml-4">
                           <label className="relative inline-flex items-center cursor-pointer">
-                            <input 
-                              type="checkbox" 
-                              className="sr-only peer" 
-                              checked={cookie.required ? true : cookiePreferences[cookie.id]}
+                            <input
+                              type="checkbox"
+                              className="sr-only peer"
+                              checked={
+                                cookie.required
+                                  ? true
+                                  : cookiePreferences[cookie.id]
+                              }
                               onChange={() => handleCookieToggle(cookie.id)}
                               disabled={cookie.required}
                             />
-                            <div className={`w-11 h-6 ${cookie.required ? 'bg-amber-500' : 'bg-gray-700'} peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${!cookie.required && 'peer-checked:bg-amber-500'}`}></div>
+                            <div
+                              className={`w-11 h-6 ${cookie.required ? "bg-amber-500" : "bg-gray-700"} peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${!cookie.required && "peer-checked:bg-amber-500"}`}
+                            ></div>
                           </label>
                         </div>
                       </div>
@@ -687,7 +777,7 @@ For residents of the European Economic Area, we have appointed a data protection
               </motion.div>
 
               {/* Data Subject Request Form */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.3, duration: 0.5 }}
@@ -706,9 +796,12 @@ For residents of the European Economic Area, we have appointed a data protection
                       <div className="flex items-start gap-3">
                         <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
                         <div>
-                          <h4 className="text-green-400 font-bold text-lg mb-2">Request Submitted!</h4>
+                          <h4 className="text-green-400 font-bold text-lg mb-2">
+                            Request Submitted!
+                          </h4>
                           <p className="text-gray-300 text-sm">
-                            We've received your data subject request. Our team will process it within 48 hours.
+                            We've received your data subject request. Our team
+                            will process it within 48 hours.
                           </p>
                         </div>
                       </div>
@@ -722,7 +815,8 @@ For residents of the European Economic Area, we have appointed a data protection
                 </h3>
 
                 <p className="text-gray-400 mb-6">
-                  Exercise your rights regarding your personal data, such as access, deletion, or correction.
+                  Exercise your rights regarding your personal data, such as
+                  access, deletion, or correction.
                 </p>
 
                 {/* Error Message */}
@@ -743,46 +837,55 @@ For residents of the European Economic Area, we have appointed a data protection
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                      <label htmlFor="fullName" className="block text-gray-400 text-sm font-medium mb-2">
+                      <label
+                        htmlFor="fullName"
+                        className="block text-gray-400 text-sm font-medium mb-2"
+                      >
                         Full Name *
                       </label>
-                      <input 
-                        type="text" 
-                        id="fullName" 
+                      <input
+                        type="text"
+                        id="fullName"
                         name="fullName"
                         value={formData.fullName}
                         onChange={handleInputChange}
                         required
                         disabled={isSubmitting}
-                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed" 
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         placeholder="John Doe"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-gray-400 text-sm font-medium mb-2">
+                      <label
+                        htmlFor="email"
+                        className="block text-gray-400 text-sm font-medium mb-2"
+                      >
                         Email Address *
                       </label>
-                      <input 
-                        type="email" 
-                        id="email" 
+                      <input
+                        type="email"
+                        id="email"
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
                         required
                         disabled={isSubmitting}
-                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed" 
+                        className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         placeholder="your@email.com"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="requestType" className="block text-gray-400 text-sm font-medium mb-2">
+                    <label
+                      htmlFor="requestType"
+                      className="block text-gray-400 text-sm font-medium mb-2"
+                    >
                       Request Type *
                     </label>
-                    <select 
-                      id="requestType" 
+                    <select
+                      id="requestType"
                       name="requestType"
                       value={formData.requestType}
                       onChange={handleInputChange}
@@ -801,32 +904,40 @@ For residents of the European Economic Area, we have appointed a data protection
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-gray-400 text-sm font-medium mb-2">
+                    <label
+                      htmlFor="message"
+                      className="block text-gray-400 text-sm font-medium mb-2"
+                    >
                       Details of Your Request *
                     </label>
-                    <textarea 
-                      id="message" 
+                    <textarea
+                      id="message"
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
-                      rows={4} 
+                      rows={4}
                       required
                       disabled={isSubmitting}
-                      className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed" 
+                      className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Please provide details about your request..."
                     ></textarea>
                   </div>
 
                   <div className="flex items-start">
-                    <input 
-                      id="terms" 
-                      type="checkbox" 
+                    <input
+                      id="terms"
+                      type="checkbox"
                       required
                       disabled={isSubmitting}
                       className="w-4 h-4 bg-gray-900 border-gray-700 rounded mt-1 focus:ring-amber-500 focus:ring-2 disabled:opacity-50"
                     />
-                    <label htmlFor="terms" className="ml-3 text-sm text-gray-400">
-                      I confirm that I am the data subject or authorized to act on their behalf, and the information provided is accurate. *
+                    <label
+                      htmlFor="terms"
+                      className="ml-3 text-sm text-gray-400"
+                    >
+                      I confirm that I am the data subject or authorized to act
+                      on their behalf, and the information provided is accurate.
+                      *
                     </label>
                   </div>
 
@@ -856,7 +967,7 @@ For residents of the European Economic Area, we have appointed a data protection
             </motion.div>
 
             {/* FAQ Section */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.4, duration: 0.5 }}
@@ -877,17 +988,21 @@ For residents of the European Economic Area, we have appointed a data protection
                       <button
                         onClick={() => toggleFaq(faq.id)}
                         className={`w-full p-4 text-left transition-colors flex justify-between items-center ${
-                          openFaqId === faq.id ? "bg-gray-900" : "hover:bg-gray-900"
+                          openFaqId === faq.id
+                            ? "bg-gray-900"
+                            : "hover:bg-gray-900"
                         }`}
                       >
-                        <span className="font-medium text-white text-sm pr-2">{faq.question}</span>
-                        <ChevronDown 
+                        <span className="font-medium text-white text-sm pr-2">
+                          {faq.question}
+                        </span>
+                        <ChevronDown
                           className={`w-4 h-4 text-amber-400 flex-shrink-0 transition-transform duration-200 ${
-                            openFaqId === faq.id ? 'rotate-180' : ''
+                            openFaqId === faq.id ? "rotate-180" : ""
                           }`}
                         />
                       </button>
-                      
+
                       <AnimatePresence>
                         {openFaqId === faq.id && (
                           <motion.div
@@ -908,7 +1023,9 @@ For residents of the European Economic Area, we have appointed a data protection
                 </div>
 
                 <div className="mt-6 p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
-                  <h4 className="font-medium text-white mb-2 text-sm">Need more help?</h4>
+                  <h4 className="font-medium text-white mb-2 text-sm">
+                    Need more help?
+                  </h4>
                   <p className="text-gray-400 text-xs mb-4">
                     Contact our Data Protection Officer directly for assistance.
                   </p>
@@ -926,7 +1043,7 @@ For residents of the European Economic Area, we have appointed a data protection
           </div>
         </main>
       </div>
-      
+
       <Footer />
     </div>
   );

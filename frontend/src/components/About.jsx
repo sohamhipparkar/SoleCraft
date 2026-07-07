@@ -191,11 +191,11 @@ export default function AboutUsComponent() {
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      
+
       <div className="pt-24 md:pt-28">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          {/* Enhanced Header */}
-          <motion.div 
+          {/* ----------------- Enhanced Header ----------------- */}
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -209,39 +209,43 @@ export default function AboutUsComponent() {
                 className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
               >
                 <Users className="w-5 h-5 text-amber-400" />
-                <span className="text-amber-400 text-sm font-semibold">Our Story</span>
+                <span className="text-amber-400 text-sm font-semibold">
+                  Our Story
+                </span>
               </motion.div>
-              
+
               <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
                 About SoleCraft
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "280px" }}
                   transition={{ delay: 0.3, duration: 0.8 }}
                   className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
                 />
               </h2>
-              
-              <motion.p 
+
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
                 className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
               >
-                More than just a sneaker store. We're a community of collectors, athletes, artists, and enthusiasts united by our passion for sneaker culture.
+                More than just a sneaker store. We're a community of collectors,
+                athletes, artists, and enthusiasts united by our passion for
+                sneaker culture.
               </motion.p>
             </div>
           </motion.div>
 
-          {/* Stats Banner */}
-          <motion.div 
+          {/* ----------------- Stats Banner ----------------- */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
             className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
-            
+
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
@@ -254,11 +258,15 @@ export default function AboutUsComponent() {
                     whileHover={{ y: -3 }}
                     className="text-center"
                   >
-                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                    <div
+                      className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}
+                    >
                       <Icon className={`w-6 h-6 text-${stat.color}-400`} />
                     </div>
                     <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
-                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                    <p className="text-2xl font-bold text-white">
+                      {stat.value}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -267,7 +275,7 @@ export default function AboutUsComponent() {
 
           {/* Content based on active tab */}
           <AnimatePresence mode="wait">
-            {activeTab === 'story' && (
+            {activeTab === "story" && (
               <motion.div
                 key="story-content"
                 initial={{ opacity: 0, y: 20 }}
@@ -278,7 +286,7 @@ export default function AboutUsComponent() {
               >
                 {/* Main Story */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                  <motion.div 
+                  <motion.div
                     variants={itemVariants}
                     className="lg:col-span-2 bg-gray-800 rounded-2xl p-8 border border-gray-700 shadow-xl"
                   >
@@ -288,23 +296,37 @@ export default function AboutUsComponent() {
                     </h3>
                     <div className="space-y-4 text-gray-300">
                       <p>
-                        Founded in 2010, SoleCraft began as a passion project between two friends who shared an obsession with sneaker culture. What started in a small garage in Portland has grown into a global community of sneaker enthusiasts.
+                        Founded in 2010, SoleCraft began as a passion project
+                        between two friends who shared an obsession with sneaker
+                        culture. What started in a small garage in Portland has
+                        grown into a global community of sneaker enthusiasts.
                       </p>
                       <p>
-                        Our mission has always remained the same: to celebrate sneaker culture in all its forms and create a space where enthusiasts can find rare, authentic footwear while connecting with a like-minded community.
+                        Our mission has always remained the same: to celebrate
+                        sneaker culture in all its forms and create a space
+                        where enthusiasts can find rare, authentic footwear
+                        while connecting with a like-minded community.
                       </p>
                       <p>
-                        Today, SoleCraft operates flagship stores in major cities across the US and ships limited edition, carefully authenticated sneakers to collectors worldwide. We've built partnerships with major brands and independent designers alike, always staying true to our roots in street culture, sports, and artistic expression.
+                        Today, SoleCraft operates flagship stores in major
+                        cities across the US and ships limited edition,
+                        carefully authenticated sneakers to collectors
+                        worldwide. We've built partnerships with major brands
+                        and independent designers alike, always staying true to
+                        our roots in street culture, sports, and artistic
+                        expression.
                       </p>
                     </div>
                   </motion.div>
 
                   {/* Values Sidebar */}
-                  <motion.div 
+                  <motion.div
                     variants={itemVariants}
                     className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl"
                   >
-                    <h3 className="text-xl font-bold text-white mb-6">Core Values</h3>
+                    <h3 className="text-xl font-bold text-white mb-6">
+                      Core Values
+                    </h3>
                     <div className="space-y-4">
                       {valuesData.map((value, index) => {
                         const Icon = value.icon;
@@ -314,11 +336,19 @@ export default function AboutUsComponent() {
                             whileHover={{ x: 3 }}
                             className={`p-4 bg-gray-900/50 rounded-xl border border-gray-700 hover:border-${value.color}-500/50 transition-all`}
                           >
-                            <div className={`inline-flex p-2 bg-${value.color}-500/10 rounded-lg mb-3 border border-${value.color}-500/20`}>
-                              <Icon className={`w-5 h-5 text-${value.color}-400`} />
+                            <div
+                              className={`inline-flex p-2 bg-${value.color}-500/10 rounded-lg mb-3 border border-${value.color}-500/20`}
+                            >
+                              <Icon
+                                className={`w-5 h-5 text-${value.color}-400`}
+                              />
                             </div>
-                            <h4 className="font-semibold text-white mb-2">{value.title}</h4>
-                            <p className="text-sm text-gray-400">{value.description}</p>
+                            <h4 className="font-semibold text-white mb-2">
+                              {value.title}
+                            </h4>
+                            <p className="text-sm text-gray-400">
+                              {value.description}
+                            </p>
                           </motion.div>
                         );
                       })}
@@ -340,16 +370,23 @@ export default function AboutUsComponent() {
                     {timelineData.map((item, index) => {
                       const Icon = item.icon;
                       return (
-                        <motion.div 
+                        <motion.div
                           key={item.year}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.8 + (index * 0.1), duration: 0.3 }}
+                          transition={{
+                            delay: 0.8 + index * 0.1,
+                            duration: 0.3,
+                          }}
                           className="flex gap-4"
                         >
                           <div className="flex flex-col items-center">
-                            <div className={`bg-${item.color}-500/10 rounded-xl p-3 border border-${item.color}-500/20`}>
-                              <Icon className={`w-6 h-6 text-${item.color}-400`} />
+                            <div
+                              className={`bg-${item.color}-500/10 rounded-xl p-3 border border-${item.color}-500/20`}
+                            >
+                              <Icon
+                                className={`w-6 h-6 text-${item.color}-400`}
+                              />
                             </div>
                             {index < timelineData.length - 1 && (
                               <div className="h-full w-0.5 bg-gray-700 mt-2"></div>
@@ -358,8 +395,12 @@ export default function AboutUsComponent() {
 
                           <div className="flex-1 pb-8">
                             <div className="flex items-baseline gap-3 mb-2">
-                              <h4 className="text-xl font-bold text-white">{item.title}</h4>
-                              <span className={`px-3 py-1 bg-${item.color}-500/10 rounded-full text-sm text-${item.color}-400 border border-${item.color}-500/20`}>
+                              <h4 className="text-xl font-bold text-white">
+                                {item.title}
+                              </h4>
+                              <span
+                                className={`px-3 py-1 bg-${item.color}-500/10 rounded-full text-sm text-${item.color}-400 border border-${item.color}-500/20`}
+                              >
                                 {item.year}
                               </span>
                             </div>
@@ -373,7 +414,7 @@ export default function AboutUsComponent() {
               </motion.div>
             )}
 
-            {activeTab === 'locations' && (
+            {activeTab === "locations" && (
               <motion.div
                 key="locations-content"
                 initial={{ opacity: 0, y: 20 }}
@@ -387,9 +428,12 @@ export default function AboutUsComponent() {
                   className="bg-gray-800 rounded-2xl p-8 border border-gray-700 shadow-xl mb-8"
                 >
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold text-white mb-3">Our Flagship Stores</h3>
+                    <h3 className="text-2xl font-bold text-white mb-3">
+                      Our Flagship Stores
+                    </h3>
                     <p className="text-gray-400 max-w-2xl mx-auto">
-                      Visit one of our retail locations to explore our curated collection of sneakers, apparel, and accessories.
+                      Visit one of our retail locations to explore our curated
+                      collection of sneakers, apparel, and accessories.
                     </p>
                   </div>
 
@@ -402,13 +446,13 @@ export default function AboutUsComponent() {
                         className="bg-gray-900 rounded-2xl border border-gray-700 overflow-hidden hover:border-purple-500/50 transition-all shadow-lg group"
                       >
                         <div className="relative overflow-hidden">
-                          <img 
-                            src={location.image} 
-                            alt={`${location.city} Store`} 
-                            className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" 
+                          <img
+                            src={location.image}
+                            alt={`${location.city} Store`}
+                            className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
-                          
+
                           <div className="absolute bottom-3 left-3">
                             <span className="px-3 py-1 bg-purple-500/20 backdrop-blur-sm rounded-full text-xs font-medium text-purple-400 border border-purple-500/30 flex items-center gap-1">
                               <MapPin className="w-3 h-3" />
@@ -416,23 +460,29 @@ export default function AboutUsComponent() {
                             </span>
                           </div>
                         </div>
-                        
+
                         <div className="p-6">
                           <div className="space-y-3 mb-4">
                             <div className="flex items-start gap-2 text-sm">
                               <MapPin className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
-                              <span className="text-gray-300">{location.address}</span>
+                              <span className="text-gray-300">
+                                {location.address}
+                              </span>
                             </div>
                             <div className="flex items-start gap-2 text-sm">
                               <Clock className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
-                              <span className="text-gray-300">{location.hours}</span>
+                              <span className="text-gray-300">
+                                {location.hours}
+                              </span>
                             </div>
                             <div className="flex items-start gap-2 text-sm">
                               <Phone className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
-                              <span className="text-gray-300">{location.phone}</span>
+                              <span className="text-gray-300">
+                                {location.phone}
+                              </span>
                             </div>
                           </div>
-                          
+
                           <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
@@ -458,16 +508,20 @@ export default function AboutUsComponent() {
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <motion.div 
+                    <motion.div
                       whileHover={{ y: -3 }}
                       className="bg-gray-900 p-6 rounded-xl border border-gray-700"
                     >
                       <div className="inline-flex p-3 bg-blue-500/10 rounded-xl mb-4 border border-blue-500/20">
                         <Globe className="w-6 h-6 text-blue-400" />
                       </div>
-                      <h4 className="text-lg font-bold text-white mb-3">International Shipping</h4>
+                      <h4 className="text-lg font-bold text-white mb-3">
+                        International Shipping
+                      </h4>
                       <p className="text-gray-400 mb-4 text-sm">
-                        Can't visit us in person? We ship to over 100 countries worldwide with expedited options available for serious collectors.
+                        Can't visit us in person? We ship to over 100 countries
+                        worldwide with expedited options available for serious
+                        collectors.
                       </p>
                       <ul className="space-y-2">
                         <li className="flex items-center text-sm text-gray-300">
@@ -485,29 +539,35 @@ export default function AboutUsComponent() {
                       </ul>
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                       whileHover={{ y: -3 }}
                       className="bg-gray-900 p-6 rounded-xl border border-gray-700"
                     >
                       <div className="inline-flex p-3 bg-purple-500/10 rounded-xl mb-4 border border-purple-500/20">
                         <Sparkles className="w-6 h-6 text-purple-400" />
                       </div>
-                      <h4 className="text-lg font-bold text-white mb-3">Pop-Up Events</h4>
+                      <h4 className="text-lg font-bold text-white mb-3">
+                        Pop-Up Events
+                      </h4>
                       <p className="text-gray-400 mb-4 text-sm">
-                        We regularly host pop-up shops and events in major cities around the world. Follow our social media to stay updated.
+                        We regularly host pop-up shops and events in major
+                        cities around the world. Follow our social media to stay
+                        updated.
                       </p>
                       <div className="flex gap-3 mt-6">
-                        {[Instagram, Twitter, Facebook, Youtube].map((Icon, idx) => (
-                          <motion.a
-                            key={idx}
-                            href="#"
-                            whileHover={{ scale: 1.1, y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-gray-700 transition-all border border-gray-700"
-                          >
-                            <Icon className="w-5 h-5" />
-                          </motion.a>
-                        ))}
+                        {[Instagram, Twitter, Facebook, Youtube].map(
+                          (Icon, idx) => (
+                            <motion.a
+                              key={idx}
+                              href="#"
+                              whileHover={{ scale: 1.1, y: -2 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-gray-700 transition-all border border-gray-700"
+                            >
+                              <Icon className="w-5 h-5" />
+                            </motion.a>
+                          ),
+                        )}
                       </div>
                     </motion.div>
                   </div>
@@ -519,15 +579,15 @@ export default function AboutUsComponent() {
                   className="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
                 >
                   <div className="absolute inset-0">
-                    <motion.div 
-                      animate={{ 
+                    <motion.div
+                      animate={{
                         x: [-100, 100, -100],
-                        opacity: [0.1, 0.2, 0.1]
+                        opacity: [0.1, 0.2, 0.1],
                       }}
-                      transition={{ 
-                        duration: 10, 
+                      transition={{
+                        duration: 10,
                         repeat: Infinity,
-                        ease: "linear"
+                        ease: "linear",
                       }}
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
                     />
@@ -537,11 +597,16 @@ export default function AboutUsComponent() {
                     <div className="flex-1">
                       <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
                         <Mail className="w-4 h-4 text-white" />
-                        <span className="text-white text-sm font-semibold">Get in Touch</span>
+                        <span className="text-white text-sm font-semibold">
+                          Get in Touch
+                        </span>
                       </div>
-                      <h3 className="text-3xl font-bold text-gray-900 mb-3">Have Questions?</h3>
+                      <h3 className="text-3xl font-bold text-gray-900 mb-3">
+                        Have Questions?
+                      </h3>
                       <p className="text-gray-800 leading-relaxed max-w-2xl">
-                        Our team is here to help with any questions about our locations or services.
+                        Our team is here to help with any questions about our
+                        locations or services.
                       </p>
                     </div>
                     <motion.button
@@ -559,7 +624,7 @@ export default function AboutUsComponent() {
           </AnimatePresence>
         </main>
       </div>
-      
+
       <Footer />
     </div>
   );
