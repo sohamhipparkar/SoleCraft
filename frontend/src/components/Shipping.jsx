@@ -450,7 +450,7 @@ export default function ShippingReturnsComponent() {
             </div>
           </motion.div>
 
-          {/* Guarantees Section */}
+          {/* ------------- Guarantees Section -------------*/}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -497,14 +497,14 @@ export default function ShippingReturnsComponent() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* FAQ Section */}
+            {/* ------------- FAQ Section ------------- */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2, duration: 0.5 }}
               className="lg:col-span-2"
             >
-              {/* Category Navigation */}
+              {/*------------- Category Navigation -------------*/}
               <div className="mb-6 overflow-x-auto pb-2 scrollbar-hide">
                 <div className="flex gap-2">
                   {categories.map((category) => {

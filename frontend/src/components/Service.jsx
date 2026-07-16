@@ -244,17 +244,17 @@ const ShoeServiceApp = () => {
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      
+
       {/* Enhanced Notification */}
       <AnimatePresence>
         {showNotification && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 300 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 300 }}
             transition={{ type: "tween", duration: 0.3 }}
             className="fixed top-24 right-4 bg-gradient-to-r from-gray-800 to-gray-900 text-white p-4 rounded-xl shadow-2xl max-w-sm z-50 border border-gray-700"
-            style={{ backdropFilter: 'blur(10px)' }}
+            style={{ backdropFilter: "blur(10px)" }}
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start space-x-3">
@@ -263,7 +263,9 @@ const ShoeServiceApp = () => {
                 </div>
                 <div className="flex-1">
                   <p className="font-bold text-sm">Special Offer</p>
-                  <p className="text-sm text-gray-400 mt-1">20% off your first repair service!</p>
+                  <p className="text-sm text-gray-400 mt-1">
+                    20% off your first repair service!
+                  </p>
                 </div>
               </div>
               <motion.button
@@ -283,7 +285,7 @@ const ShoeServiceApp = () => {
       <div className="pt-24 md:pt-28">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
           {/* Enhanced Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -293,7 +295,7 @@ const ShoeServiceApp = () => {
               <div className="mb-4 md:mb-0">
                 <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
                   Premium Shoe Service
-                  <motion.div 
+                  <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: "375px" }}
                     transition={{ delay: 0.3, duration: 0.8 }}
@@ -309,20 +311,40 @@ const ShoeServiceApp = () => {
           </motion.div>
 
           {/* Enhanced Stats Banner */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
             className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
-            
+
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
               {[
-                { label: 'Shoes Repaired', value: '1,254', icon: Wrench, color: 'amber' },
-                { label: 'Premium Polishes', value: '867', icon: Sparkles,  color: 'purple' },
-                { label: 'Happy Customers', value: '5,000', icon: Users,  color: 'green' },
-                { label: 'Custom Jobs', value: '432', icon: Settings, color: 'blue' }
+                {
+                  label: "Shoes Repaired",
+                  value: "1,254",
+                  icon: Wrench,
+                  color: "amber",
+                },
+                {
+                  label: "Premium Polishes",
+                  value: "867",
+                  icon: Sparkles,
+                  color: "purple",
+                },
+                {
+                  label: "Happy Customers",
+                  value: "5,000",
+                  icon: Users,
+                  color: "green",
+                },
+                {
+                  label: "Custom Jobs",
+                  value: "432",
+                  icon: Settings,
+                  color: "blue",
+                },
               ].map((stat, index) => {
                 const Icon = stat.icon;
                 return (
@@ -334,7 +356,9 @@ const ShoeServiceApp = () => {
                     whileHover={{ y: -3 }}
                     className="text-center"
                   >
-                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                    <div
+                      className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}
+                    >
                       <Icon className={`w-6 h-6 text-${stat.color}-400`} />
                     </div>
                     <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
@@ -349,26 +373,34 @@ const ShoeServiceApp = () => {
           <AnimatePresence mode="wait">
             {!selectedService ? (
               <>
-                <motion.div 
+                <motion.div
                   className="mb-10"
                   initial="hidden"
                   animate="visible"
                   variants={containerVariants}
                 >
                   <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-white">Our Services</h2>
+                    <h2 className="text-2xl font-bold text-white">
+                      Our Services
+                    </h2>
                   </div>
-                  
+
                   {isLoading ? (
                     <div className="flex justify-center py-20">
                       <motion.div
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
                         className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full"
                       />
                     </div>
                   ) : error ? (
-                    <div className="text-center py-16 text-red-400">{error}</div>
+                    <div className="text-center py-16 text-red-400">
+                      {error}
+                    </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                       {services.map((service) => {
@@ -397,19 +429,24 @@ const ShoeServiceApp = () => {
                                 whileHover={{ scale: 1.1, opacity: 0.9 }}
                                 transition={{
                                   duration: 0.6,
-                                  ease: [0.43, 0.13, 0.23, 0.96] // Custom cubic-bezier for smooth easing
+                                  ease: [0.43, 0.13, 0.23, 0.96], // Custom cubic-bezier for smooth easing
                                 }}
                               />
-                              <motion.div 
+                              <motion.div
                                 className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent"
                                 initial={{ opacity: 1 }}
                                 whileHover={{ opacity: 0.7 }}
-                                transition={{ duration: 0.4, ease: "easeInOut" }}
+                                transition={{
+                                  duration: 0.4,
+                                  ease: "easeInOut",
+                                }}
                               />
-                              
+
                               <div className="absolute top-3 right-3 bg-gray-900/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center space-x-1 border border-gray-700">
                                 <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                                <span className="text-xs font-semibold">{service.rating}</span>
+                                <span className="text-xs font-semibold">
+                                  {service.rating}
+                                </span>
                               </div>
 
                               <div className="absolute bottom-3 left-3 flex items-center text-xs text-gray-200 bg-gray-900/90 backdrop-blur-sm px-3 py-1.5 rounded-full border border-gray-700">
@@ -417,33 +454,45 @@ const ShoeServiceApp = () => {
                                 {service.popularCount}
                               </div>
                             </div>
-                            
+
                             <div className="p-5">
                               <div className="flex justify-between items-start mb-4">
-                                <motion.div 
+                                <motion.div
                                   className="p-3 bg-gray-900 rounded-lg"
                                   whileHover={{ scale: 1.05, rotate: 5 }}
-                                  transition={{ duration: 0.3, ease: "easeOut" }}
+                                  transition={{
+                                    duration: 0.3,
+                                    ease: "easeOut",
+                                  }}
                                 >
                                   <Icon className="w-6 h-6 text-amber-400" />
                                 </motion.div>
-                                <span className="text-amber-400 font-bold text-lg">{service.price}</span>
+                                <span className="text-amber-400 font-bold text-lg">
+                                  {service.price}
+                                </span>
                               </div>
-                              
-                              <h3 className="font-bold text-lg mb-2 group-hover:text-amber-400 transition-colors duration-300">{service.title}</h3>
-                              <p className="text-gray-400 text-sm mb-4">{service.description}</p>
-                              
+
+                              <h3 className="font-bold text-lg mb-2 group-hover:text-amber-400 transition-colors duration-300">
+                                {service.title}
+                              </h3>
+                              <p className="text-gray-400 text-sm mb-4">
+                                {service.description}
+                              </p>
+
                               <div className="flex items-center text-gray-500 text-xs mb-4">
                                 <Clock className="w-3 h-3 mr-1" />
                                 {service.turnaround}
                               </div>
 
                               <div className="mt-4 text-amber-400 text-sm font-medium flex items-center group">
-                                Learn more 
+                                Learn more
                                 <motion.div
                                   animate={{ x: 0 }}
                                   whileHover={{ x: 4 }}
-                                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                                  transition={{
+                                    duration: 0.3,
+                                    ease: "easeInOut",
+                                  }}
                                 >
                                   <ChevronRight className="ml-1 w-4 h-4" />
                                 </motion.div>
@@ -459,7 +508,7 @@ const ShoeServiceApp = () => {
                 {/* Activity and Trending Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
                   {/* Recent Activity */}
-                  <motion.div 
+                  <motion.div
                     className="lg:col-span-2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -474,7 +523,7 @@ const ShoeServiceApp = () => {
                         {recentActivity.map((activity) => {
                           const Icon = activity.icon;
                           return (
-                            <motion.div 
+                            <motion.div
                               key={activity.id}
                               initial={{ opacity: 0, x: -10 }}
                               animate={{ opacity: 1, x: 0 }}
@@ -483,19 +532,31 @@ const ShoeServiceApp = () => {
                               className="p-4 bg-gray-900/50 rounded-xl flex justify-between items-center hover:bg-gray-700/50 transition-all cursor-pointer border border-gray-800 hover:border-gray-700"
                             >
                               <div className="flex items-center flex-1">
-                                <div className={`p-2.5 bg-${activity.color}-500/20 rounded-lg mr-3 border border-${activity.color}-500/30`}>
+                                <div
+                                  className={`p-2.5 bg-${activity.color}-500/20 rounded-lg mr-3 border border-${activity.color}-500/30`}
+                                >
                                   <Icon className="w-5 h-5" />
                                 </div>
                                 <div>
-                                  <p className="font-medium text-sm">{activity.action}</p>
+                                  <p className="font-medium text-sm">
+                                    {activity.action}
+                                  </p>
                                   <div className="flex items-center mt-1">
-                                    <p className="text-gray-400 text-xs">{activity.time}</p>
-                                    <span className="mx-2 text-gray-600">•</span>
-                                    <p className="text-gray-500 text-xs">{activity.details}</p>
+                                    <p className="text-gray-400 text-xs">
+                                      {activity.time}
+                                    </p>
+                                    <span className="mx-2 text-gray-600">
+                                      •
+                                    </span>
+                                    <p className="text-gray-500 text-xs">
+                                      {activity.details}
+                                    </p>
                                   </div>
                                 </div>
                               </div>
-                              <span className={`text-xs px-3 py-1.5 rounded-full bg-${activity.color}-900/30 text-${activity.color}-400 border border-${activity.color}-500/30`}>
+                              <span
+                                className={`text-xs px-3 py-1.5 rounded-full bg-${activity.color}-900/30 text-${activity.color}-400 border border-${activity.color}-500/30`}
+                              >
                                 {activity.status}
                               </span>
                             </motion.div>
@@ -506,7 +567,7 @@ const ShoeServiceApp = () => {
                   </motion.div>
 
                   {/* Trending Styles */}
-                  <motion.div 
+                  <motion.div
                     className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -516,27 +577,35 @@ const ShoeServiceApp = () => {
                       <TrendingUp className="mr-2 text-amber-400" />
                       Trending Styles
                     </h3>
-                    
+
                     <div className="space-y-4">
                       {trendingStyles.map((style, index) => (
-                        <motion.div 
+                        <motion.div
                           key={index}
                           className="flex justify-between items-center"
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.6 + 0.1 * index, duration: 0.3 }}
+                          transition={{
+                            delay: 0.6 + 0.1 * index,
+                            duration: 0.3,
+                          }}
                         >
                           <p className="text-gray-300 text-sm">{style.name}</p>
                           <div className="flex items-center">
                             <div className="w-24 bg-gray-700 rounded-full h-1.5 mr-2">
-                              <motion.div 
+                              <motion.div
                                 className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${style.popularity}%` }}
-                                transition={{ delay: 0.8 + 0.1 * index, duration: 0.8 }}
+                                transition={{
+                                  delay: 0.8 + 0.1 * index,
+                                  duration: 0.8,
+                                }}
                               />
                             </div>
-                            <span className="text-xs text-gray-400">{style.popularity}%</span>
+                            <span className="text-xs text-gray-400">
+                              {style.popularity}%
+                            </span>
                           </div>
                         </motion.div>
                       ))}
@@ -545,22 +614,22 @@ const ShoeServiceApp = () => {
                 </div>
 
                 {/* Special Promo Banner */}
-                <motion.div 
+                <motion.div
                   className="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.5 }}
                 >
                   <div className="absolute inset-0">
-                    <motion.div 
-                      animate={{ 
+                    <motion.div
+                      animate={{
                         x: [-100, 100, -100],
-                        opacity: [0.1, 0.2, 0.1]
+                        opacity: [0.1, 0.2, 0.1],
                       }}
-                      transition={{ 
-                        duration: 10, 
+                      transition={{
+                        duration: 10,
                         repeat: Infinity,
-                        ease: "linear"
+                        ease: "linear",
                       }}
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
                     />
@@ -570,11 +639,16 @@ const ShoeServiceApp = () => {
                     <div className="flex-1">
                       <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
                         <Zap className="w-4 h-4 text-white" />
-                        <span className="text-white text-sm font-semibold">Limited Time</span>
+                        <span className="text-white text-sm font-semibold">
+                          Limited Time
+                        </span>
                       </div>
-                      <h3 className="text-3xl font-bold text-gray-900 mb-3">Get a Free Consultation!</h3>
+                      <h3 className="text-3xl font-bold text-gray-900 mb-3">
+                        Get a Free Consultation!
+                      </h3>
                       <p className="text-gray-800 leading-relaxed max-w-2xl">
-                        Ask our experts about shoe care, restoration, or customization. No purchase required.
+                        Ask our experts about shoe care, restoration, or
+                        customization. No purchase required.
                       </p>
                       <ul className="mt-4 space-y-2 text-gray-800">
                         <li className="flex items-center gap-2">
@@ -612,7 +686,7 @@ const ShoeServiceApp = () => {
                   exit={{ opacity: 0 }}
                   onClick={resetBooking}
                 />
-                
+
                 <motion.div
                   className="relative z-50 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-2xl border border-gray-700 p-8 max-w-2xl w-full mx-4 my-8"
                   initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -625,7 +699,7 @@ const ShoeServiceApp = () => {
                   >
                     <X className="w-5 h-5" />
                   </button>
-                  
+
                   {!isBooked ? (
                     <form onSubmit={handleBookService}>
                       <div className="flex flex-col items-center mb-6">
@@ -634,15 +708,21 @@ const ShoeServiceApp = () => {
                           alt={selectedService.title}
                           className="w-32 h-32 object-cover rounded-2xl mb-4 border-4 border-amber-400 shadow-lg"
                         />
-                        <h2 className="text-2xl font-bold mb-2 text-center">{selectedService.title}</h2>
-                        <p className="text-gray-400 text-center mb-4">{selectedService.description}</p>
+                        <h2 className="text-2xl font-bold mb-2 text-center">
+                          {selectedService.title}
+                        </h2>
+                        <p className="text-gray-400 text-center mb-4">
+                          {selectedService.description}
+                        </p>
                       </div>
 
-                      {/* Booking Form */}
+                      {/* ------------- Booking Form ------------- */}
                       <div className="space-y-4 mb-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Name *</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              Name *
+                            </label>
                             <input
                               type="text"
                               value={customerName}
@@ -652,7 +732,9 @@ const ShoeServiceApp = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Email *</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              Email *
+                            </label>
                             <input
                               type="email"
                               value={customerEmail}
@@ -665,7 +747,9 @@ const ShoeServiceApp = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Phone *</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              Phone *
+                            </label>
                             <input
                               type="tel"
                               value={customerPhone}
@@ -675,11 +759,18 @@ const ShoeServiceApp = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Shoe Size</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              Shoe Size
+                            </label>
                             <input
                               type="text"
                               value={shoeDetails.size}
-                              onChange={(e) => setShoeDetails({...shoeDetails, size: e.target.value})}
+                              onChange={(e) =>
+                                setShoeDetails({
+                                  ...shoeDetails,
+                                  size: e.target.value,
+                                })
+                              }
                               className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-amber-500"
                               placeholder="e.g., US 10"
                             />
@@ -687,7 +778,9 @@ const ShoeServiceApp = () => {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">Address *</label>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Address *
+                          </label>
                           <textarea
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
@@ -698,10 +791,14 @@ const ShoeServiceApp = () => {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">Special Instructions</label>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Special Instructions
+                          </label>
                           <textarea
                             value={specialInstructions}
-                            onChange={(e) => setSpecialInstructions(e.target.value)}
+                            onChange={(e) =>
+                              setSpecialInstructions(e.target.value)
+                            }
                             className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-amber-500"
                             rows="3"
                             placeholder="Any special requests or details..."
@@ -739,11 +836,17 @@ const ShoeServiceApp = () => {
                         className="bg-green-500 rounded-full p-4 mb-4"
                         initial={{ scale: 0.8 }}
                         animate={{ scale: 1 }}
-                        transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 200,
+                          damping: 12,
+                        }}
                       >
                         <Check className="text-white w-8 h-8" />
                       </motion.div>
-                      <p className="text-green-300 font-bold text-xl mb-2">Booking Confirmed!</p>
+                      <p className="text-green-300 font-bold text-xl mb-2">
+                        Booking Confirmed!
+                      </p>
                       <p className="text-gray-400 text-center mb-4">
                         We'll contact you shortly to schedule your appointment
                       </p>

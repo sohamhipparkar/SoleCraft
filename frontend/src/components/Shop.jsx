@@ -336,12 +336,12 @@ export default function ShoeShopComponent() {
           >
             <div
               className={`px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 ${
-                notification.type === 'success'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-red-500 text-white'
+                notification.type === "success"
+                  ? "bg-green-500 text-white"
+                  : "bg-red-500 text-white"
               }`}
             >
-              {notification.type === 'success' ? (
+              {notification.type === "success" ? (
                 <Check className="w-5 h-5" />
               ) : (
                 <X className="w-5 h-5" />
@@ -367,7 +367,7 @@ export default function ShoeShopComponent() {
                   Shoe Shop
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: '180px' }}
+                    animate={{ width: "180px" }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                     className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2"
                   />
@@ -434,11 +434,11 @@ export default function ShoeShopComponent() {
                   whileTap={{ scale: 0.97 }}
                   className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
                     selectedBrand === brand
-                      ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900'
-                      : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                      ? "bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900"
+                      : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700"
                   }`}
                 >
-                  {brand === 'all' ? 'All Brands' : brand}
+                  {brand === "all" ? "All Brands" : brand}
                 </motion.button>
               ))}
             </div>
@@ -454,58 +454,59 @@ export default function ShoeShopComponent() {
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-            {[
-              {
-                label: 'Total Products',
-                value: stats.totalProducts,
-                icon: Package,
-                colorClass: 'amber',
-              },
-              {
-                label: 'Happy Customers',
-                value: '2,547',
-                icon: Users,
-                colorClass: 'purple',
-              },
-              {
-                label: 'Avg Rating',
-                value: (stats.averageRating || 0).toFixed(1),
-                icon: Star,
-                colorClass: 'yellow',
-              },
-              {
-                label: 'Fast Delivery',
-                value: '24h',
-                icon: Clock,
-                colorClass: 'green',
-              },
-            ].map((stat, index) => {
+              {[
+                {
+                  label: "Total Products",
+                  value: stats.totalProducts,
+                  icon: Package,
+                  colorClass: "amber",
+                },
+                {
+                  label: "Happy Customers",
+                  value: "2,547",
+                  icon: Users,
+                  colorClass: "purple",
+                },
+                {
+                  label: "Avg Rating",
+                  value: (stats.averageRating || 0).toFixed(1),
+                  icon: Star,
+                  colorClass: "yellow",
+                },
+                {
+                  label: "Fast Delivery",
+                  value: "24h",
+                  icon: Clock,
+                  colorClass: "green",
+                },
+              ].map((stat, index) => {
                 const Icon = stat.icon;
 
                 const colorStyles = {
                   amber: {
-                    bg: 'bg-amber-500/10',
-                    border: 'border-amber-500/20',
-                    text: 'text-amber-400',
+                    bg: "bg-amber-500/10",
+                    border: "border-amber-500/20",
+                    text: "text-amber-400",
                   },
                   purple: {
-                    bg: 'bg-purple-500/10',
-                    border: 'border-purple-500/20',
-                    text: 'text-purple-400',
+                    bg: "bg-purple-500/10",
+                    border: "border-purple-500/20",
+                    text: "text-purple-400",
                   },
                   yellow: {
-                    bg: 'bg-yellow-500/10',
-                    border: 'border-yellow-500/20',
-                    text: 'text-yellow-400',
+                    bg: "bg-yellow-500/10",
+                    border: "border-yellow-500/20",
+                    text: "text-yellow-400",
                   },
                   green: {
-                    bg: 'bg-green-500/10',
-                    border: 'border-green-500/20',
-                    text: 'text-green-400',
+                    bg: "bg-green-500/10",
+                    border: "border-green-500/20",
+                    text: "text-green-400",
                   },
                 };
 
-                const colors = colorStyles[stat.colorClass] || colorStyles.amber;
+                const colors =
+                  colorStyles[stat.colorClass] || colorStyles.amber;
 
                 return (
                   <motion.div
@@ -522,7 +523,9 @@ export default function ShoeShopComponent() {
                       <Icon className={`w-6 h-6 ${colors.text}`} />
                     </div>
                     <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
-                    <p className="text-2xl font-bold mb-1 text-white">{stat.value}</p>
+                    <p className="text-2xl font-bold mb-1 text-white">
+                      {stat.value}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -540,7 +543,10 @@ export default function ShoeShopComponent() {
               whileHover={{ scale: 1.01 }}
               className="flex justify-between items-center bg-gray-800 p-4 rounded-xl shadow-lg cursor-pointer border border-gray-700"
               onClick={() =>
-                setFilterOptions({ ...filterOptions, showFilter: !filterOptions.showFilter })
+                setFilterOptions({
+                  ...filterOptions,
+                  showFilter: !filterOptions.showFilter,
+                })
               }
             >
               <div className="flex items-center">
@@ -559,7 +565,7 @@ export default function ShoeShopComponent() {
               {filterOptions.showFilter && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
+                  animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden bg-gray-800 rounded-b-xl border-x border-b border-gray-700 mt-2"
@@ -573,15 +579,15 @@ export default function ShoeShopComponent() {
                       </h3>
                       <div className="grid grid-cols-2 gap-2">
                         {brands
-                          .filter((b) => b !== 'all')
+                          .filter((b) => b !== "all")
                           .map((brand) => (
                             <motion.label
                               key={brand}
                               whileHover={{ scale: 1.02 }}
                               className={`flex items-center p-3 rounded-lg cursor-pointer transition-all ${
                                 filterOptions.brands.includes(brand)
-                                  ? 'bg-amber-500/10 border-amber-500'
-                                  : 'bg-gray-900 border-gray-700 hover:border-gray-600'
+                                  ? "bg-amber-500/10 border-amber-500"
+                                  : "bg-gray-900 border-gray-700 hover:border-gray-600"
                               } border`}
                             >
                               <input
@@ -590,7 +596,9 @@ export default function ShoeShopComponent() {
                                 onChange={() => handleBrandFilter(brand)}
                                 className="w-4 h-4 rounded bg-gray-700 border-gray-600 text-amber-500 focus:ring-amber-500"
                               />
-                              <span className="ml-2 text-sm text-gray-300">{brand}</span>
+                              <span className="ml-2 text-sm text-gray-300">
+                                {brand}
+                              </span>
                             </motion.label>
                           ))}
                       </div>
@@ -609,17 +617,21 @@ export default function ShoeShopComponent() {
                             whileHover={{ scale: 1.02 }}
                             className={`flex items-center p-3 rounded-lg cursor-pointer transition-all ${
                               filterOptions.categories.includes(category)
-                                ? 'bg-amber-500/10 border-amber-500'
-                                : 'bg-gray-900 border-gray-700 hover:border-gray-600'
+                                ? "bg-amber-500/10 border-amber-500"
+                                : "bg-gray-900 border-gray-700 hover:border-gray-600"
                             } border`}
                           >
                             <input
                               type="checkbox"
-                              checked={filterOptions.categories.includes(category)}
+                              checked={filterOptions.categories.includes(
+                                category,
+                              )}
                               onChange={() => handleCategoryFilter(category)}
                               className="w-4 h-4 rounded bg-gray-700 border-gray-600 text-amber-500 focus:ring-amber-500"
                             />
-                            <span className="ml-2 text-sm text-gray-300">{category}</span>
+                            <span className="ml-2 text-sm text-gray-300">
+                              {category}
+                            </span>
                           </motion.label>
                         ))}
                       </div>
@@ -633,7 +645,9 @@ export default function ShoeShopComponent() {
                       </h3>
                       <div className="flex gap-4">
                         <div className="flex-1">
-                          <label className="text-sm text-gray-400 mb-1 block">Min Price</label>
+                          <label className="text-sm text-gray-400 mb-1 block">
+                            Min Price
+                          </label>
                           <div className="relative">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400">
                               $
@@ -649,7 +663,9 @@ export default function ShoeShopComponent() {
                           </div>
                         </div>
                         <div className="flex-1">
-                          <label className="text-sm text-gray-400 mb-1 block">Max Price</label>
+                          <label className="text-sm text-gray-400 mb-1 block">
+                            Max Price
+                          </label>
                           <div className="relative">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400">
                               $
@@ -723,7 +739,9 @@ export default function ShoeShopComponent() {
                         ({pagination.totalItems} items)
                       </span>
                     </h3>
-                    <p className="text-gray-500 text-sm mt-1">Premium quality sneakers</p>
+                    <p className="text-gray-500 text-sm mt-1">
+                      Premium quality sneakers
+                    </p>
                   </div>
                 </div>
 
@@ -756,7 +774,9 @@ export default function ShoeShopComponent() {
                           {/* Rating Badge */}
                           <div className="absolute top-3 left-3 bg-gray-900/80 backdrop-blur-sm px-3 py-1 rounded-full border border-gray-700 flex items-center gap-1">
                             <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                            <span className="text-xs font-semibold">{product.rating}</span>
+                            <span className="text-xs font-semibold">
+                              {product.rating}
+                            </span>
                           </div>
 
                           {/* Stock Status */}
@@ -764,11 +784,11 @@ export default function ShoeShopComponent() {
                             <span
                               className={`px-3 py-1 rounded-full text-xs font-medium ${
                                 product.inStock
-                                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                                  : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                                  ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                                  : "bg-red-500/20 text-red-400 border border-red-500/30"
                               }`}
                             >
-                              {product.inStock ? 'In Stock' : 'Out of Stock'}
+                              {product.inStock ? "In Stock" : "Out of Stock"}
                             </span>
                           </div>
                         </div>
@@ -782,14 +802,18 @@ export default function ShoeShopComponent() {
                           </p>
 
                           <div className="flex items-center gap-2 mb-4">
-                            {product.colors && product.colors.length > 0 && product.colors.slice(0, 3).map((color, i) => (
-                              <motion.div
-                                key={i}
-                                whileHover={{ scale: 1.3 }}
-                                className={`w-5 h-5 rounded-full ${color} border-2 border-gray-700 cursor-pointer`}
-                                title={`Color option ${i + 1}`}
-                              />
-                            ))}
+                            {product.colors &&
+                              product.colors.length > 0 &&
+                              product.colors
+                                .slice(0, 3)
+                                .map((color, i) => (
+                                  <motion.div
+                                    key={i}
+                                    whileHover={{ scale: 1.3 }}
+                                    className={`w-5 h-5 rounded-full ${color} border-2 border-gray-700 cursor-pointer`}
+                                    title={`Color option ${i + 1}`}
+                                  />
+                                ))}
                           </div>
 
                           <div className="flex justify-between items-center">
@@ -799,12 +823,14 @@ export default function ShoeShopComponent() {
                             <motion.button
                               onClick={() => addToCart(product)}
                               disabled={!product.inStock || isCartLoading}
-                              whileHover={product.inStock ? { scale: 1.05 } : {}}
+                              whileHover={
+                                product.inStock ? { scale: 1.05 } : {}
+                              }
                               whileTap={product.inStock ? { scale: 0.95 } : {}}
                               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
                                 product.inStock
-                                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 shadow-lg shadow-amber-500/30'
-                                  : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                                  ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 shadow-lg shadow-amber-500/30"
+                                  : "bg-gray-700 text-gray-500 cursor-not-allowed"
                               }`}
                               aria-label={`Add ${product.name} to cart`}
                             >
@@ -844,7 +870,9 @@ export default function ShoeShopComponent() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setPage(Math.min(pagination.totalPages, page + 1))}
+                      onClick={() =>
+                        setPage(Math.min(pagination.totalPages, page + 1))
+                      }
                       disabled={page === pagination.totalPages}
                       className="px-4 py-2 bg-gray-800 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -860,7 +888,9 @@ export default function ShoeShopComponent() {
                     className="py-16 text-center"
                   >
                     <Package className="w-16 h-16 mx-auto text-gray-600 mb-4" />
-                    <p className="text-gray-400 text-lg mb-4">No products match your filters.</p>
+                    <p className="text-gray-400 text-lg mb-4">
+                      No products match your filters.
+                    </p>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -872,8 +902,8 @@ export default function ShoeShopComponent() {
                           priceRange: [0, 200],
                           showFilter: false,
                         });
-                        setSearchTerm('');
-                        setSelectedBrand('all');
+                        setSearchTerm("");
+                        setSelectedBrand("all");
                       }}
                     >
                       Reset All Filters
@@ -897,10 +927,10 @@ export default function ShoeShopComponent() {
                 />
 
                 <motion.aside
-                  initial={{ x: '100%' }}
+                  initial={{ x: "100%" }}
                   animate={{ x: 0 }}
-                  exit={{ x: '100%' }}
-                  transition={{ type: 'tween', ease: 'easeOut', duration: 0.3 }}
+                  exit={{ x: "100%" }}
+                  transition={{ type: "tween", ease: "easeOut", duration: 0.3 }}
                   className="fixed top-0 right-0 w-full sm:w-96 h-full bg-gray-900 shadow-2xl border-l border-gray-700 z-50 flex flex-col"
                 >
                   <div className="flex justify-between items-center p-6 border-b border-gray-700 bg-gray-800">
@@ -944,8 +974,12 @@ export default function ShoeShopComponent() {
                         >
                           <ShoppingBag className="w-16 h-16 text-gray-600 mb-4" />
                         </motion.div>
-                        <p className="text-gray-400 text-center">Your cart is empty.</p>
-                        <p className="text-gray-500 text-sm mt-2">Add some shoes to get started!</p>
+                        <p className="text-gray-400 text-center">
+                          Your cart is empty.
+                        </p>
+                        <p className="text-gray-500 text-sm mt-2">
+                          Add some shoes to get started!
+                        </p>
                       </div>
                     ) : (
                       cart.items.map((item) => (
@@ -971,13 +1005,17 @@ export default function ShoeShopComponent() {
                             <h4 className="text-white font-semibold truncate">
                               {item.productId?.name}
                             </h4>
-                            <p className="text-gray-400 text-sm">{item.productId?.brand}</p>
+                            <p className="text-gray-400 text-sm">
+                              {item.productId?.brand}
+                            </p>
                             <div className="flex items-center gap-3 mt-2">
                               <div className="flex items-center gap-2 bg-gray-900 rounded-lg p-1">
                                 <motion.button
                                   whileHover={{ scale: 1.1 }}
                                   whileTap={{ scale: 0.9 }}
-                                  onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                                  onClick={() =>
+                                    updateQuantity(item._id, item.quantity - 1)
+                                  }
                                   className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-white"
                                 >
                                   -
@@ -988,7 +1026,9 @@ export default function ShoeShopComponent() {
                                 <motion.button
                                   whileHover={{ scale: 1.1 }}
                                   whileTap={{ scale: 0.9 }}
-                                  onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                                  onClick={() =>
+                                    updateQuantity(item._id, item.quantity + 1)
+                                  }
                                   className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-white"
                                 >
                                   +
@@ -1016,7 +1056,9 @@ export default function ShoeShopComponent() {
                   {isAuthenticated && cart.items.length > 0 && (
                     <div className="p-6 border-t border-gray-700 bg-gray-800">
                       <div className="flex justify-between items-center mb-4">
-                        <span className="text-gray-400 font-semibold">Total:</span>
+                        <span className="text-gray-400 font-semibold">
+                          Total:
+                        </span>
                         <span className="text-amber-400 font-bold text-2xl">
                           ${cart.subtotal}
                         </span>
@@ -1038,7 +1080,7 @@ export default function ShoeShopComponent() {
             )}
           </AnimatePresence>
 
-          {/* Enhanced Featured Section - UPDATED */}
+          {/* ------------- Enhanced Featured Section - UPDATED ------------- */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1048,17 +1090,26 @@ export default function ShoeShopComponent() {
             <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl overflow-hidden shadow-xl border border-gray-700">
               <div className="grid grid-cols-1 md:grid-cols-2">
                 <div className="p-8 flex flex-col justify-center">
-                  <span className="text-amber-400 text-sm font-medium mb-2">Featured Collection</span>
-                  <h3 className="text-3xl font-bold mb-3 text-white">Dynamic Wave</h3>
-                  <p className="text-gray-300 mb-6">Experience the perfect blend of style and comfort with our latest Nike collection.</p>
+                  <span className="text-amber-400 text-sm font-medium mb-2">
+                    Featured Collection
+                  </span>
+                  <h3 className="text-3xl font-bold mb-3 text-white">
+                    Dynamic Wave
+                  </h3>
+                  <p className="text-gray-300 mb-6">
+                    Experience the perfect blend of style and comfort with our
+                    latest Nike collection.
+                  </p>
                   <div className="flex gap-2 mb-6">
-                    {["bg-indigo-600", "bg-teal-400", "bg-gray-700"].map((color, i) => (
-                      <motion.div
-                        key={i}
-                        whileHover={{ scale: 1.3 }}
-                        className={`${color} w-8 h-8 rounded-full border-2 border-gray-600 cursor-pointer`}
-                      />
-                    ))}
+                    {["bg-indigo-600", "bg-teal-400", "bg-gray-700"].map(
+                      (color, i) => (
+                        <motion.div
+                          key={i}
+                          whileHover={{ scale: 1.3 }}
+                          className={`${color} w-8 h-8 rounded-full border-2 border-gray-600 cursor-pointer`}
+                        />
+                      ),
+                    )}
                   </div>
                   <div className="flex gap-4">
                     <motion.button
@@ -1088,8 +1139,9 @@ export default function ShoeShopComponent() {
                     onError={(e) => {
                       e.target.onerror = null;
                       // Fallback to placeholder or hide if image doesn't exist
-                      e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Coming Soon</div>';
+                      e.target.style.display = "none";
+                      e.target.parentElement.innerHTML =
+                        '<div class="flex items-center justify-center h-full text-gray-500">Coming Soon</div>';
                     }}
                   />
                 </div>
@@ -1097,34 +1149,38 @@ export default function ShoeShopComponent() {
             </div>
           </motion.div>
 
-          {/* Enhanced Benefits Section */}
+          {/* ------------- Enhanced Benefits Section ------------- */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
             className="mb-12 bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700"
           >
-            <h3 className="text-2xl font-bold mb-8 text-center">Why Shop With Us</h3>
+            <h3 className="text-2xl font-bold mb-8 text-center">
+              Why Shop With Us
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 {
                   icon: Clock,
                   title: "Fast Shipping",
-                  description: "Free shipping for orders over $100. Express delivery available.",
-                  color: "amber"
+                  description:
+                    "Free shipping for orders over $100. Express delivery available.",
+                  color: "amber",
                 },
                 {
                   icon: Shield,
                   title: "Secure Payment",
-                  description: "Multiple secure payment options. 100% secure checkout.",
-                  color: "green"
+                  description:
+                    "Multiple secure payment options. 100% secure checkout.",
+                  color: "green",
                 },
                 {
                   icon: RefreshCw,
                   title: "Easy Returns",
                   description: "30-day return policy. No questions asked.",
-                  color: "purple"
-                }
+                  color: "purple",
+                },
               ].map((benefit, idx) => {
                 const Icon = benefit.icon;
                 return (
@@ -1136,18 +1192,24 @@ export default function ShoeShopComponent() {
                     whileHover={{ y: -5 }}
                     className="flex flex-col items-center text-center p-6 bg-gray-900 rounded-xl border border-gray-700"
                   >
-                    <div className={`p-4 bg-${benefit.color}-500/10 rounded-xl mb-4 border border-${benefit.color}-500/20`}>
+                    <div
+                      className={`p-4 bg-${benefit.color}-500/10 rounded-xl mb-4 border border-${benefit.color}-500/20`}
+                    >
                       <Icon className={`w-8 h-8 text-${benefit.color}-400`} />
                     </div>
-                    <h4 className="font-bold mb-2 text-white">{benefit.title}</h4>
-                    <p className="text-sm text-gray-400">{benefit.description}</p>
+                    <h4 className="font-bold mb-2 text-white">
+                      {benefit.title}
+                    </h4>
+                    <p className="text-sm text-gray-400">
+                      {benefit.description}
+                    </p>
                   </motion.div>
                 );
               })}
             </div>
           </motion.div>
 
-          {/* Enhanced CTA Banner */}
+          {/* ------------- Enhanced CTA Banner ------------- */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1158,12 +1220,12 @@ export default function ShoeShopComponent() {
               <motion.div
                 animate={{
                   x: [-100, 100, -100],
-                  opacity: [0.1, 0.2, 0.1]
+                  opacity: [0.1, 0.2, 0.1],
                 }}
                 transition={{
                   duration: 10,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "linear",
                 }}
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
               />
@@ -1173,9 +1235,13 @@ export default function ShoeShopComponent() {
               <div className="flex-1">
                 <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
                   <Zap className="w-4 h-4 text-white" />
-                  <span className="text-white text-sm font-semibold">Stay Updated</span>
+                  <span className="text-white text-sm font-semibold">
+                    Stay Updated
+                  </span>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-3">Join Our Newsletter</h3>
+                <h3 className="text-3xl font-bold text-gray-900 mb-3">
+                  Join Our Newsletter
+                </h3>
                 <p className="text-gray-800 leading-relaxed max-w-2xl">
                   Stay updated with the latest releases and exclusive offers.
                 </p>
