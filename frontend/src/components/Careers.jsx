@@ -101,6 +101,7 @@ export default function CareersComponent() {
     { id: 'operations', icon: Building, name: 'Operations', color: 'green' }
   ];
 
+  //Jobs Data
   const jobsData = {
     technology: [
       {

@@ -31,6 +31,7 @@ import Footer from './Footer';
 // Configure axios base URL
 const API_BASE_URL = 'http://localhost:5000';
 
+//Shoes Data
 const shoesData = [
   {
     id: 1,

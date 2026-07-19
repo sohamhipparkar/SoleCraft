@@ -14,6 +14,7 @@ import StreetZoom from '../assets/StreetZoom.jpg';
 import CosmicHype from '../assets/CosmicHype.jpg';
 import FutureGliders from '../assets/FutureGliders.jpg';
 
+//Shoes Data
 const shoesData = [
   {
     id: 1,

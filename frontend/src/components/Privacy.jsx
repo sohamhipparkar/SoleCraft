@@ -88,7 +88,8 @@ export default function PrivacyPolicyComponent() {
     { id: 'security', icon: Lock, name: 'Security', color: 'amber' },
     { id: 'rights', icon: Key, name: 'Your Rights', color: 'red' }
   ];
-
+  
+  //Policy Sections Data
   const policySections = [
     {
       id: 'section-1',

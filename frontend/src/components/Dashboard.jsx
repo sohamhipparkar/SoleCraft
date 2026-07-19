@@ -72,7 +72,7 @@ export default function EnhancedCobblerDashboard() {
   }, []);
 
 
-//Service cards data with enhanced details and categories for filtering
+  //Service cards data 
   const serviceCards = [
     { 
       id: 1, 

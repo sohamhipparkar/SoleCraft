@@ -215,6 +215,7 @@ export default function OrderTrackingComponent() {
     }
   ];
 
+  //FAQ data
   const faqData = [
     {
       id: 'faq-1',
