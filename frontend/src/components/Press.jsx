@@ -502,7 +502,7 @@ export default function PressComponent() {
               transition={{ delay: 1.1, duration: 0.5 }}
               className="lg:col-span-2"
             >
-              {/* ----------------- Category Navigation ----------------- */}
+              {/*Category Navigation*/}
               <div className="mb-6 overflow-x-auto pb-2 scrollbar-hide">
                 <div className="flex gap-2">
                   {pressCategories.map((category) => {

@@ -4,7 +4,6 @@ import { ShoppingBag, Heart, Star, Filter, ChevronDown, Search, ShoppingCart, Ta
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import axios from '../utils/axiosConfig';
 
 // Get API base URL for image references
 const getApiBaseUrl = () => {
