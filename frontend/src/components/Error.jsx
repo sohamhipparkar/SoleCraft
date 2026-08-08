@@ -600,7 +600,7 @@ export default function ErrorPage() {
             </motion.button>
           </motion.div>
 
-          {/* ------------- Contact Info ------------- */}
+          {/* Contact Info */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
