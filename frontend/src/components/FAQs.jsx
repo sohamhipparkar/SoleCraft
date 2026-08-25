@@ -283,11 +283,11 @@ export default function FAQComponent() {
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans">
       <Navbar />
-      
+
       <div className="pt-24 md:pt-28">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
           {/* Enhanced Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -301,39 +301,42 @@ export default function FAQComponent() {
                 className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full mb-4 border border-amber-500/20"
               >
                 <HelpCircle className="w-5 h-5 text-amber-400" />
-                <span className="text-amber-400 text-sm font-semibold">Help Center</span>
+                <span className="text-amber-400 text-sm font-semibold">
+                  Help Center
+                </span>
               </motion.div>
-              
+
               <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
                 Frequently Asked Questions
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "470px" }}
                   transition={{ delay: 0.3, duration: 0.8 }}
                   className="h-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mt-2 mx-auto"
                 />
               </h2>
-              
-              <motion.p 
+
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
                 className="text-gray-400 text-lg max-w-2xl mx-auto mt-4"
               >
-                Find answers to common questions about our services. Can't find what you're looking for? Contact our support team.
+                Find answers to common questions about our services. Can't find
+                what you're looking for? Contact our support team.
               </motion.p>
             </div>
           </motion.div>
 
           {/* Stats Banner */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
             className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-700 rounded-2xl p-6 mb-8 shadow-xl border border-gray-700 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-purple-500/5" />
-            
+
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
@@ -346,11 +349,15 @@ export default function FAQComponent() {
                     whileHover={{ y: -3 }}
                     className="text-center"
                   >
-                    <div className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}>
+                    <div
+                      className={`inline-flex p-3 bg-${stat.color}-500/10 rounded-xl mb-3 border border-${stat.color}-500/20`}
+                    >
                       <Icon className={`w-6 h-6 text-${stat.color}-400`} />
                     </div>
                     <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
-                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                    <p className="text-2xl font-bold text-white">
+                      {stat.value}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -358,7 +365,7 @@ export default function FAQComponent() {
           </motion.div>
 
           {/* Support Features */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
@@ -371,14 +378,18 @@ export default function FAQComponent() {
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 + (index * 0.1), duration: 0.3 }}
+                  transition={{ delay: 0.8 + index * 0.1, duration: 0.3 }}
                   whileHover={{ y: -5 }}
                   className={`bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-${feature.color}-500/50 transition-all shadow-lg text-center group`}
                 >
-                  <div className={`inline-flex p-3 bg-${feature.color}-500/10 rounded-xl mb-4 border border-${feature.color}-500/20 group-hover:scale-110 transition-transform`}>
+                  <div
+                    className={`inline-flex p-3 bg-${feature.color}-500/10 rounded-xl mb-4 border border-${feature.color}-500/20 group-hover:scale-110 transition-transform`}
+                  >
                     <Icon className={`w-6 h-6 text-${feature.color}-400`} />
                   </div>
-                  <h3 className="font-medium text-white text-lg mb-2">{feature.title}</h3>
+                  <h3 className="font-medium text-white text-lg mb-2">
+                    {feature.title}
+                  </h3>
                   <p className="text-gray-400 text-sm">{feature.description}</p>
                 </motion.div>
               );
@@ -387,7 +398,7 @@ export default function FAQComponent() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main FAQ Content */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.5 }}
@@ -396,7 +407,10 @@ export default function FAQComponent() {
               {/* Search Bar */}
               <div className="mb-6">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                  <Search
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
                   <input
                     type="text"
                     placeholder="Search questions..."
@@ -419,12 +433,12 @@ export default function FAQComponent() {
                         whileTap={{ scale: 0.97 }}
                         onClick={() => {
                           setActiveCategory(category.id);
-                          setSearchQuery('');
+                          setSearchQuery("");
                         }}
                         className={`px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
-                          activeCategory === category.id 
-                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30' 
-                            : 'bg-gray-800 text-gray-400 hover:text-white border border-gray-700'
+                          activeCategory === category.id
+                            ? "bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30"
+                            : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700"
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -444,10 +458,14 @@ export default function FAQComponent() {
               >
                 <h3 className="text-xl font-bold text-white mb-6 flex items-center">
                   <HelpCircle className="mr-2 text-amber-400" size={20} />
-                  {categories.find(cat => cat.id === activeCategory)?.name} Questions
+                  {
+                    categories.find((cat) => cat.id === activeCategory)?.name
+                  }{" "}
+                  Questions
                   {searchQuery && (
                     <span className="ml-auto text-sm text-gray-400">
-                      {filteredFAQs.length} result{filteredFAQs.length !== 1 ? 's' : ''}
+                      {filteredFAQs.length} result
+                      {filteredFAQs.length !== 1 ? "s" : ""}
                     </span>
                   )}
                 </h3>
@@ -462,12 +480,16 @@ export default function FAQComponent() {
                     >
                       <Search size={32} className="text-gray-500" />
                     </motion.div>
-                    <h4 className="text-lg font-medium text-white mb-2">No results found</h4>
-                    <p className="text-gray-400 mb-6">Try adjusting your search or browse by category</p>
+                    <h4 className="text-lg font-medium text-white mb-2">
+                      No results found
+                    </h4>
+                    <p className="text-gray-400 mb-6">
+                      Try adjusting your search or browse by category
+                    </p>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setSearchQuery('')}
+                      onClick={() => setSearchQuery("")}
                       className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-900 rounded-xl font-bold shadow-lg shadow-amber-500/30 transition-colors"
                     >
                       Clear Search
@@ -488,19 +510,25 @@ export default function FAQComponent() {
                           <button
                             onClick={() => toggleQuestion(item.id)}
                             className={`w-full p-5 text-left flex justify-between items-center transition-colors ${
-                              openQuestionId === item.id ? "bg-gray-900" : "hover:bg-gray-900"
+                              openQuestionId === item.id
+                                ? "bg-gray-900"
+                                : "hover:bg-gray-900"
                             }`}
                           >
-                            <span className="font-medium text-white pr-4">{item.question}</span>
+                            <span className="font-medium text-white pr-4">
+                              {item.question}
+                            </span>
                             <motion.span
-                              animate={{ rotate: openQuestionId === item.id ? 180 : 0 }}
+                              animate={{
+                                rotate: openQuestionId === item.id ? 180 : 0,
+                              }}
                               transition={{ duration: 0.3 }}
                               className="text-amber-400 flex-shrink-0"
                             >
                               <ChevronDown size={20} />
                             </motion.span>
                           </button>
-                          
+
                           <AnimatePresence>
                             {openQuestionId === item.id && (
                               <motion.div
@@ -511,7 +539,7 @@ export default function FAQComponent() {
                                 className="overflow-hidden"
                               >
                                 <div className="p-5 bg-gray-900 border-t border-gray-700">
-                                  <motion.p 
+                                  <motion.p
                                     initial={{ y: 10, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ duration: 0.3, delay: 0.1 }}
@@ -541,47 +569,49 @@ export default function FAQComponent() {
               </motion.div>
             </motion.div>
 
-            {/* Sidebar */}
-            <motion.div 
+            {/* -------------------------- Sidebar -------------------------- */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.5 }}
               className="lg:col-span-1"
             >
               <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl sticky top-24 space-y-6">
-                {/* Contact Support */}
+                {/* -------------------------- Contact Support -------------------------- */}
                 <div>
                   <div className="text-center mb-6">
                     <div className="inline-flex p-3 bg-amber-500/10 rounded-xl mb-3 border border-amber-500/20">
                       <MessageSquare className="w-5 h-5 text-amber-400" />
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">Need More Help?</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      Need More Help?
+                    </h3>
                     <p className="text-gray-400 text-sm">
                       Our support team is here to assist you
                     </p>
                   </div>
 
                   <div className="space-y-3">
-                  {[
-                    {
-                      icon: Mail,
-                      label: 'Email Support',
-                      value: 'support@solecraft.com',
-                      color: 'blue'
-                    },
-                    {
-                      icon: Phone,
-                      label: 'Call Us',
-                      value: '+91-7705481059',
-                      color: 'green'
-                    },
-                    {
-                      icon: MessageSquare,
-                      label: 'Live Chat',
-                      value: 'Available 24/7',
-                      color: 'purple'
-                    }
-                  ].map((contact, index) => {
+                    {[
+                      {
+                        icon: Mail,
+                        label: "Email Support",
+                        value: "support@solecraft.com",
+                        color: "blue",
+                      },
+                      {
+                        icon: Phone,
+                        label: "Call Us",
+                        value: "+91-7705481059",
+                        color: "green",
+                      },
+                      {
+                        icon: MessageSquare,
+                        label: "Live Chat",
+                        value: "Available 24/7",
+                        color: "purple",
+                      },
+                    ].map((contact, index) => {
                       const Icon = contact.icon;
                       return (
                         <motion.div
@@ -589,12 +619,20 @@ export default function FAQComponent() {
                           whileHover={{ x: 3 }}
                           className={`flex items-center gap-3 p-4 bg-gray-900 rounded-xl border border-gray-700 hover:border-${contact.color}-500/50 transition-all cursor-pointer`}
                         >
-                          <div className={`p-2 bg-${contact.color}-500/10 rounded-lg border border-${contact.color}-500/20`}>
-                            <Icon className={`w-4 h-4 text-${contact.color}-400`} />
+                          <div
+                            className={`p-2 bg-${contact.color}-500/10 rounded-lg border border-${contact.color}-500/20`}
+                          >
+                            <Icon
+                              className={`w-4 h-4 text-${contact.color}-400`}
+                            />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-white text-sm font-medium">{contact.label}</p>
-                            <p className="text-gray-500 text-xs truncate">{contact.value}</p>
+                            <p className="text-white text-sm font-medium">
+                              {contact.label}
+                            </p>
+                            <p className="text-gray-500 text-xs truncate">
+                              {contact.value}
+                            </p>
                           </div>
                           <ArrowRight className="w-4 h-4 text-gray-500" />
                         </motion.div>
@@ -603,7 +641,7 @@ export default function FAQComponent() {
                   </div>
                 </div>
 
-                {/* Quick Links */}
+                {/* -------------------------- Quick Links -------------------------- */}
                 <div className="pt-6 border-t border-gray-700">
                   <h4 className="text-white font-medium mb-4 flex items-center">
                     <ExternalLink size={16} className="mr-2 text-amber-400" />
@@ -611,12 +649,12 @@ export default function FAQComponent() {
                   </h4>
                   <div className="space-y-2">
                     {[
-                      'Shipping Information',
-                      'Return Policy',
-                      'Payment Methods',
-                      'Track Order',
-                      'Terms of Service',
-                      'Privacy Policy'
+                      "Shipping Information",
+                      "Return Policy",
+                      "Payment Methods",
+                      "Track Order",
+                      "Terms of Service",
+                      "Privacy Policy",
                     ].map((link, index) => (
                       <motion.button
                         key={index}
@@ -630,7 +668,7 @@ export default function FAQComponent() {
                   </div>
                 </div>
 
-                {/* Help Banner */}
+                {/* -------------------------- Help Banner -------------------------- */}
                 <div className="pt-6 border-t border-gray-700">
                   <div className="bg-gradient-to-r from-amber-500/10 to-purple-500/10 rounded-xl p-4 border border-amber-500/20">
                     <h4 className="font-medium text-white mb-2 text-sm flex items-center">
@@ -654,23 +692,23 @@ export default function FAQComponent() {
             </motion.div>
           </div>
 
-          {/* Contact Banner */}
-          <motion.div 
+          {/* --------------------------Contact Banner -------------------------- */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.5 }}
             className="mt-8 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
           >
             <div className="absolute inset-0">
-              <motion.div 
-                animate={{ 
+              <motion.div
+                animate={{
                   x: [-100, 100, -100],
-                  opacity: [0.1, 0.2, 0.1]
+                  opacity: [0.1, 0.2, 0.1],
                 }}
-                transition={{ 
-                  duration: 10, 
+                transition={{
+                  duration: 10,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "linear",
                 }}
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
               />
@@ -680,7 +718,9 @@ export default function FAQComponent() {
               <div className="text-center md:text-left">
                 <div className="inline-flex items-center gap-2 bg-gray-900/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
                   <MessageSquare className="w-4 h-4 text-white" />
-                  <span className="text-white text-sm font-semibold">Still Have Questions?</span>
+                  <span className="text-white text-sm font-semibold">
+                    Still Have Questions?
+                  </span>
                 </div>
                 <h3 className="text-3xl font-bold text-gray-900 mb-2">
                   Our Team Is Here to Help
@@ -711,7 +751,7 @@ export default function FAQComponent() {
           </motion.div>
         </main>
       </div>
-      
+
       <Footer />
     </div>
   );
