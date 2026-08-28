@@ -231,13 +231,13 @@ export default function ErrorPage() {
     <div className="bg-gray-900 text-gray-100 min-h-screen font-sans flex flex-col">
       <Navbar />
 
-      {/* Simplified Background */}
+      {/* ------------------ Simplified Background ------------------ */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
       </div>
 
-      {/* Main Error Content */}
+      {/* ------------------ Main Error Content ------------------ */}
       <main className="flex-grow flex flex-col items-center justify-center p-4 md:p-6 pt-24 md:pt-28 pb-16 relative z-10">
         <motion.div
           className="max-w-6xl w-full mx-auto"
@@ -264,7 +264,7 @@ export default function ErrorPage() {
                 </div>
               </div>
 
-              {/* Creative Rotating Message */}
+              {/* ------------------ Creative Rotating Message ------------------ */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentMessageIndex}
@@ -315,7 +315,7 @@ export default function ErrorPage() {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Error Code */}
+              {/* ------------------ Error Code ------------------ */}
               <div className="text-center mb-6">
                 <motion.h1
                   initial={{ scale: 0.5, opacity: 0 }}
@@ -338,7 +338,7 @@ export default function ErrorPage() {
                 />
               </div>
 
-              {/* Friendly Message */}
+              {/* ------------------ Friendly Message ------------------ */}
               <div className="text-center mb-6">
                 <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto mb-2">
                   The page you're looking for doesn't exist or has been moved.
