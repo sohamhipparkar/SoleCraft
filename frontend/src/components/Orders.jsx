@@ -243,7 +243,7 @@ const OrderCard = ({ order, onViewDetails }) => {
       className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden hover:border-amber-500/50 transition-colors duration-200 shadow-xl"
     >
       <div className="p-6">
-        {/* Header */}
+        {/* --------------------------- Header  ---------------------------*/}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -259,7 +259,7 @@ const OrderCard = ({ order, onViewDetails }) => {
               {itemCount > 0 && (
                 <span className="flex items-center gap-1">
                   <Package className="w-4 h-4" />
-                  {itemCount} item{itemCount !== 1 ? 's' : ''}
+                  {itemCount} item{itemCount !== 1 ? "s" : ""}
                 </span>
               )}
             </div>
@@ -272,15 +272,18 @@ const OrderCard = ({ order, onViewDetails }) => {
           </div>
         </div>
 
-        {/* Order Items Preview - Shop & Resell Orders */}
+        {/* --------------------------- Order Items Preview - Shop & Resell Orders --------------------------- */}
         {order.items && order.items.length > 0 && (
           <div className="mb-4">
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
               {order.items.slice(0, 4).map((item, index) => (
-                <div key={`${order._id}-item-${index}`} className="flex-shrink-0">
+                <div
+                  key={`${order._id}-item-${index}`}
+                  className="flex-shrink-0"
+                >
                   <img
                     src={`${API_BASE_URL}${item.image}`}
-                    alt={item.name || 'Product'}
+                    alt={item.name || "Product"}
                     className="w-16 h-16 object-cover rounded-lg border-2 border-gray-700"
                     loading="lazy"
                     onError={(e) => {
@@ -301,7 +304,7 @@ const OrderCard = ({ order, onViewDetails }) => {
           </div>
         )}
 
-        {/* Service Details */}
+        {/* --------------------------- Service Details --------------------------- */}
         {order.serviceId && (
           <div className="mb-4 p-3 bg-gray-900/50 rounded-lg border border-gray-700">
             <div className="flex items-center gap-3">
@@ -310,7 +313,9 @@ const OrderCard = ({ order, onViewDetails }) => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-gray-400 mb-1">Service</p>
-                <p className="text-white font-medium truncate">{order.serviceId?.title || 'Service Booking'}</p>
+                <p className="text-white font-medium truncate">
+                  {order.serviceId?.title || "Service Booking"}
+                </p>
                 {order.scheduledDate && (
                   <p className="text-xs text-gray-500 mt-1">
                     Scheduled: {formatDate(order.scheduledDate)}
@@ -321,14 +326,16 @@ const OrderCard = ({ order, onViewDetails }) => {
           </div>
         )}
 
-        {/* Delivery/Address Info */}
+        {/* --------------------------- Delivery/Address Info --------------------------- */}
         {(order.shippingAddress || order.address) && (
           <div className="mb-4 p-3 bg-gray-900/50 rounded-lg border border-gray-700">
             <div className="flex items-start gap-2">
               <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-gray-500 mb-1">
-                  {orderType === 'service' ? 'Service Address' : 'Shipping Address'}
+                  {orderType === "service"
+                    ? "Service Address"
+                    : "Shipping Address"}
                 </p>
                 <p className="text-sm text-gray-300 line-clamp-2">
                   {order.shippingAddress || order.address}
@@ -347,11 +354,9 @@ const OrderCard = ({ order, onViewDetails }) => {
             <Eye className="w-4 h-4" />
             View Details
           </button>
-          
-          {['delivered', 'completed'].includes(order.status?.toLowerCase()) && (
-            <button
-              className="px-4 py-2.5 bg-gray-900 text-gray-300 hover:text-white border border-gray-700 hover:border-gray-600 rounded-xl font-bold transition-colors duration-200 flex items-center justify-center gap-2"
-            >
+
+          {["delivered", "completed"].includes(order.status?.toLowerCase()) && (
+            <button className="px-4 py-2.5 bg-gray-900 text-gray-300 hover:text-white border border-gray-700 hover:border-gray-600 rounded-xl font-bold transition-colors duration-200 flex items-center justify-center gap-2">
               <Download className="w-4 h-4" />
             </button>
           )}
