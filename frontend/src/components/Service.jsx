@@ -566,7 +566,7 @@ const ShoeServiceApp = () => {
                     </div>
                   </motion.div>
 
-                  {/* Trending Styles */}
+                  {/* --------------------------- Trending Styles --------------------------- */}
                   <motion.div
                     className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-xl"
                     initial={{ opacity: 0, y: 20 }}
@@ -613,7 +613,7 @@ const ShoeServiceApp = () => {
                   </motion.div>
                 </div>
 
-                {/* Special Promo Banner */}
+                {/* --------------------------- Special Promo Banner --------------------------- */}
                 <motion.div
                   className="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
                   initial={{ opacity: 0, y: 20 }}
@@ -716,7 +716,7 @@ const ShoeServiceApp = () => {
                         </p>
                       </div>
 
-                      {/* Booking Form*/}
+                      {/* --------------------------- Booking Form ---------------------------*/}
                       <div className="space-y-4 mb-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
