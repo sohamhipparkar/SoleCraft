@@ -5,6 +5,11 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
+const { registerChatbot } = require("./chatbot");
+
+const dns = require("node:dns");
+
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 dotenv.config();
 
@@ -3783,6 +3788,9 @@ app.post("/api/press/inquiries", async (req, res) => {
   }
 });
 
+
+// AI chatbot (Gemini) — helps customers choose the right cobbler. See chatbot/ folder.
+registerChatbot(app, { Cobbler });
 
 app.use((req, res) => {
   res.status(404).json({

@@ -25,7 +25,7 @@ import {
   Loader
 } from 'lucide-react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
@@ -84,6 +84,7 @@ const itemVariants = {
 
 const FindCobbler = () => {
   const navigate = useNavigate();
+  const routerLocation = useLocation();
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''
@@ -207,6 +208,66 @@ const FindCobbler = () => {
       setIsLoading(false);
     }
   };
+
+  // Chatbot hand-off: the chat's "Book" / "Show on map" buttons navigate here with
+  // { bookCobblerId, serviceType } or { focusCobblerId } in the router state.
+  useEffect(() => {
+    const state = routerLocation.state;
+    const targetId = state?.bookCobblerId || state?.focusCobblerId;
+    if (!targetId || isLoading) return;
+
+    const openFromChat = async () => {
+      let cobbler = cobblers.find((c) => c.id === targetId);
+      if (!cobbler) {
+        // Not in the nearby list (e.g. user is far from Pune) — load it directly
+        try {
+          const response = await axios.get(`/api/cobblers/${targetId}`);
+          const c = response.data?.cobbler;
+          if (c) {
+            cobbler = {
+              id: c._id,
+              cobblerId: c.cobblerId,
+              name: c.name,
+              position: { lat: c.location.coordinates[1], lng: c.location.coordinates[0] },
+              rating: c.rating,
+              reviews: c.reviews,
+              phone: c.phone,
+              email: c.email,
+              hours: c.hours,
+              services: c.services,
+              distance: 'N/A',
+              address: c.address,
+              verified: c.verified,
+              speciality: c.speciality,
+              availableSlots: c.availableSlots || []
+            };
+          }
+        } catch (error) {
+          console.error('Could not load cobbler from chat:', error);
+        }
+      }
+
+      // clear the state so a page refresh doesn't reopen the form
+      navigate(routerLocation.pathname, { replace: true, state: null });
+      if (!cobbler) return;
+
+      if (state.bookCobblerId) {
+        handleBookAppointment(cobbler);
+        if (state.serviceType && cobbler.services.includes(state.serviceType)) {
+          setSelectedService(state.serviceType);
+        }
+      } else {
+        setSelectedCobbler(cobbler);
+        if (map) {
+          map.panTo(cobbler.position);
+          map.setZoom(15);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+    openFromChat();
+  }, [routerLocation.state, isLoading, cobblers, map]);
 
   // Search with debounce
   useEffect(() => {

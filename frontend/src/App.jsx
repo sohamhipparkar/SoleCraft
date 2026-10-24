@@ -26,12 +26,14 @@ import Press from "./components/Press";
 import Privacy from "./components/Privacy";
 import Terms from "./components/Terms";
 import Error from "./components/Error";
+import ChatBot from "./components/ChatBot";
 
 function Root() {
   return (
     <>
       <ScrollToTop />
       <Outlet />
+      <ChatBot />
     </>
   );
 }
