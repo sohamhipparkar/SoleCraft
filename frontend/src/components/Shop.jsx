@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Heart, Star, Filter, ChevronDown, Search, ShoppingCart, Tag, ChevronRight, Package, TrendingUp, Users, Clock, Check, X, ArrowRight, Zap, Shield, RefreshCw, Loader } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from "axios";
 import Navbar from './Navbar';
 import Footer from './Footer';
 
